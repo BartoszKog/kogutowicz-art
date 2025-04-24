@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main # lub master, w zależności od głównej gałęzi repozytorium
+      - master # Aktualizacja do gałęzi master, której używasz w swoim repozytorium
 
 jobs:
   build:
