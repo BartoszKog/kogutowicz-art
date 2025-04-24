@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
 // Pobieranie nazwy repozytorium - wpisz tutaj nazwę swojego repozytorium GitHub
-const repoName = 'strona_mamy';
+const repoName = 'kogutowicz-art';
 
 export default defineConfig({
   plugins: [
