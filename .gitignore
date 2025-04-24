@@ -1,2 +1,29 @@
+# Dependencje
+node_modules/
+.npm
+npm-debug.log*
+
+# Vite
+/dist
+/out
+/.vite
+
+# Systemy operacyjne
+.DS_Store
+Thumbs.db
+
+# IDE i edytory
+/.idea
+/.vscode
+*.sublime-project
+*.sublime-workspace
+
+# Logi
+logs
+*.log
+
 .vscode/
-.github/
+
+# GitHub Copilot
+/.github/prompts
+/.github/copilot-instructions.md
