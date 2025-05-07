@@ -3,30 +3,37 @@ import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'path';
 import { existsSync, mkdirSync, copyFileSync, readdirSync } from 'fs';
 
-// Pobieranie nazwy repozytorium - wpisz tutaj nazwę swojego repozytorium GitHub
+// Nazwa repozytorium GitHub
 const repoName = 'kogutowicz-art';
 
-// Funkcja do kopiowania plików statycznych
-const copyStaticFiles = () => {
+// Plugin do kopiowania plików statycznych
+function copyStaticFilesPlugin() {
   return {
     name: 'copy-static-files',
-    buildEnd() {
+    // Używaj writeBundle zamiast buildEnd
+    writeBundle() {
       const sourceFolders = [
         { src: 'images', dest: 'dist/images' },
         { src: 'src/data/json', dest: 'dist/src/data/json' }
       ];
 
       sourceFolders.forEach(({ src, dest }) => {
+        if (!existsSync(src)) {
+          console.warn(`Katalog źródłowy ${src} nie istnieje!`);
+          return;
+        }
+
         if (!existsSync(dest)) {
           mkdirSync(dest, { recursive: true });
         }
 
-        // Rekursywne kopiowanie plików
         copyFolderRecursiveSync(src, dest);
       });
+      
+      console.log('Statyczne pliki zostały skopiowane do katalogu dist');
     }
   };
-};
+}
 
 // Funkcja do rekursywnego kopiowania folderów
 function copyFolderRecursiveSync(source, target) {
@@ -60,14 +67,10 @@ function copyFolderRecursiveSync(source, target) {
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    copyStaticFiles(),
+    copyStaticFilesPlugin(),
   ],
-  // Base URL dla GitHub Pages - używaj ścieżki względnej w środowisku deweloperskim
+  // Base URL dla GitHub Pages
   base: process.env.NODE_ENV === 'production' ? `/${repoName}/` : '/',
-  // Konfiguracja serwera deweloperskiego
-  server: {
-    port: 5173,
-  },
   // Konfiguracja budowania projektu
   build: {
     outDir: 'dist',
@@ -75,13 +78,13 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: './index.html',
-        gallery: './src/pages/gallery.html',
-        about: './src/pages/about.html',
-        shop: './src/pages/shop.html',
+        main: resolve(__dirname, 'index.html'),
+        gallery: resolve(__dirname, 'src/pages/gallery.html'),
+        about: resolve(__dirname, 'src/pages/about.html'),
+        shop: resolve(__dirname, 'src/pages/shop.html'),
       },
     },
   },
-  // Konfiguracja publicznego katalogu
-  publicDir: 'public',
+  // Publiczny katalog z zasobami statycznymi
+  publicDir: '',
 });

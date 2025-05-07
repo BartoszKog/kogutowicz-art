@@ -7,25 +7,37 @@ let featuredArtworks = [];
 let shopProducts = [];
 let artistData = {}; // Nowa zmienna dla danych o artyście
 
-// Funkcja do korygowania ścieżek do obrazów w zależności od podstrony
-function correctImagePath(imagePath) {
-  const basePath = getBasePath();
-  // Sprawdź, czy jesteśmy na podstronie
-  const isSubpage = window.location.pathname.includes('/pages/');
-  
-  // Jeśli jesteśmy na podstronie, dodaj prefix '../..' oraz podstawową ścieżkę, jeśli jesteśmy na GitHub Pages
-  if (isSubpage) {
-    return `../../${imagePath}`;
-  } else {
-    return `${basePath}/${imagePath}`;
-  }
-}
-
 // Funkcja pomocnicza do pobierania podstawowej ścieżki
 function getBasePath() {
-  // W środowisku produkcyjnym GitHub Pages będzie miał prefiks z nazwą repozytorium
   const isGitHubPages = window.location.hostname.includes('github.io');
+  
+  // Na GitHub Pages używamy prefiksu z nazwą repozytorium
+  // Lokalnie używamy pustej ścieżki bazowej
   return isGitHubPages ? '/kogutowicz-art' : '';
+}
+
+// Funkcja do korygowania ścieżek do obrazów w zależności od podstrony i środowiska
+function correctImagePath(imagePath) {
+  const basePath = getBasePath();
+  const currentPath = window.location.pathname;
+  
+  // Usuń wiodące "/" jeśli występuje w ścieżce obrazu
+  const cleanImagePath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+  
+  // Jeśli jesteśmy na podstronie (pages/), dodaj odpowiednie prefiksy
+  if (currentPath.includes('/pages/') || currentPath.includes('/gallery.html') || 
+      currentPath.includes('/about.html') || currentPath.includes('/shop.html')) {
+    if (basePath) {
+      // Na GitHub Pages dla podstron
+      return `${basePath}/${cleanImagePath}`;
+    } else {
+      // Lokalnie dla podstron
+      return `../../${cleanImagePath}`;
+    }
+  } else {
+    // Strona główna
+    return `${basePath}/${cleanImagePath}`;
+  }
 }
 
 // Funkcja do pobierania danych z plików JSON
