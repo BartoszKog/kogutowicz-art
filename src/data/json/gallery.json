@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "title": "Dwór w Łąkcie Górnej",
+    "description": "Dwór w Łąkcie Górnej",
+    "technique": "Olej na płótnie",
+    "dimensions": "60 x 80 cm",
+    "year": 2022,
+    "image": "images/featured/dwor.jpg",
+    "categories": ["architektura", "Łąkta Górna", "dwór"],
+    "available": true
+  },
+  {
+    "id": 2,
+    "title": "Zamek w Starym Wiśniczu",
+    "description": "Zamek w Starym Wiśniczu tuż przed zachodem slonca",
+    "technique": "Olej na płótnie",
+    "dimensions": "40 x 50 cm",
+    "year": 2023,
+    "image": "images/featured/zamek.jpg",
+    "categories": ["architektura", "Wiśnicz", "zamek"],
+    "available": true
+  }
+]

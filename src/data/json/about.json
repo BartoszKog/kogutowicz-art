@@ -1,0 +1,23 @@
+{
+  "artistName": "Imię i Nazwisko Artysty",
+  "artistPhoto": "images/featured/dwor.jpg",
+  "biography": [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, velit nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel ultricies lacinia, velit nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl.",
+    "Sed euismod, nisl vel ultricies lacinia, velit nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel ultricies lacinia, velit nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl.",
+    "Sed euismod, nisl vel ultricies lacinia, velit nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel ultricies lacinia, velit nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl."
+  ],
+  "education": [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Sed euismod, nisl vel ultricies lacinia, velit nisl aliquam nisl.",
+    "Eget aliquam nisl nisl sit amet nisl.",
+    "Sed euismod, nisl vel ultricies lacinia, velit nisl aliquam nisl.",
+    "Eget aliquam nisl nisl sit amet nisl."
+  ],
+  "achievements": [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Sed euismod, nisl vel ultricies lacinia, velit nisl aliquam nisl.",
+    "Eget aliquam nisl nisl sit amet nisl.",
+    "Sed euismod, nisl vel ultricies lacinia, velit nisl aliquam nisl.",
+    "Eget aliquam nisl nisl sit amet nisl."
+  ]
+}

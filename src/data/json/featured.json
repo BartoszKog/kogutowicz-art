@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Krajobrazy",
+    "description": "Kolekcja obrazow przedstawiajacych piekne krajobrazy",
+    "image": "images/featured/sterta.jpg"
+  },
+  {
+    "id": 4,
+    "title": "Zamek w Starym Wiśniczu",
+    "description": "Zamek w Starym Wiśniczu tuż przed zachodem slonca",
+    "image": "images/featured/zamek.jpg"
+  },
+  {
+    "id": 6,
+    "title": "Dwór w Łąkcie Górnej",
+    "description": "Dwór w Łąkcie Górnej",
+    "image": "images/featured/dwor.jpg"
+  }
+]

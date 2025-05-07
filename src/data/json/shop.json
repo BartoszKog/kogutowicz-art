@@ -1,0 +1,22 @@
+[
+  {
+    "id": 101,
+    "title": "Obraz 1.",
+    "description": "Wysokiej jakosci reprodukcja na płotnie",
+    "price": 350,
+    "image": "images/featured/dwor.jpg",
+    "available": true,
+    "originalArtworkId": 1,
+    "purchaseUrl": "https://github.com/BartoszKog"
+  },
+  {
+    "id": 102,
+    "title": "Obraz 2.",
+    "description": "Reprodukcja na płotnie",
+    "price": 300,
+    "image": "images/featured/dwor.jpg",
+    "available": true,
+    "originalArtworkId": 6,
+    "purchaseUrl": "https://github.com/BartoszKog"
+  }
+]
