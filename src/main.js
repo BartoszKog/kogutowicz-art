@@ -9,30 +9,44 @@ let artistData = {}; // Nowa zmienna dla danych o artyście
 
 // Funkcja do korygowania ścieżek do obrazów w zależności od podstrony
 function correctImagePath(imagePath) {
+  const basePath = getBasePath();
   // Sprawdź, czy jesteśmy na podstronie
   const isSubpage = window.location.pathname.includes('/pages/');
   
-  // Jeśli jesteśmy na podstronie, dodaj prefix '../..'
-  return isSubpage ? '../../' + imagePath : imagePath;
+  // Jeśli jesteśmy na podstronie, dodaj prefix '../..' oraz podstawową ścieżkę, jeśli jesteśmy na GitHub Pages
+  if (isSubpage) {
+    return `../../${imagePath}`;
+  } else {
+    return `${basePath}/${imagePath}`;
+  }
+}
+
+// Funkcja pomocnicza do pobierania podstawowej ścieżki
+function getBasePath() {
+  // W środowisku produkcyjnym GitHub Pages będzie miał prefiks z nazwą repozytorium
+  const isGitHubPages = window.location.hostname.includes('github.io');
+  return isGitHubPages ? '/kogutowicz-art' : '';
 }
 
 // Funkcja do pobierania danych z plików JSON
 async function fetchData() {
   try {
+    const basePath = getBasePath();
+    
     // Pobieranie danych dla galerii
-    const galleryResponse = await fetch('/src/data/json/gallery.json');
+    const galleryResponse = await fetch(`${basePath}/src/data/json/gallery.json`);
     galleryArtworks = await galleryResponse.json();
     
     // Pobieranie danych dla wyróżnionych dzieł
-    const featuredResponse = await fetch('/src/data/json/featured.json');
+    const featuredResponse = await fetch(`${basePath}/src/data/json/featured.json`);
     featuredArtworks = await featuredResponse.json();
     
     // Pobieranie danych dla sklepu
-    const shopResponse = await fetch('/src/data/json/shop.json');
+    const shopResponse = await fetch(`${basePath}/src/data/json/shop.json`);
     shopProducts = await shopResponse.json();
     
     // Pobieranie danych o artyście
-    const aboutResponse = await fetch('/src/data/json/about.json');
+    const aboutResponse = await fetch(`${basePath}/src/data/json/about.json`);
     artistData = await aboutResponse.json();
     
     // Po załadowaniu danych, inicjalizuj aplikację
