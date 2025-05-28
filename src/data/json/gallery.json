@@ -20,5 +20,22 @@
     "image": "images/featured/zamek.jpg",
     "categories": ["architektura", "Wiśnicz", "zamek"],
     "available": true
+  },
+  {
+    "id": 3,
+    "title": "Martwa natura czerwona",
+    "dimensions": "30 x 30 cm",
+    "year": 2004,
+    "image": "images/gallery/martwa_natura_czerwone.jpg",
+    "categories": ["martwa natura"]
+  },
+  {
+    "id": 4,
+    "title": "Widok z okna",
+    "dimensions": "40 x 60 cm",
+    "year": 2011,
+    "image": "images/gallery/Widok_z_okna_kko64.jpg",
+    "categories": ["Pejzaż", "Impresjonizm"],
+    "available": false
   }
 ]
