@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sklep - Portfolio Artystyczne</title>
-  <script type="module" crossorigin src="/kogutowicz-art/assets/main-AFvRn-RQ.js"></script>
-  <link rel="stylesheet" crossorigin href="/kogutowicz-art/assets/main-CHyCYmXl.css">
+  <script type="module" crossorigin src="/kogutowicz-art/assets/main-mp826_F5.js"></script>
+  <link rel="stylesheet" crossorigin href="/kogutowicz-art/assets/main-CuAniXvo.css">
 </head>
 <body class="bg-gray-50">
     <header class="bg-white shadow">
@@ -14,15 +14,39 @@
                 <div>
                     <a href="../../" class="text-xl font-bold text-gray-800">Portfolio Artystyczne</a>
                 </div>
-                <ul class="flex space-x-6">
+                
+                <!-- Desktop Navigation -->
+                <ul class="hidden md:flex space-x-6">
                     <li><a href="../../" class="text-gray-600 hover:text-gray-800 hover:border-b-2 hover:border-purple-500">Strona Główna</a></li>
                     <li><a href="./gallery.html" class="text-gray-600 hover:text-gray-800 hover:border-b-2 hover:border-purple-500">Galeria</a></li>
                     <li><a href="./about.html" class="text-gray-600 hover:text-gray-800 hover:border-b-2 hover:border-purple-500">O Artyście</a></li>
                     <li><a href="./shop.html" class="text-gray-800 font-semibold border-b-2 border-purple-500">Sklep</a></li>
-                </ul>
+                </ul>                <!-- Mobile Menu Button -->
+                <button 
+                    type="button"
+                    id="mobile-menu-button" 
+                    class="md:hidden p-2 text-gray-600 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                    aria-label="Otwórz menu"
+                    aria-expanded="false"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
             </div>
-        </nav>
-    </header>    <main class="flex-1">
+
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t border-gray-200">
+                <ul class="space-y-2 pt-4">
+                    <li><a href="../../" class="block py-2 px-4 text-gray-600 hover:text-gray-800 hover:bg-gray-50">Strona Główna</a></li>
+                    <li><a href="./gallery.html" class="block py-2 px-4 text-gray-600 hover:text-gray-800 hover:bg-gray-50">Galeria</a></li>
+                    <li><a href="./about.html" class="block py-2 px-4 text-gray-600 hover:text-gray-800 hover:bg-gray-50">O Artyście</a></li>
+                    <li><a href="./shop.html" class="block py-2 px-4 text-gray-800 font-semibold bg-purple-50 border-l-4 border-purple-500">Sklep</a></li>
+                </ul>
+            </div>        </nav>
+    </header>
+
+    <main class="flex-1">
         <div class="container mx-auto px-6 py-8">
             <h1 class="text-4xl font-bold text-gray-800 mb-4">Prace na sprzedaż</h1>
             
