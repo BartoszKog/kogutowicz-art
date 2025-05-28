@@ -44,21 +44,28 @@ function correctImagePath(imagePath) {
 async function fetchData() {
   try {
     const basePath = getBasePath();
+    const currentPath = window.location.pathname;
+    
+    // Ustal prawidłową ścieżkę bazową dla plików JSON w zależności od lokalizacji
+    let jsonBasePath = basePath;
+    if (currentPath.includes('/pages/') && !basePath) {
+      // Jeśli jesteśmy na podstronie lokalnie, dodaj ścieżkę względną
+      jsonBasePath = '../..';
+    }
     
     // Pobieranie danych dla galerii
-    const galleryResponse = await fetch(`${basePath}/src/data/json/gallery.json`);
+    const galleryResponse = await fetch(`${jsonBasePath}/src/data/json/gallery.json`);
     galleryArtworks = await galleryResponse.json();
-    
     // Pobieranie danych dla wyróżnionych dzieł
-    const featuredResponse = await fetch(`${basePath}/src/data/json/featured.json`);
+    const featuredResponse = await fetch(`${jsonBasePath}/src/data/json/featured.json`);
     featuredArtworks = await featuredResponse.json();
     
     // Pobieranie danych dla sklepu
-    const shopResponse = await fetch(`${basePath}/src/data/json/shop.json`);
+    const shopResponse = await fetch(`${jsonBasePath}/src/data/json/shop.json`);
     shopProducts = await shopResponse.json();
     
     // Pobieranie danych o artyście
-    const aboutResponse = await fetch(`${basePath}/src/data/json/about.json`);
+    const aboutResponse = await fetch(`${jsonBasePath}/src/data/json/about.json`);
     artistData = await aboutResponse.json();
     
     // Po załadowaniu danych, inicjalizuj aplikację
@@ -189,46 +196,66 @@ function setupCategoryFilters() {
   const filterContainer = document.querySelector('.category-filters');
   if (!filterContainer) return;
   
-  // Zbierz wszystkie unikalne kategorie
-  const categories = new Set();
+  // Dodaj stan ładowania
+  filterContainer.className = 'category-filters loading';
+  
+  // Zbierz wszystkie unikalne kategorie i policz liczbę dzieł w każdej
+  const categoryCount = new Map();
   galleryArtworks.forEach(artwork => {
-    artwork.categories.forEach(category => categories.add(category));
+    artwork.categories.forEach(category => {
+      categoryCount.set(category, (categoryCount.get(category) || 0) + 1);
+    });
   });
+  
+  // Sortuj kategorie według liczby dzieł (malejąco)
+  const sortedCategories = Array.from(categoryCount.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(entry => entry[0]);
+  
+  // Wyczyść kontener
+  filterContainer.innerHTML = '';
   
   // Dodaj przycisk "Wszystkie"
   const allButton = document.createElement('button');
-  allButton.className = 'px-3 py-1 bg-purple-500 text-white rounded mr-2 mb-2';
-  allButton.textContent = 'Wszystkie';
+  allButton.className = 'category-chip category-chip-active';
+  allButton.textContent = `Wszystkie (${galleryArtworks.length})`;
+  allButton.setAttribute('data-category', 'wszystkie');
   allButton.addEventListener('click', () => {
     renderGalleryArtworks();
     highlightActiveFilter(allButton);
   });
   filterContainer.appendChild(allButton);
   
-  // Dodaj przyciski dla każdej kategorii
-  categories.forEach(category => {
+  // Dodaj przyciski dla każdej kategorii z licznikiem
+  sortedCategories.forEach(category => {
+    const count = categoryCount.get(category);
     const button = document.createElement('button');
-    button.className = 'px-3 py-1 bg-gray-200 text-gray-800 rounded mr-2 mb-2 hover:bg-purple-200';
-    button.textContent = category;
+    button.className = 'category-chip category-chip-inactive';
+    button.textContent = `${category} (${count})`;
+    button.setAttribute('data-category', category);
     button.addEventListener('click', () => {
       const filteredArtworks = filterArtworksByCategory(category);
       renderGalleryArtworks(filteredArtworks);
       highlightActiveFilter(button);
     });
-    filterContainer.appendChild(button);
-  });
+    filterContainer.appendChild(button);  });
   
   function highlightActiveFilter(activeButton) {
     // Resetuj style wszystkich przycisków
-    filterContainer.querySelectorAll('button').forEach(btn => {
-      btn.className = 'px-3 py-1 bg-gray-200 text-gray-800 rounded mr-2 mb-2 hover:bg-purple-200';
+    filterContainer.querySelectorAll('.category-chip').forEach(btn => {
+      btn.className = 'category-chip category-chip-inactive';
     });
     // Podświetl aktywny przycisk
-    activeButton.className = 'px-3 py-1 bg-purple-500 text-white rounded mr-2 mb-2';
+    activeButton.className = 'category-chip category-chip-active';
   }
   
   // Domyślnie podświetl "Wszystkie"
   highlightActiveFilter(allButton);
+  
+  // Usuń stan ładowania po krótkim opóźnieniu dla animacji
+  setTimeout(() => {
+    filterContainer.classList.remove('loading');
+  }, 300);
 }
 
 // Nowa funkcja do renderowania strony "O Artyście"
@@ -306,8 +333,122 @@ function initializeApp() {
   }
 }
 
+// Funkcja do obsługi responsywnego menu
+function setupMobileMenu() {
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  
+  if (!mobileMenuButton || !mobileMenu) return;
+  
+  let isMenuOpen = false;
+  
+  // Funkcja do przełączania menu
+  function toggleMenu() {
+    isMenuOpen = !isMenuOpen;
+    
+    if (isMenuOpen) {
+      mobileMenu.classList.remove('hidden');
+      mobileMenuButton.setAttribute('aria-expanded', 'true');
+      mobileMenuButton.setAttribute('aria-label', 'Zamknij menu');
+      
+      // Zmień ikonę na X
+      mobileMenuButton.innerHTML = `
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      `;
+      
+      // Dodaj focus trap dla dostępności
+      mobileMenu.focus();
+    } else {
+      mobileMenu.classList.add('hidden');
+      mobileMenuButton.setAttribute('aria-expanded', 'false');
+      mobileMenuButton.setAttribute('aria-label', 'Otwórz menu');
+      
+      // Zmień ikonę z powrotem na hamburger
+      mobileMenuButton.innerHTML = `
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      `;
+    }
+  }
+  // Obsługa kliknięcia przycisku menu
+  mobileMenuButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleMenu();
+  });
+  
+  // Obsługa klawisza Enter i Space na przycisku menu
+  mobileMenuButton.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleMenu();
+    }
+  });
+  
+  // Zamknij menu przy zmianie rozmiaru okna na większy
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768 && isMenuOpen) { // 768px to breakpoint md w Tailwind
+      toggleMenu();
+    }
+  });
+  
+  // Zamknij menu po kliknięciu w link (dla lepszego UX)
+  const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+  mobileMenuLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (isMenuOpen) {
+        toggleMenu();
+      }
+    });
+  });
+  
+  // Obsługa klawisza Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isMenuOpen) {
+      toggleMenu();
+      mobileMenuButton.focus(); // Przywróć focus do przycisku
+    }
+  });
+  
+  // Zamknij menu po kliknięciu poza nim
+  document.addEventListener('click', (e) => {
+    if (isMenuOpen && !mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+      toggleMenu();
+    }
+  });
+  
+  // Obsługa nawigacji klawiaturą w menu
+  mobileMenu.addEventListener('keydown', (e) => {
+    const menuLinks = mobileMenu.querySelectorAll('a');
+    const currentIndex = Array.from(menuLinks).indexOf(document.activeElement);
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextIndex = currentIndex < menuLinks.length - 1 ? currentIndex + 1 : 0;
+      menuLinks[nextIndex].focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prevIndex = currentIndex > 0 ? currentIndex - 1 : menuLinks.length - 1;
+      menuLinks[prevIndex].focus();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      menuLinks[0].focus();
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      menuLinks[menuLinks.length - 1].focus();
+    }
+  });
+}
+
 // Uruchom pobieranie danych po załadowaniu dokumentu
-document.addEventListener('DOMContentLoaded', fetchData);
+document.addEventListener('DOMContentLoaded', () => {
+  fetchData();
+  setupMobileMenu();
+});
 
 // Eksport funkcji dla możliwości użycia w innych modułach
 export { 
@@ -317,5 +458,6 @@ export {
   renderArtistPage,
   getArtworkById,
   getProductById,
-  filterArtworksByCategory
+  filterArtworksByCategory,
+  setupMobileMenu
 };
