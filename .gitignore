@@ -27,6 +27,7 @@ logs
 # GitHub Copilot
 /.github/prompts
 /.github/copilot-instructions.md
+/.github/instructions
 
 # Python Virtual Environment
 admin_interface/venv/
