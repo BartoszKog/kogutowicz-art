@@ -211,6 +211,7 @@ html {
 .category-chip-active:hover {
     background-color: #7c3aed;
     border-color: #7c3aed;
+    color: white; /* Zachowaj biały kolor tekstu przy hover */
     box-shadow: 0 3px 6px rgba(139, 92, 246, 0.4);
     transform: translateY(-1px);
 }
@@ -240,9 +241,10 @@ html {
     border-color: #8b5cf6;
 }
 
-.category-chip[data-category="wszystkie"]:hover {
+.category-chip[data-category="wszystkie"].category-chip-active:hover {
     background-color: #7c3aed;
     border-color: #7c3aed;
+    color: white; /* Zachowaj biały kolor tekstu przy hover */
 }
 
 /* Mobile responsive adjustments for chips */

@@ -88,14 +88,13 @@ function renderFeaturedArtworks() {
     
     // Użyj funkcji correctImagePath do skorygowania ścieżki obrazu
     const correctedImagePath = correctImagePath(artwork.image);
-    
-    artworkElement.innerHTML = `
+      artworkElement.innerHTML = `
       <div class="h-64 bg-gray-200 flex items-center justify-center overflow-hidden">
-        <img src="${correctedImagePath}" alt="${artwork.title}" class="w-full h-full object-cover">
+        <img src="${correctedImagePath}" alt="${artwork.title || 'Obraz'}" class="w-full h-full object-cover">
       </div>
       <div class="p-4">
-        <h3 class="text-xl font-semibold mb-2">${artwork.title}</h3>
-        <p class="text-gray-600">${artwork.description}</p>
+        <h3 class="text-xl font-semibold mb-2">${artwork.title || 'Bez tytułu'}</h3>
+        ${artwork.description ? `<p class="text-gray-600">${artwork.description}</p>` : ''}
       </div>
     `;
     
@@ -116,17 +115,18 @@ function renderGalleryArtworks(artworks = galleryArtworks) {
     
     // Użyj funkcji correctImagePath do skorygowania ścieżki obrazu
     const correctedImagePath = correctImagePath(artwork.image);
-    
-    artworkElement.innerHTML = `
+      artworkElement.innerHTML = `
       <div class="h-64 bg-gray-200 flex items-center justify-center overflow-hidden">
-        <img src="${correctedImagePath}" alt="${artwork.title}" class="w-full h-full object-cover">
+        <img src="${correctedImagePath}" alt="${artwork.title || 'Obraz'}" class="w-full h-full object-cover">
       </div>
       <div class="p-4">
-        <h3 class="text-xl font-semibold mb-2">${artwork.title}</h3>
-        <p class="text-gray-600">${artwork.technique}, ${artwork.dimensions}, ${artwork.year}</p>
-        <p class="text-sm mt-2">${artwork.description}</p>
-        <p class="mt-2 ${artwork.available ? 'text-green-600' : 'text-red-600'}">
-          ${artwork.available ? 'Dostępny' : 'Sprzedany'}
+        <h3 class="text-xl font-semibold mb-2">${artwork.title || 'Bez tytułu'}</h3>
+        ${(artwork.technique || artwork.dimensions || artwork.year) ? 
+          `<p class="text-gray-600">${[artwork.technique, artwork.dimensions, artwork.year].filter(Boolean).join(', ')}</p>` : 
+          ''}
+        ${artwork.description ? `<p class="text-sm mt-2">${artwork.description}</p>` : ''}
+        <p class="mt-2 ${artwork.available ? 'text-green-600' : 'text-gray-400'}">
+          ${artwork.available ? 'Dostępny' : 'Niedostępny'}
         </p>
       </div>
     `;
@@ -148,19 +148,30 @@ function renderShopProducts() {
     
     // Użyj funkcji correctImagePath do skorygowania ścieżki obrazu
     const correctedImagePath = correctImagePath(product.image);
+      // Sprawdź czy produkt jest dostępny
+    const isAvailable = product.available !== false;
+    const buttonClass = isAvailable 
+      ? 'bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 inline-block'
+      : 'bg-gray-400 text-gray-600 px-4 py-2 rounded cursor-not-allowed inline-block';
+    const buttonText = isAvailable ? 'Przejdź do zakupu' : 'Niedostępne';
+    const buttonAttributes = isAvailable 
+      ? `href="${product.purchaseUrl}" target="_blank" rel="noopener noreferrer"`
+      : 'onclick="return false;"';
     
     productElement.innerHTML = `
       <div class="h-64 bg-gray-200 flex items-center justify-center overflow-hidden">
-        <img src="${correctedImagePath}" alt="${product.title}" class="w-full h-full object-cover">
+        <img src="${correctedImagePath}" alt="${product.title || 'Produkt'}" class="w-full h-full object-cover">
       </div>
       <div class="p-4">
-        <h3 class="text-xl font-semibold mb-2">${product.title}</h3>
-        <p class="text-gray-600">${product.description}</p>
-        <p class="text-purple-600 font-bold mt-2">${product.price} zł</p>
-        <a href="${product.purchaseUrl}" target="_blank" rel="noopener noreferrer" 
-           class="mt-4 bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 inline-block">
-          Przejdź do zakupu
-        </a>
+        <h3 class="text-xl font-semibold mb-2">${product.title || 'Bez tytułu'}</h3>
+        ${product.description ? `<p class="text-gray-600">${product.description}</p>` : ''}
+        ${product.price ? `<p class="text-purple-600 font-bold mt-2">${product.price} zł</p>` : ''}
+        <div class="mt-4 flex items-center justify-between">
+          <a ${buttonAttributes} class="${buttonClass}">
+            ${buttonText}
+          </a>
+          ${!isAvailable ? '<span class="text-gray-400 font-semibold text-sm">Sprzedane</span>' : ''}
+        </div>
       </div>
     `;
     
@@ -184,10 +195,10 @@ function filterArtworksByCategory(category) {
   
   // Konwertuj szukaną kategorię na małe litery
   const searchCategory = category.toLowerCase();
-  
-  return galleryArtworks.filter(artwork => 
-    // Sprawdź, czy którakolwiek z kategorii dzieła pasuje (niezależnie od wielkości liter)
-    artwork.categories.some(cat => cat.toLowerCase() === searchCategory)
+    return galleryArtworks.filter(artwork => 
+    // Sprawdź, czy artwork ma kategorie i czy którakolwiek z kategorii pasuje
+    artwork.categories && Array.isArray(artwork.categories) &&
+    artwork.categories.some(cat => cat && cat.toLowerCase() === searchCategory)
   );
 }
 
@@ -198,13 +209,16 @@ function setupCategoryFilters() {
   
   // Dodaj stan ładowania
   filterContainer.className = 'category-filters loading';
-  
-  // Zbierz wszystkie unikalne kategorie i policz liczbę dzieł w każdej
+    // Zbierz wszystkie unikalne kategorie i policz liczbę dzieł w każdej
   const categoryCount = new Map();
   galleryArtworks.forEach(artwork => {
-    artwork.categories.forEach(category => {
-      categoryCount.set(category, (categoryCount.get(category) || 0) + 1);
-    });
+    if (artwork.categories && Array.isArray(artwork.categories)) {
+      artwork.categories.forEach(category => {
+        if (category && category.trim()) {
+          categoryCount.set(category, (categoryCount.get(category) || 0) + 1);
+        }
+      });
+    }
   });
   
   // Sortuj kategorie według liczby dzieł (malejąco)
@@ -269,48 +283,56 @@ function renderArtistPage() {
   const biographyContainer = document.querySelector('.artist-biography');
   const educationContainer = document.querySelector('.artist-education');
   const achievementsContainer = document.querySelector('.artist-achievements');
-  
-  // Aktualizuj tytuł strony
-  document.querySelector('h1').textContent = artistData.artistName || "O Artyście";
+    // Aktualizuj tytuł strony
+  const h1Element = document.querySelector('h1');
+  if (h1Element) {
+    h1Element.textContent = artistData.artistName || "O Artyście";
+  }
   
   // Aktualizuj zdjęcie artysty
   if (artistPhotoContainer && artistData.artistPhoto) {
     artistPhotoContainer.innerHTML = `
-      <img src="${correctImagePath(artistData.artistPhoto)}" alt="${artistData.artistName}" 
+      <img src="${correctImagePath(artistData.artistPhoto)}" alt="${artistData.artistName || 'Artysta'}" 
            class="w-full h-full object-cover rounded">
     `;
   }
   
   // Aktualizuj biografię
-  if (biographyContainer && artistData.biography) {
+  if (biographyContainer && artistData.biography && Array.isArray(artistData.biography) && artistData.biography.length > 0) {
     biographyContainer.innerHTML = '';
     artistData.biography.forEach(paragraph => {
-      const p = document.createElement('p');
-      p.className = 'text-gray-700 mb-4';
-      p.textContent = paragraph;
-      biographyContainer.appendChild(p);
+      if (paragraph && paragraph.trim()) {
+        const p = document.createElement('p');
+        p.className = 'text-gray-700 mb-4';
+        p.textContent = paragraph;
+        biographyContainer.appendChild(p);
+      }
     });
   }
   
   // Aktualizuj wykształcenie
-  if (educationContainer && artistData.education) {
+  if (educationContainer && artistData.education && Array.isArray(artistData.education) && artistData.education.length > 0) {
     educationContainer.innerHTML = '';
     artistData.education.forEach(item => {
-      const li = document.createElement('li');
-      li.className = 'list-disc list-inside text-gray-700';
-      li.textContent = item;
-      educationContainer.appendChild(li);
+      if (item && item.trim()) {
+        const li = document.createElement('li');
+        li.className = 'list-disc list-inside text-gray-700';
+        li.textContent = item;
+        educationContainer.appendChild(li);
+      }
     });
   }
   
   // Aktualizuj osiągnięcia
-  if (achievementsContainer && artistData.achievements) {
+  if (achievementsContainer && artistData.achievements && Array.isArray(artistData.achievements) && artistData.achievements.length > 0) {
     achievementsContainer.innerHTML = '';
     artistData.achievements.forEach(item => {
-      const li = document.createElement('li');
-      li.className = 'list-disc list-inside text-gray-700';
-      li.textContent = item;
-      achievementsContainer.appendChild(li);
+      if (item && item.trim()) {
+        const li = document.createElement('li');
+        li.className = 'list-disc list-inside text-gray-700';
+        li.textContent = item;
+        achievementsContainer.appendChild(li);
+      }
     });
   }
 }
