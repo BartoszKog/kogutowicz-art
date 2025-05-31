@@ -296,41 +296,44 @@ function renderArtistPage() {
            class="w-full h-full object-cover rounded">
     `;
   }
-  
-  // Aktualizuj biografię
+    // Aktualizuj biografię
   if (biographyContainer && artistData.biography && Array.isArray(artistData.biography) && artistData.biography.length > 0) {
     biographyContainer.innerHTML = '';
     artistData.biography.forEach(paragraph => {
       if (paragraph && paragraph.trim()) {
         const p = document.createElement('p');
         p.className = 'text-gray-700 mb-4';
-        p.textContent = paragraph;
+        // Zabezpieczenie przed sierotkami - dodaj niełamliwe spacje po krótkich słowach
+        const textWithNonBreakingSpaces = paragraph.replace(/\b([aiozwunazeprzypod])\s+/gi, '$1&nbsp;');
+        p.innerHTML = textWithNonBreakingSpaces;
         biographyContainer.appendChild(p);
       }
     });
   }
-  
-  // Aktualizuj wykształcenie
+    // Aktualizuj wykształcenie
   if (educationContainer && artistData.education && Array.isArray(artistData.education) && artistData.education.length > 0) {
     educationContainer.innerHTML = '';
     artistData.education.forEach(item => {
       if (item && item.trim()) {
         const li = document.createElement('li');
         li.className = 'list-disc list-inside text-gray-700';
-        li.textContent = item;
+        // Zabezpieczenie przed sierotkami - dodaj niełamliwe spacje po krótkich słowach
+        const textWithNonBreakingSpaces = item.replace(/\b([aiozwunazeprzypod])\s+/gi, '$1&nbsp;');
+        li.innerHTML = textWithNonBreakingSpaces;
         educationContainer.appendChild(li);
       }
     });
   }
-  
-  // Aktualizuj osiągnięcia
+    // Aktualizuj osiągnięcia
   if (achievementsContainer && artistData.achievements && Array.isArray(artistData.achievements) && artistData.achievements.length > 0) {
     achievementsContainer.innerHTML = '';
     artistData.achievements.forEach(item => {
       if (item && item.trim()) {
         const li = document.createElement('li');
         li.className = 'list-disc list-inside text-gray-700';
-        li.textContent = item;
+        // Zabezpieczenie przed sierotkami - dodaj niełamliwe spacje po krótkich słowach
+        const textWithNonBreakingSpaces = item.replace(/\b([aiozwunazeprzypod])\s+/gi, '$1&nbsp;');
+        li.innerHTML = textWithNonBreakingSpaces;
         achievementsContainer.appendChild(li);
       }
     });

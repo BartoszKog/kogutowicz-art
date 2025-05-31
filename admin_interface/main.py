@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import threading
 
 class AdminInterface:
     def __init__(self, page: ft.Page):
@@ -33,6 +34,9 @@ class AdminInterface:
             bgcolor="#1976d2",
             color="#ffffff"
         )
+        
+        # Obsługa skrótów klawiszowych
+        self.page.on_keyboard_event = self.on_keyboard_event
         
         # Boczny panel nawigacji w kontenerze z określoną wysokością
         self.rail = ft.Container(
@@ -78,24 +82,33 @@ class AdminInterface:
             width=1000  # Maksymalna szerokość 1000px dla optymalnej czytelności
         )
         
+        # Stały kontener dla przycisków akcji na dole
+        self.action_buttons_container = ft.Container(
+            content=ft.Row([]),
+            padding=ft.padding.symmetric(horizontal=20, vertical=10),
+            bgcolor=ft.Colors.PRIMARY_CONTAINER,
+            border=ft.border.only(top=ft.BorderSide(1, ft.Colors.OUTLINE_VARIANT))
+        )
+        
         # Powiadomienia
         self.snackbar = ft.SnackBar(content=ft.Text(""))
         self.page.overlay.append(self.snackbar)
         
         # Layout główny - container z pełną wysokością i wyśrodkowaną zawartością
-        main_layout = ft.Container(
-            content=ft.Row([
-            self.rail,
-            ft.VerticalDivider(width=1),
-            ft.Container(
-                content=self.content_area,
-                alignment=ft.alignment.center,
-                expand=True
-            )
-            ]),
-            expand=True
-        )
-        self.page.add(main_layout)
+        main_content = ft.Column([
+            ft.Row([
+                self.rail,
+                ft.VerticalDivider(width=1),
+                ft.Container(
+                    content=self.content_area,
+                    alignment=ft.alignment.center,
+                    expand=True
+                )
+            ], expand=True),
+            self.action_buttons_container
+        ], expand=True)
+        
+        self.page.add(main_content)
         
         # Automatyczne załadowanie sekcji "O Artyście" na początku
         self.load_section(0)
@@ -201,26 +214,12 @@ class AdminInterface:
         def close_dialog(e):
             self.page.close(dialog)
 
-        def save_and_continue(e):
-            self.save_data()
-            self.page.close(dialog)
-            self.load_section(new_index)
-
-        def discard_and_continue(e):
-            self.unsaved_changes = False
-            self.update_title()
-            self.update_buttons_state()
-            self.page.close(dialog)
-            self.load_section(new_index)
-
         dialog = ft.AlertDialog(
             modal=True,
-            title=ft.Text("Niezapisane zmiany"),
-            content=ft.Text("Masz niezapisane zmiany. Co chcesz zrobić?"),
+            title=ft.Text("Niezapisane zmiany", color="#f57c00"),
+            content=ft.Text("Masz niezapisane zmiany. Aby zmienić sekcję, najpierw zapisz zmiany lub anuluj je używając przycisków na dole strony."),
             actions=[
-                ft.TextButton("Zapisz i kontynuuj", on_click=save_and_continue),
-                ft.TextButton("Odrzuć zmiany", on_click=discard_and_continue),
-                ft.TextButton("Anuluj", on_click=close_dialog),
+                ft.TextButton("OK", on_click=close_dialog),
             ],
             actions_alignment=ft.MainAxisAlignment.END,
         )
@@ -244,8 +243,20 @@ class AdminInterface:
             self.current_cancel_button.disabled = not self.unsaved_changes
         self.page.update()
 
-    def create_action_buttons(self, form_refresh_func=None):
-        """Tworzy przyciski akcji z odpowiednim stanem disabled"""
+    def create_action_buttons(self, form_refresh_func=None, show_add_button=False, add_button_text="Dodaj nowy element", add_button_callback=None):
+        """Tworzy przyciski akcji i umieszcza je w stałym kontenerze na dole"""
+        buttons = []
+        
+        # Przycisk dodawania (jeśli wymagany)
+        if show_add_button and add_button_callback:
+            add_button = ft.ElevatedButton(
+                add_button_text,
+                icon=ft.Icons.ADD,
+                on_click=add_button_callback
+            )
+            buttons.append(add_button)
+        
+        # Przycisk zapisywania
         save_button = ft.ElevatedButton(
             "Zapisz zmiany",
             icon=ft.Icons.SAVE,
@@ -253,6 +264,7 @@ class AdminInterface:
             disabled=not self.unsaved_changes
         )
         
+        # Przycisk anulowania
         cancel_button = ft.OutlinedButton(
             "Anuluj",
             icon=ft.Icons.CANCEL,
@@ -260,11 +272,15 @@ class AdminInterface:
             disabled=not self.unsaved_changes
         )
         
+        buttons.extend([save_button, cancel_button])
+        
         # Zapisz referencje do przycisków dla późniejszego aktualizowania
         self.current_save_button = save_button
         self.current_cancel_button = cancel_button
         
-        return ft.Row([save_button, cancel_button])
+        # Umieść przyciski w stałym kontenerze
+        self.action_buttons_container.content = ft.Row(buttons, spacing=10)
+        self.page.update()
 
     def create_image_picker(self, current_image="", on_change=None):
         """Tworzy komponent wyboru obrazu"""
@@ -274,6 +290,7 @@ class AdminInterface:
 
             def select_image(image_path):
                 image_display.src = f"../{image_path}"
+                image_display.visible = True  # Upewnij się, że obraz jest widoczny
                 image_field.value = image_path
                 if on_change:
                     on_change(image_path)
@@ -351,13 +368,16 @@ class AdminInterface:
             visible=bool(current_image)
         )
         
-        return ft.Column([
+        # Kontener do aktualizacji obrazu
+        image_container = ft.Column([
             ft.Row([
                 image_field,
                 ft.ElevatedButton("Wybierz obraz", on_click=pick_image)
             ]),
             image_display
         ])
+        
+        return image_container
 
     def show_about_form(self):
         """Pokazuje formularz edycji sekcji 'O Artyście'"""
@@ -464,9 +484,6 @@ class AdminInterface:
             ])
             achievements_section.controls.append(row)
         
-        # Przyciski akcji
-        action_buttons = self.create_action_buttons(self.show_about_form)
-        
         # Zawartość formularza
         form_content = ft.Column([
             ft.Text("Edycja sekcji 'O Artyście'", size=24, weight=ft.FontWeight.BOLD),
@@ -476,13 +493,13 @@ class AdminInterface:
             artist_photo,
             biography_section,
             education_section,
-            achievements_section,
-            ft.Divider(),
-            action_buttons
+            achievements_section
         ], scroll=ft.ScrollMode.AUTO)
 
         self.content_area.content = form_content
-        self.page.update()
+        
+        # Utwórz przyciski akcji w stałym kontenerze
+        self.create_action_buttons(self.show_about_form)
 
     def update_field(self, field_name, value):
         """Aktualizuje pole w danych"""
@@ -657,9 +674,18 @@ class AdminInterface:
             )
         )
         
-        # Wstaw przed przyciskami akcji (ostatnie 2 elementy to divider i przyciski)
-        items_container.controls.insert(-2, item_card)
+        items_container.controls.append(item_card)
         self.page.update()
+        
+        # Przewiń do nowo dodanego elementu
+        def scroll_to_new_item():
+            if hasattr(self.content_area.content, 'scroll_to'):
+                self.content_area.content.scroll_to(offset=-1, duration=300)
+                self.page.update()
+        
+        # Opóźnione przewijanie
+        timer = threading.Timer(0.1, scroll_to_new_item)
+        timer.start()
 
     def delete_featured_item_inline(self, index, items_container):
         """Usuwa element z sekcji wyróżnione bez pełnego odświeżania"""
@@ -669,12 +695,12 @@ class AdminInterface:
             self.update_title()
             self.update_buttons_state()
             
-            # Znajdź i usuń odpowiednią kartę (pomijając tytuł i divider na początku, divider i przyciski na końcu)
-            if index + 2 < len(items_container.controls) - 2:
+            # Znajdź i usuń odpowiednią kartę
+            if index + 2 < len(items_container.controls):
                 items_container.controls.pop(index + 2)
                 
                 # Zaktualizuj numery elementów w pozostałych kartach
-                for i, card in enumerate(items_container.controls[2:-2], 0):  # Pomijamy tytuł, divider na początku i divider+przyciski na końcu
+                for i, card in enumerate(items_container.controls[2:], 0):
                     if isinstance(card, ft.Card):
                         title_row = card.content.content.controls[0]
                         if isinstance(title_row, ft.Row) and len(title_row.controls) >= 2:
@@ -748,38 +774,15 @@ class AdminInterface:
             )
             form_container.controls.append(item_card)
 
-        # Przyciski akcji na końcu
-        save_button = ft.ElevatedButton(
-            "Zapisz zmiany",
-            icon=ft.Icons.SAVE,
-            on_click=lambda e: self.validate_and_save_data(),
-            disabled=not self.unsaved_changes
-        )
-        
-        cancel_button = ft.OutlinedButton(
-            "Anuluj",
-            icon=ft.Icons.CANCEL,
-            on_click=lambda e: self.load_data() or self.show_featured_form(),
-            disabled=not self.unsaved_changes
-        )
-        
-        # Zapisz referencje do przycisków
-        self.current_save_button = save_button
-        self.current_cancel_button = cancel_button
-        
-        action_buttons = ft.Row([
-            ft.ElevatedButton(
-                "Dodaj nowy element",
-                icon=ft.Icons.ADD,
-                on_click=lambda e: self.add_featured_item_inline(form_container)
-            ),
-            save_button,
-            cancel_button
-        ])
-
-        form_container.controls.extend([ft.Divider(), action_buttons])
         self.content_area.content = form_container
-        self.page.update()
+        
+        # Utwórz przyciski akcji w stałym kontenerze
+        self.create_action_buttons(
+            form_refresh_func=self.show_featured_form,
+            show_add_button=True,
+            add_button_text="Dodaj nowy element",
+            add_button_callback=lambda e: self.add_featured_item_inline(form_container)
+        )
 
     def show_gallery_form(self):
         """Pokazuje formularz edycji galerii"""
@@ -870,8 +873,18 @@ class AdminInterface:
                 )
             )
             
-            form_container.controls.insert(-2, artwork_card)
+            form_container.controls.append(artwork_card)
             self.page.update()
+            
+            # Przewiń do nowo dodanego elementu
+            def scroll_to_new_item():
+                if hasattr(self.content_area.content, 'scroll_to'):
+                    self.content_area.content.scroll_to(offset=-1, duration=300)
+                    self.page.update()
+            
+            # Opóźnione przewijanie
+            timer = threading.Timer(0.1, scroll_to_new_item)
+            timer.start()
 
         def delete_artwork_inline(index):
             def confirm_delete(e):
@@ -880,10 +893,10 @@ class AdminInterface:
                 self.update_title()
                 self.update_buttons_state()
                 
-                if index + 2 < len(form_container.controls) - 2:
+                if index + 2 < len(form_container.controls):
                     form_container.controls.pop(index + 2)
                     
-                    for i, card in enumerate(form_container.controls[2:-2], 0):
+                    for i, card in enumerate(form_container.controls[2:], 0):
                         if isinstance(card, ft.Card):
                             title_row = card.content.content.controls[0]
                             if isinstance(title_row, ft.Row) and len(title_row.controls) >= 2:
@@ -985,38 +998,15 @@ class AdminInterface:
             )
             form_container.controls.append(artwork_card)
 
-        # Przyciski akcji
-        save_button = ft.ElevatedButton(
-            "Zapisz zmiany",
-            icon=ft.Icons.SAVE,
-            on_click=lambda e: self.validate_and_save_data(),
-            disabled=not self.unsaved_changes
-        )
-        
-        cancel_button = ft.OutlinedButton(
-            "Anuluj",
-            icon=ft.Icons.CANCEL,
-            on_click=lambda e: self.load_data() or self.show_gallery_form(),
-            disabled=not self.unsaved_changes
-        )
-        
-        # Zapisz referencje do przycisków
-        self.current_save_button = save_button
-        self.current_cancel_button = cancel_button
-        
-        action_buttons = ft.Row([
-            ft.ElevatedButton(
-                "Dodaj nowe dzieło",
-                icon=ft.Icons.ADD,
-                on_click=lambda e: add_new_artwork()
-            ),
-            save_button,
-            cancel_button
-        ])
-
-        form_container.controls.extend([ft.Divider(), action_buttons])
         self.content_area.content = form_container
-        self.page.update()
+        
+        # Utwórz przyciski akcji w stałym kontenerze
+        self.create_action_buttons(
+            form_refresh_func=self.show_gallery_form,
+            show_add_button=True,
+            add_button_text="Dodaj nowe dzieło",
+            add_button_callback=lambda e: add_new_artwork()
+        )
 
     def show_shop_form(self):
         """Pokazuje formularz edycji sklepu"""
@@ -1097,8 +1087,18 @@ class AdminInterface:
                 )
             )
             
-            form_container.controls.insert(-2, product_card)
+            form_container.controls.append(product_card)
             self.page.update()
+            
+            # Przewiń do nowo dodanego elementu
+            def scroll_to_new_item():
+                if hasattr(self.content_area.content, 'scroll_to'):
+                    self.content_area.content.scroll_to(offset=-1, duration=300)
+                    self.page.update()
+            
+            # Opóźnione przewijanie
+            timer = threading.Timer(0.1, scroll_to_new_item)
+            timer.start()
 
         def delete_product_inline(index):
             def confirm_delete(e):
@@ -1107,10 +1107,10 @@ class AdminInterface:
                 self.update_title()
                 self.update_buttons_state()
                 
-                if index + 2 < len(form_container.controls) - 2:
+                if index + 2 < len(form_container.controls):
                     form_container.controls.pop(index + 2)
                     
-                    for i, card in enumerate(form_container.controls[2:-2], 0):
+                    for i, card in enumerate(form_container.controls[2:], 0):
                         if isinstance(card, ft.Card):
                             title_row = card.content.content.controls[0]
                             if isinstance(title_row, ft.Row) and len(title_row.controls) >= 2:
@@ -1203,38 +1203,15 @@ class AdminInterface:
             )
             form_container.controls.append(product_card)
 
-        # Przyciski akcji
-        save_button = ft.ElevatedButton(
-            "Zapisz zmiany",
-            icon=ft.Icons.SAVE,
-            on_click=lambda e: self.validate_and_save_data(),
-            disabled=not self.unsaved_changes
-        )
-        
-        cancel_button = ft.OutlinedButton(
-            "Anuluj",
-            icon=ft.Icons.CANCEL,
-            on_click=lambda e: self.load_data() or self.show_shop_form(),
-            disabled=not self.unsaved_changes
-        )
-        
-        # Zapisz referencje do przycisków
-        self.current_save_button = save_button
-        self.current_cancel_button = cancel_button
-        
-        action_buttons = ft.Row([
-            ft.ElevatedButton(
-                "Dodaj nowy produkt",
-                icon=ft.Icons.ADD,
-                on_click=lambda e: add_new_product()
-            ),
-            save_button,
-            cancel_button
-        ])
-
-        form_container.controls.extend([ft.Divider(), action_buttons])
         self.content_area.content = form_container
-        self.page.update()
+        
+        # Utwórz przyciski akcji w stałym kontenerze
+        self.create_action_buttons(
+            form_refresh_func=self.show_shop_form,
+            show_add_button=True,
+            add_button_text="Dodaj nowy produkt",
+            add_button_callback=lambda e: add_new_product()
+        )
 
     def validate_data(self, data_type, data):
         """Waliduje dane przed zapisem"""
@@ -1313,6 +1290,15 @@ class AdminInterface:
         )
         
         self.page.open(dialog)
+
+    def on_keyboard_event(self, e: ft.KeyboardEvent):
+        """Obsługuje zdarzenia klawiatury"""
+        # Ctrl+S - zapisz zmiany
+        if e.key == "S" and e.ctrl and not e.shift and not e.alt:
+            if self.unsaved_changes:
+                self.validate_and_save_data()
+            e.page.update()
+
 def main(page: ft.Page):
     AdminInterface(page)
 

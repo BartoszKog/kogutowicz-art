@@ -297,3 +297,59 @@ html {
         transform: translateY(0);
     }
 }
+
+/* Zabezpieczenie przed sierotkami w sekcji About */
+.artist-biography p,
+.artist-education li,
+.artist-achievements li {
+    /* Zapobiega łamaniu linii po krótkich słowach (1-3 znaki) */
+    word-break: normal;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+/* Dodatkowe zabezpieczenie przed sierotkami używając JavaScript hack w CSS */
+.artist-biography p::after {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    word-spacing: 1000px;
+}
+
+/* Zapobiega łamaniu linii po pojedynczych literach i krótkich słowach */
+.artist-biography p,
+.artist-education li,
+.artist-achievements li {
+    text-wrap: pretty; /* Nowa właściwość CSS dla lepszego łamania tekstu */
+}
+
+/* Fallback dla starszych przeglądarek */
+@supports not (text-wrap: pretty) {
+    .artist-biography p,
+    .artist-education li,
+    .artist-achievements li {
+        line-height: 1.6;
+        word-spacing: 0.1em;
+    }
+}
+
+/* Dodatkowe style dla lepszej czytelności w sekcji About */
+.about-artist-content {
+    line-height: 1.7;
+    font-feature-settings: "kern" 1, "liga" 1;
+    text-rendering: optimizeLegibility;
+}
+
+/* Responsywne dostosowania dla sekcji About */
+@media (max-width: 768px) {
+    .artist-biography p,
+    .artist-education li,
+    .artist-achievements li {
+        text-align: left; /* Na mobile lepiej wygląda wyrównanie do lewej */
+        line-height: 1.6;
+    }
+}

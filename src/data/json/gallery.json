@@ -8,24 +8,9 @@
     "year": 2022,
     "image": "images/featured/dwor.jpg",
     "categories": [
-      "architektura",
       "Łąkta Górna",
-      "dwór"
-    ],
-    "available": true
-  },
-  {
-    "id": 2,
-    "title": "Zamek w Starym Wiśniczu",
-    "description": "Zamek w Starym Wiśniczu tuż przed zachodem słońca",
-    "technique": "Olej na płótnie",
-    "dimensions": "40 x 50 cm",
-    "year": 2023,
-    "image": "images/featured/zamek.jpg",
-    "categories": [
-      "architektura",
-      "Wiśnicz",
-      "zamek"
+      "dwór",
+      "pejzaż lokalny"
     ],
     "available": true
   },
@@ -37,7 +22,8 @@
     "image": "images/gallery/martwa_natura_czerwone.jpg",
     "categories": [
       "martwa natura"
-    ]
+    ],
+    "available": true
   },
   {
     "id": 4,
@@ -47,26 +33,52 @@
     "image": "images/gallery/Widok_z_okna_kko64.jpg",
     "categories": [
       "Pejzaż",
-      "Impresjonizm"
+      "Impresjonizm",
+      "pejzaż lokalny"
     ],
     "available": false
   },
   {
     "id": 5,
-    "title": "jakieś kwiatki",
+    "title": "Róże",
     "year": 2024,
     "image": "images/gallery/A_pink_still_life_kko29.jpg",
     "categories": [
-      "kwiaty"
+      "kwiaty",
+      "martwa natura"
     ],
     "available": false
   },
   {
     "id": 6,
-    "title": "fbx",
+    "title": "Martwa natura",
     "year": 2024,
     "image": "images/gallery/Carmine_still_life_kko10.jpg",
-    "categories": [],
-    "available": true
+    "categories": [
+      "martwa natura"
+    ],
+    "available": false
+  },
+  {
+    "id": 7,
+    "title": "Bochnia",
+    "description": "Rynek w Bochni",
+    "year": 2008,
+    "image": "images/gallery/Bochnia_kko87_88308.jpg",
+    "categories": [
+      "Bochnia",
+      "pejzaż lokalny"
+    ],
+    "available": false
+  },
+  {
+    "id": 8,
+    "title": "Jan Paweł II",
+    "year": 2024,
+    "image": "images/gallery/Jan_Pawel_II_kko95_88316.jpg",
+    "categories": [
+      "Motywy sakralne"
+    ],
+    "available": false
   }
 ]
