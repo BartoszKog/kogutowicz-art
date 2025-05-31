@@ -9,9 +9,8 @@ class AdminInterface:
         self.page = page
         self.page.title = "Interfejs Administratora - Strona Artysty"
         self.page.theme_mode = ft.ThemeMode.LIGHT
-        self.page.window_width = 1200
-        self.page.window_height = 800
-        self.page.scroll = ft.ScrollMode.AUTO
+        self.page.window.height = 800
+        self.page.window.width = 800
         
         # Ścieżki do plików JSON
         self.base_path = Path(__file__).parent.parent
@@ -22,18 +21,20 @@ class AdminInterface:
         self.current_file = None
         self.current_data = None
         self.unsaved_changes = False
-          # Komponenty UI
+        # Komponenty UI
         self.setup_ui()
 
     def setup_ui(self):
         """Konfiguruje interfejs użytkownika"""
         # AppBar
         self.page.appbar = ft.AppBar(
-            title=ft.Text("Panel Administracyjny"),
+            title=ft.Text("Panel Administracyjny", weight=ft.FontWeight.BOLD),
+            leading=ft.Icon(ft.Icons.ADMIN_PANEL_SETTINGS, size=40),
             bgcolor="#1976d2",
             color="#ffffff"
         )
-          # Boczny panel nawigacji w kontenerze z określoną wysokością
+        
+        # Boczny panel nawigacji w kontenerze z określoną wysokością
         self.rail = ft.Container(
             content=ft.NavigationRail(
                 selected_index=0,
@@ -64,31 +65,40 @@ class AdminInterface:
                 ],
                 on_change=self.rail_changed
             ),
-            height=self.page.window_height - 64  # Odejmujemy wysokość AppBar
+            height=self.page.window.height - 64  # Odejmujemy wysokość AppBar
         )
-          # Główny obszar zawartości
+        
+        # Główny obszar zawartości z przewijaniem i ograniczoną szerokością
         self.content_area = ft.Container(
             content=ft.Column([
-                ft.Text("Wybierz sekcję do edycji", size=20, color="#757575")
-            ]),
+                ft.Text("Ładowanie sekcji 'O Artyście'...", size=20, color="#757575")
+            ], scroll=ft.ScrollMode.AUTO),
             padding=20,
-            expand=True
+            expand=True,
+            width=1000  # Maksymalna szerokość 1000px dla optymalnej czytelności
         )
         
         # Powiadomienia
         self.snackbar = ft.SnackBar(content=ft.Text(""))
         self.page.overlay.append(self.snackbar)
         
-        # Layout główny - container z pełną wysokością
+        # Layout główny - container z pełną wysokością i wyśrodkowaną zawartością
         main_layout = ft.Container(
             content=ft.Row([
-                self.rail,
-                ft.VerticalDivider(width=1),
-                self.content_area
+            self.rail,
+            ft.VerticalDivider(width=1),
+            ft.Container(
+                content=self.content_area,
+                alignment=ft.alignment.center,
+                expand=True
+            )
             ]),
             expand=True
         )
         self.page.add(main_layout)
+        
+        # Automatyczne załadowanie sekcji "O Artyście" na początku
+        self.load_section(0)
 
     def rail_changed(self, e):
         """Obsługuje zmianę w nawigacji"""
@@ -119,6 +129,8 @@ class AdminInterface:
             with open(json_file, 'r', encoding='utf-8') as f:
                 self.current_data = json.load(f)
             self.unsaved_changes = False
+            self.update_title()
+            self.update_buttons_state()
         except FileNotFoundError:
             self.show_message("Błąd: Nie znaleziono pliku JSON", "#f44336")
             self.current_data = None
@@ -126,13 +138,54 @@ class AdminInterface:
             self.show_message("Błąd: Nieprawidłowy format JSON", "#f44336")
             self.current_data = None
 
+    def clean_data_before_save(self, data):
+        """Usuwa puste wartości z danych przed zapisem"""
+        if isinstance(data, list):
+            cleaned_list = []
+            for item in data:
+                cleaned_item = self.clean_data_before_save(item)
+                if cleaned_item:  # Dodaj tylko niepuste elementy
+                    cleaned_list.append(cleaned_item)
+            return cleaned_list
+        elif isinstance(data, dict):
+            cleaned_dict = {}
+            for key, value in data.items():
+                # Specjalne traktowanie kategorii w galerii - zawsze zachowaj jako listę
+                if key == "categories" and self.current_file == "gallery":
+                    if isinstance(value, list):
+                        # Usuń puste stringi z kategorii, ale zachowaj pustą listę jeśli wszystkie są puste
+                        cleaned_categories = [cat.strip() for cat in value if cat.strip()]
+                        cleaned_dict[key] = cleaned_categories
+                    else:
+                        cleaned_dict[key] = []
+                elif isinstance(value, str):
+                    # Usuń puste stringi
+                    if value.strip():
+                        cleaned_dict[key] = value.strip()
+                elif isinstance(value, list):
+                    # Dla innych list, usuń puste elementy
+                    cleaned_list = [item for item in value if item and str(item).strip()]
+                    if cleaned_list:
+                        cleaned_dict[key] = cleaned_list
+                elif value is not None and value != "":
+                    # Zachowaj wszystkie inne niepuste wartości
+                    cleaned_dict[key] = value
+            return cleaned_dict
+        else:
+            return data
+
     def save_data(self):
         """Zapisuje dane do pliku JSON"""
         try:
+            # Wyczyść dane przed zapisem
+            cleaned_data = self.clean_data_before_save(self.current_data)
+            
             json_file = self.json_path / f"{self.current_file}.json"
             with open(json_file, 'w', encoding='utf-8') as f:
-                json.dump(self.current_data, f, ensure_ascii=False, indent=2)
+                json.dump(cleaned_data, f, ensure_ascii=False, indent=2)
             self.unsaved_changes = False
+            self.update_title()
+            self.update_buttons_state()
             self.show_message("Zmiany zostały zapisane pomyślnie", "#4caf50")
         except Exception as e:
             self.show_message(f"Błąd podczas zapisywania: {str(e)}", "#f44336")
@@ -146,17 +199,18 @@ class AdminInterface:
     def show_unsaved_changes_dialog(self, new_index):
         """Pokazuje dialog o niezapisanych zmianach"""
         def close_dialog(e):
-            dialog.open = False
-            self.page.update()
+            self.page.close(dialog)
 
         def save_and_continue(e):
             self.save_data()
-            close_dialog(e)
+            self.page.close(dialog)
             self.load_section(new_index)
 
         def discard_and_continue(e):
             self.unsaved_changes = False
-            close_dialog(e)
+            self.update_title()
+            self.update_buttons_state()
+            self.page.close(dialog)
             self.load_section(new_index)
 
         dialog = ft.AlertDialog(
@@ -171,16 +225,52 @@ class AdminInterface:
             actions_alignment=ft.MainAxisAlignment.END,
         )
         
-        self.page.dialog = dialog
-        dialog.open = True
+        self.page.open(dialog)
+
+    def update_title(self):
+        """Aktualizuje tytuł AppBar w zależności od stanu zmian"""
+        if self.unsaved_changes:
+            self.page.appbar.title = ft.Text("Panel Administracyjny - Niezapisane zmiany", weight=ft.FontWeight.BOLD)
+        else:
+            self.page.appbar.title = ft.Text("Panel Administracyjny", weight=ft.FontWeight.BOLD)
         self.page.update()
+
+    def update_buttons_state(self):
+        """Aktualizuje stan przycisków w aktualnie wyświetlanej sekcji"""
+        # Znaleźć przyciski w content_area i zaktualizować ich stan
+        if hasattr(self, 'current_save_button'):
+            self.current_save_button.disabled = not self.unsaved_changes
+        if hasattr(self, 'current_cancel_button'):
+            self.current_cancel_button.disabled = not self.unsaved_changes
+        self.page.update()
+
+    def create_action_buttons(self, form_refresh_func=None):
+        """Tworzy przyciski akcji z odpowiednim stanem disabled"""
+        save_button = ft.ElevatedButton(
+            "Zapisz zmiany",
+            icon=ft.Icons.SAVE,
+            on_click=lambda e: self.validate_and_save_data(),
+            disabled=not self.unsaved_changes
+        )
+        
+        cancel_button = ft.OutlinedButton(
+            "Anuluj",
+            icon=ft.Icons.CANCEL,
+            on_click=lambda e: self.load_data() or (form_refresh_func() if form_refresh_func else None),
+            disabled=not self.unsaved_changes
+        )
+        
+        # Zapisz referencje do przycisków dla późniejszego aktualizowania
+        self.current_save_button = save_button
+        self.current_cancel_button = cancel_button
+        
+        return ft.Row([save_button, cancel_button])
 
     def create_image_picker(self, current_image="", on_change=None):
         """Tworzy komponent wyboru obrazu"""
         def pick_image(e):
             def close_picker(e):
-                picker_dialog.open = False
-                self.page.update()
+                self.page.close(picker_dialog)
 
             def select_image(image_path):
                 image_display.src = f"../{image_path}"
@@ -188,22 +278,35 @@ class AdminInterface:
                 if on_change:
                     on_change(image_path)
                 self.unsaved_changes = True
-                close_picker(None)
+                self.update_title()
+                self.update_buttons_state()
+                self.page.close(picker_dialog)
                 self.page.update()
 
-            # Lista obrazów
+            # Dodaj sprawdzenie czy foldery istnieją
+            if not self.images_path.exists():
+                self.show_message("Folder 'images' nie istnieje", "#f44336")
+                return
+                
             image_list = ft.Column(scroll=ft.ScrollMode.AUTO, height=400)
             
-            # Skanowanie folderów z obrazami
+            # Dodaj informację gdy brak obrazów
+            has_images = False
+            
             for folder in ["featured", "gallery"]:
                 folder_path = self.images_path / folder
                 if folder_path.exists():
-                    image_list.controls.append(
-                        ft.Text(f"Folder: {folder}", weight=ft.FontWeight.BOLD, size=16)                    )
-                    
-                    # Obsługuje różne formaty obrazów
+                    folder_images = []
                     for ext in ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.webp"]:
-                        for img_file in folder_path.glob(ext):
+                        folder_images.extend(list(folder_path.glob(ext)))
+                    
+                    if folder_images:
+                        has_images = True
+                        image_list.controls.append(
+                            ft.Text(f"Folder: {folder}", weight=ft.FontWeight.BOLD, size=16)
+                        )
+                        
+                        for img_file in folder_images:
                             rel_path = f"images/{folder}/{img_file.name}"
                             image_list.controls.append(
                                 ft.ListTile(
@@ -213,7 +316,13 @@ class AdminInterface:
                                     on_click=lambda e, path=rel_path: select_image(path)
                                 )
                             )
-
+            
+            if not has_images:
+                image_list.controls.append(
+                    ft.Text("Brak dostępnych obrazów. Dodaj pliki do folderów images/featured lub images/gallery", 
+                           color="#757575", text_align=ft.TextAlign.CENTER)
+                )
+            
             picker_dialog = ft.AlertDialog(
                 modal=True,
                 title=ft.Text("Wybierz obraz"),
@@ -223,9 +332,7 @@ class AdminInterface:
                 ]
             )
             
-            self.page.dialog = picker_dialog
-            picker_dialog.open = True
-            self.page.update()
+            self.page.open(picker_dialog)
 
         # Pole tekstowe na ścieżkę
         image_field = ft.TextField(
@@ -267,7 +374,8 @@ class AdminInterface:
         # Wybór zdjęcia artysty
         artist_photo = self.create_image_picker(
             self.current_data.get("artistPhoto", ""),
-            lambda path: self.update_field("artistPhoto", path)        )
+            lambda path: self.update_field("artistPhoto", path)
+        )
         
         # Biografia (lista akapitów)
         biography_section = ft.Column([
@@ -276,7 +384,7 @@ class AdminInterface:
                 ft.IconButton(
                     ft.Icons.ADD,
                     tooltip="Dodaj akapit",
-                    on_click=lambda e: self.add_list_item("biography", self.show_about_form)
+                    on_click=lambda e: self.add_list_item_inline("biography", biography_section)
                 )
             ])
         ])
@@ -295,42 +403,71 @@ class AdminInterface:
                 ft.IconButton(
                     ft.Icons.DELETE,
                     tooltip="Usuń akapit",
-                    on_click=lambda e, idx=i: self.remove_list_item("biography", idx, self.show_about_form)
+                    on_click=lambda e, idx=i: self.remove_list_item_inline("biography", idx, biography_section)
                 )
             ])
             biography_section.controls.append(row)
         
         # Edukacja
-        education_fields = []
+        education_section = ft.Column([
+            ft.Row([
+                ft.Text("Edukacja:", weight=ft.FontWeight.BOLD),
+                ft.IconButton(
+                    ft.Icons.ADD,
+                    tooltip="Dodaj pozycję edukacyjną",
+                    on_click=lambda e: self.add_list_item_inline("education", education_section)
+                )
+            ])
+        ])
+        
         for i, item in enumerate(self.current_data.get("education", [])):
-            field = ft.TextField(
-                label=f"Edukacja {i+1}",
-                value=item,
-                on_change=lambda e, idx=i: self.update_list_field("education", idx, e.control.value)
-            )
-            education_fields.append(field)
+            row = ft.Row([
+                ft.TextField(
+                    label=f"Edukacja {i+1}",
+                    value=item,
+                    expand=True,
+                    on_change=lambda e, idx=i: self.update_list_field("education", idx, e.control.value)
+                ),
+                ft.IconButton(
+                    ft.Icons.DELETE,
+                    tooltip="Usuń pozycję edukacyjną",
+                    on_click=lambda e, idx=i: self.remove_list_item_inline("education", idx, education_section)
+                )
+            ])
+            education_section.controls.append(row)
         
         # Osiągnięcia
-        achievements_fields = []
+        achievements_section = ft.Column([
+            ft.Row([
+                ft.Text("Osiągnięcia:", weight=ft.FontWeight.BOLD),
+                ft.IconButton(
+                    ft.Icons.ADD,
+                    tooltip="Dodaj osiągnięcie",
+                    on_click=lambda e: self.add_list_item_inline("achievements", achievements_section)
+                )
+            ])
+        ])
+        
         for i, item in enumerate(self.current_data.get("achievements", [])):
-            field = ft.TextField(
-                label=f"Osiągnięcie {i+1}",
-                value=item,
-                on_change=lambda e, idx=i: self.update_list_field("achievements", idx, e.control.value)
-            )
-            achievements_fields.append(field)        # Przyciski akcji
-        action_buttons = ft.Row([
-            ft.ElevatedButton(
-                "Zapisz zmiany",
-                icon=ft.Icons.SAVE,
-                on_click=lambda e: self.validate_and_save_data()
-            ),
-            ft.OutlinedButton(
-                "Anuluj",
-                icon=ft.Icons.CANCEL,
-                on_click=lambda e: self.load_data() or self.show_about_form()
-            )
-        ])        # Zawartość formularza
+            row = ft.Row([
+                ft.TextField(
+                    label=f"Osiągnięcie {i+1}",
+                    value=item,
+                    expand=True,
+                    on_change=lambda e, idx=i: self.update_list_field("achievements", idx, e.control.value)
+                ),
+                ft.IconButton(
+                    ft.Icons.DELETE,
+                    tooltip="Usuń osiągnięcie",
+                    on_click=lambda e, idx=i: self.remove_list_item_inline("achievements", idx, achievements_section)
+                )
+            ])
+            achievements_section.controls.append(row)
+        
+        # Przyciski akcji
+        action_buttons = self.create_action_buttons(self.show_about_form)
+        
+        # Zawartość formularza
         form_content = ft.Column([
             ft.Text("Edycja sekcji 'O Artyście'", size=24, weight=ft.FontWeight.BOLD),
             ft.Divider(),
@@ -338,10 +475,8 @@ class AdminInterface:
             ft.Text("Zdjęcie artysty:", weight=ft.FontWeight.BOLD),
             artist_photo,
             biography_section,
-            ft.Text("Edukacja:", weight=ft.FontWeight.BOLD),
-            *education_fields,
-            ft.Text("Osiągnięcia:", weight=ft.FontWeight.BOLD),
-            *achievements_fields,
+            education_section,
+            achievements_section,
             ft.Divider(),
             action_buttons
         ], scroll=ft.ScrollMode.AUTO)
@@ -353,6 +488,8 @@ class AdminInterface:
         """Aktualizuje pole w danych"""
         self.current_data[field_name] = value
         self.unsaved_changes = True
+        self.update_title()
+        self.update_buttons_state()
 
     def update_list_field(self, list_name, index, value):
         """Aktualizuje element listy w danych"""
@@ -365,6 +502,16 @@ class AdminInterface:
             
         self.current_data[list_name][index] = value
         self.unsaved_changes = True
+        self.update_title()
+        self.update_buttons_state()
+
+    def update_item_field(self, index, field_name, value):
+        """Aktualizuje pole w elemencie listy"""
+        if 0 <= index < len(self.current_data):
+            self.current_data[index][field_name] = value
+            self.unsaved_changes = True
+            self.update_title()
+            self.update_buttons_state()
 
     def add_list_item(self, list_name, form_refresh_func):
         """Dodaje nowy element do listy"""
@@ -382,50 +529,191 @@ class AdminInterface:
             self.unsaved_changes = True
             form_refresh_func()
 
+    def add_list_item_inline(self, list_name, section_container):
+        """Dodaje nowy element do listy bez pełnego odświeżania"""
+        if list_name not in self.current_data:
+            self.current_data[list_name] = []
+        
+        self.current_data[list_name].append("")
+        self.unsaved_changes = True
+        self.update_title()
+        self.update_buttons_state()
+        
+        # Dodaj nowy wiersz do istniejącego kontenera
+        new_index = len(self.current_data[list_name]) - 1
+        
+        if list_name == "biography":
+            label = f"Akapit biografii {new_index + 1}"
+            multiline = True
+            min_lines = 2
+            max_lines = 5
+        elif list_name == "education":
+            label = f"Edukacja {new_index + 1}"
+            multiline = False
+            min_lines = 1
+            max_lines = 1
+        elif list_name == "achievements":
+            label = f"Osiągnięcie {new_index + 1}"
+            multiline = False
+            min_lines = 1
+            max_lines = 1
+        
+        new_row = ft.Row([
+            ft.TextField(
+                label=label,
+                value="",
+                multiline=multiline,
+                min_lines=min_lines,
+                max_lines=max_lines,
+                expand=True,
+                on_change=lambda e, idx=new_index: self.update_list_field(list_name, idx, e.control.value)
+            ),
+            ft.IconButton(
+                ft.Icons.DELETE,
+                tooltip=f"Usuń {label.lower()}",
+                on_click=lambda e, idx=new_index: self.remove_list_item_inline(list_name, idx, section_container)
+            )
+        ])
+        
+        section_container.controls.append(new_row)
+        self.page.update()
+
+    def remove_list_item_inline(self, list_name, index, section_container):
+        """Usuwa element z listy bez pełnego odświeżania"""
+        if list_name in self.current_data and 0 <= index < len(self.current_data[list_name]):
+            self.current_data[list_name].pop(index)
+            self.unsaved_changes = True
+            self.update_title()
+            self.update_buttons_state()
+            
+            # Usuń odpowiedni wiersz z kontenera (pomijając pierwszy wiersz z nagłówkiem)
+            if index + 1 < len(section_container.controls):
+                section_container.controls.pop(index + 1)
+                
+                # Zaktualizuj etykiety i indeksy w pozostałych wierszach
+                for i, row_control in enumerate(section_container.controls[1:], 0):  # Pomijamy nagłówek
+                    if isinstance(row_control, ft.Row) and len(row_control.controls) >= 2:
+                        text_field = row_control.controls[0]
+                        delete_button = row_control.controls[1]
+                        
+                        # Zaktualizuj etykietę
+                        if list_name == "biography":
+                            text_field.label = f"Akapit biografii {i + 1}"
+                        elif list_name == "education":
+                            text_field.label = f"Edukacja {i + 1}"
+                        elif list_name == "achievements":
+                            text_field.label = f"Osiągnięcie {i + 1}"
+                        
+                        # Zaktualizuj callback'i
+                        text_field.on_change = lambda e, idx=i: self.update_list_field(list_name, idx, e.control.value)
+                        delete_button.on_click = lambda e, idx=i: self.remove_list_item_inline(list_name, idx, section_container)
+            
+            self.page.update()
+
+    def add_featured_item_inline(self, items_container):
+        """Dodaje nowy element do sekcji wyróżnione bez pełnego odświeżania"""
+        new_item = {
+            "id": max([item.get("id", 0) for item in self.current_data] + [0]) + 1,
+            "title": "",
+            "description": "",
+            "image": ""
+        }
+        self.current_data.append(new_item)
+        self.unsaved_changes = True
+        self.update_title()
+        self.update_buttons_state()
+        
+        new_index = len(self.current_data) - 1
+        
+        item_card = ft.Card(
+            content=ft.Container(
+                content=ft.Column([
+                    ft.Row([
+                        ft.Text(f"Element {new_index + 1}", weight=ft.FontWeight.BOLD),
+                        ft.IconButton(
+                            ft.Icons.DELETE,
+                            tooltip="Usuń element",
+                            on_click=lambda e, idx=new_index: self.delete_featured_item_inline(idx, items_container)
+                        )
+                    ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
+                    ft.TextField(
+                        label="Tytuł",
+                        value="",
+                        on_change=lambda e, idx=new_index: self.update_item_field(idx, "title", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Opis",
+                        value="",
+                        multiline=True,
+                        on_change=lambda e, idx=new_index: self.update_item_field(idx, "description", e.control.value)
+                    ),
+                    ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
+                    self.create_image_picker(
+                        "",
+                        lambda path, idx=new_index: self.update_item_field(idx, "image", path)
+                    )
+                ]),
+                padding=15
+            )
+        )
+        
+        # Wstaw przed przyciskami akcji (ostatnie 2 elementy to divider i przyciski)
+        items_container.controls.insert(-2, item_card)
+        self.page.update()
+
+    def delete_featured_item_inline(self, index, items_container):
+        """Usuwa element z sekcji wyróżnione bez pełnego odświeżania"""
+        def confirm_delete(e):
+            self.current_data.pop(index)
+            self.unsaved_changes = True
+            self.update_title()
+            self.update_buttons_state()
+            
+            # Znajdź i usuń odpowiednią kartę (pomijając tytuł i divider na początku, divider i przyciski na końcu)
+            if index + 2 < len(items_container.controls) - 2:
+                items_container.controls.pop(index + 2)
+                
+                # Zaktualizuj numery elementów w pozostałych kartach
+                for i, card in enumerate(items_container.controls[2:-2], 0):  # Pomijamy tytuł, divider na początku i divider+przyciski na końcu
+                    if isinstance(card, ft.Card):
+                        title_row = card.content.content.controls[0]
+                        if isinstance(title_row, ft.Row) and len(title_row.controls) >= 2:
+                            title_text = title_row.controls[0]
+                            delete_button = title_row.controls[1]
+                            
+                            title_text.value = f"Element {i + 1}"
+                            delete_button.on_click = lambda e, idx=i: self.delete_featured_item_inline(idx, items_container)
+            
+            self.page.close(dialog)
+            self.page.update()
+
+        def cancel_delete(e):
+            self.page.close(dialog)
+
+        dialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Potwierdź usunięcie"),
+            content=ft.Text("Czy na pewno chcesz usunąć ten element?"),
+            actions=[
+                ft.TextButton("Usuń", on_click=confirm_delete),
+                ft.TextButton("Anuluj", on_click=cancel_delete),
+            ]
+        )
+        
+        self.page.open(dialog)
+
     def show_featured_form(self):
         """Pokazuje formularz edycji sekcji 'Wyróżnione'"""
         if not self.current_data:
             return
 
-        def add_new_item():
-            new_item = {
-                "id": max([item.get("id", 0) for item in self.current_data] + [0]) + 1,
-                "title": "",
-                "description": "",
-                "image": ""
-            }
-            self.current_data.append(new_item)
-            self.unsaved_changes = True
-            self.show_featured_form()
-
-        def delete_item(index):
-            def confirm_delete(e):
-                self.current_data.pop(index)
-                self.unsaved_changes = True
-                dialog.open = False
-                self.page.update()
-                self.show_featured_form()
-
-            def cancel_delete(e):
-                dialog.open = False
-                self.page.update()
-
-            dialog = ft.AlertDialog(
-                modal=True,
-                title=ft.Text("Potwierdź usunięcie"),
-                content=ft.Text("Czy na pewno chcesz usunąć ten element?"),
-                actions=[
-                    ft.TextButton("Usuń", on_click=confirm_delete),
-                    ft.TextButton("Anuluj", on_click=cancel_delete),
-                ]
-            )
-            
-            self.page.dialog = dialog
-            dialog.open = True
-            self.page.update()
+        # Kontener na wszystkie elementy
+        form_container = ft.Column([
+            ft.Text("Edycja sekcji 'Wyróżnione'", size=24, weight=ft.FontWeight.BOLD),
+            ft.Divider(),
+        ], scroll=ft.ScrollMode.AUTO)
 
         # Lista elementów
-        items_list = []
         for i, item in enumerate(self.current_data):
             item_card = ft.Card(
                 content=ft.Container(
@@ -435,7 +723,7 @@ class AdminInterface:
                             ft.IconButton(
                                 ft.Icons.DELETE,
                                 tooltip="Usuń element",
-                                on_click=lambda e, idx=i: delete_item(idx)
+                                on_click=lambda e, idx=i: self.delete_featured_item_inline(idx, form_container)
                             )
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                         ft.TextField(
@@ -458,41 +746,40 @@ class AdminInterface:
                     padding=15
                 )
             )
-            items_list.append(item_card)
+            form_container.controls.append(item_card)
 
-        # Przyciski akcji
+        # Przyciski akcji na końcu
+        save_button = ft.ElevatedButton(
+            "Zapisz zmiany",
+            icon=ft.Icons.SAVE,
+            on_click=lambda e: self.validate_and_save_data(),
+            disabled=not self.unsaved_changes
+        )
+        
+        cancel_button = ft.OutlinedButton(
+            "Anuluj",
+            icon=ft.Icons.CANCEL,
+            on_click=lambda e: self.load_data() or self.show_featured_form(),
+            disabled=not self.unsaved_changes
+        )
+        
+        # Zapisz referencje do przycisków
+        self.current_save_button = save_button
+        self.current_cancel_button = cancel_button
+        
         action_buttons = ft.Row([
             ft.ElevatedButton(
                 "Dodaj nowy element",
                 icon=ft.Icons.ADD,
-                on_click=lambda e: add_new_item()
-            ),            ft.ElevatedButton(
-                "Zapisz zmiany",
-                icon=ft.Icons.SAVE,
-                on_click=lambda e: self.validate_and_save_data()
+                on_click=lambda e: self.add_featured_item_inline(form_container)
             ),
-            ft.OutlinedButton(
-                "Anuluj",
-                icon=ft.Icons.CANCEL,
-                on_click=lambda e: self.load_data() or self.show_featured_form()
-            )
+            save_button,
+            cancel_button
         ])
 
-        form_content = ft.Column([
-            ft.Text("Edycja sekcji 'Wyróżnione'", size=24, weight=ft.FontWeight.BOLD),
-            ft.Divider(),
-            *items_list,
-            ft.Divider(),
-            action_buttons
-        ], scroll=ft.ScrollMode.AUTO)
-
-        self.content_area.content = form_content
+        form_container.controls.extend([ft.Divider(), action_buttons])
+        self.content_area.content = form_container
         self.page.update()
-
-    def update_item_field(self, index, field_name, value):
-        """Aktualizuje pole w elemencie listy"""
-        self.current_data[index][field_name] = value
-        self.unsaved_changes = True
 
     def show_gallery_form(self):
         """Pokazuje formularz edycji galerii"""
@@ -513,19 +800,104 @@ class AdminInterface:
             }
             self.current_data.append(new_artwork)
             self.unsaved_changes = True
-            self.show_gallery_form()
+            self.update_title()
+            self.update_buttons_state()
+            
+            new_index = len(self.current_data) - 1
+            
+            artwork_card = ft.Card(
+                content=ft.Container(
+                    content=ft.Column([
+                        ft.Row([
+                            ft.Text(f"Dzieło {new_index + 1}", weight=ft.FontWeight.BOLD),
+                            ft.IconButton(
+                                ft.Icons.DELETE,
+                                tooltip="Usuń dzieło",
+                                on_click=lambda e, idx=new_index: delete_artwork_inline(idx)
+                            )
+                        ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
+                        ft.Row([
+                            ft.TextField(
+                                label="Tytuł",
+                                value="",
+                                expand=True,
+                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "title", e.control.value)
+                            ),
+                            ft.TextField(
+                                label="Rok",
+                                value="2024",
+                                width=100,
+                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "year", int(e.control.value) if e.control.value.isdigit() else 2024)
+                            )
+                        ]),
+                        ft.TextField(
+                            label="Opis",
+                            value="",
+                            multiline=True,
+                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "description", e.control.value)
+                        ),
+                        ft.Row([
+                            ft.TextField(
+                                label="Technika",
+                                value="",
+                                expand=True,
+                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "technique", e.control.value)
+                            ),
+                            ft.TextField(
+                                label="Wymiary",
+                                value="",
+                                expand=True,
+                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "dimensions", e.control.value)
+                            )
+                        ]),
+                        ft.TextField(
+                            label="Kategorie (oddzielone przecinkami)",
+                            value="",
+                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "categories", [cat.strip() for cat in e.control.value.split(",")])
+                        ),
+                        ft.Switch(
+                            label="Dostępne",
+                            value=True,
+                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "available", e.control.value)
+                        ),
+                        ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
+                        self.create_image_picker(
+                            "",
+                            lambda path, idx=new_index: self.update_item_field(idx, "image", path)
+                        )
+                    ]),
+                    padding=15
+                )
+            )
+            
+            form_container.controls.insert(-2, artwork_card)
+            self.page.update()
 
-        def delete_artwork(index):
+        def delete_artwork_inline(index):
             def confirm_delete(e):
                 self.current_data.pop(index)
                 self.unsaved_changes = True
-                dialog.open = False
+                self.update_title()
+                self.update_buttons_state()
+                
+                if index + 2 < len(form_container.controls) - 2:
+                    form_container.controls.pop(index + 2)
+                    
+                    for i, card in enumerate(form_container.controls[2:-2], 0):
+                        if isinstance(card, ft.Card):
+                            title_row = card.content.content.controls[0]
+                            if isinstance(title_row, ft.Row) and len(title_row.controls) >= 2:
+                                title_text = title_row.controls[0]
+                                delete_button = title_row.controls[1]
+                                
+                                title_text.value = f"Dzieło {i + 1}"
+                                delete_button.on_click = lambda e, idx=i: delete_artwork_inline(idx)
+                
+                self.page.close(dialog)
                 self.page.update()
-                self.show_gallery_form()
 
             def cancel_delete(e):
-                dialog.open = False
-                self.page.update()
+                self.page.close(dialog)
 
             dialog = ft.AlertDialog(
                 modal=True,
@@ -537,12 +909,15 @@ class AdminInterface:
                 ]
             )
             
-            self.page.dialog = dialog
-            dialog.open = True
-            self.page.update()
+            self.page.open(dialog)
+
+        # Kontener główny
+        form_container = ft.Column([
+            ft.Text("Edycja galerii", size=24, weight=ft.FontWeight.BOLD),
+            ft.Divider(),
+        ], scroll=ft.ScrollMode.AUTO)
 
         # Lista dzieł sztuki
-        artworks_list = []
         for i, artwork in enumerate(self.current_data):
             artwork_card = ft.Card(
                 content=ft.Container(
@@ -552,7 +927,7 @@ class AdminInterface:
                             ft.IconButton(
                                 ft.Icons.DELETE,
                                 tooltip="Usuń dzieło",
-                                on_click=lambda e, idx=i: delete_artwork(idx)
+                                on_click=lambda e, idx=i: delete_artwork_inline(idx)
                             )
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                         ft.Row([
@@ -608,35 +983,39 @@ class AdminInterface:
                     padding=15
                 )
             )
-            artworks_list.append(artwork_card)
+            form_container.controls.append(artwork_card)
 
         # Przyciski akcji
+        save_button = ft.ElevatedButton(
+            "Zapisz zmiany",
+            icon=ft.Icons.SAVE,
+            on_click=lambda e: self.validate_and_save_data(),
+            disabled=not self.unsaved_changes
+        )
+        
+        cancel_button = ft.OutlinedButton(
+            "Anuluj",
+            icon=ft.Icons.CANCEL,
+            on_click=lambda e: self.load_data() or self.show_gallery_form(),
+            disabled=not self.unsaved_changes
+        )
+        
+        # Zapisz referencje do przycisków
+        self.current_save_button = save_button
+        self.current_cancel_button = cancel_button
+        
         action_buttons = ft.Row([
             ft.ElevatedButton(
                 "Dodaj nowe dzieło",
                 icon=ft.Icons.ADD,
                 on_click=lambda e: add_new_artwork()
-            ),            ft.ElevatedButton(
-                "Zapisz zmiany",
-                icon=ft.Icons.SAVE,
-                on_click=lambda e: self.validate_and_save_data()
             ),
-            ft.OutlinedButton(
-                "Anuluj",
-                icon=ft.Icons.CANCEL,
-                on_click=lambda e: self.load_data() or self.show_gallery_form()
-            )
+            save_button,
+            cancel_button
         ])
 
-        form_content = ft.Column([
-            ft.Text("Edycja galerii", size=24, weight=ft.FontWeight.BOLD),
-            ft.Divider(),
-            *artworks_list,
-            ft.Divider(),
-            action_buttons
-        ], scroll=ft.ScrollMode.AUTO)
-
-        self.content_area.content = form_content
+        form_container.controls.extend([ft.Divider(), action_buttons])
+        self.content_area.content = form_container
         self.page.update()
 
     def show_shop_form(self):
@@ -657,19 +1036,95 @@ class AdminInterface:
             }
             self.current_data.append(new_product)
             self.unsaved_changes = True
-            self.show_shop_form()
+            self.update_title()
+            self.update_buttons_state()
+            
+            new_index = len(self.current_data) - 1
+            
+            product_card = ft.Card(
+                content=ft.Container(
+                    content=ft.Column([
+                        ft.Row([
+                            ft.Text(f"Produkt {new_index + 1}", weight=ft.FontWeight.BOLD),
+                            ft.IconButton(
+                                ft.Icons.DELETE,
+                                tooltip="Usuń produkt",
+                                on_click=lambda e, idx=new_index: delete_product_inline(idx)
+                            )
+                        ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
+                        ft.TextField(
+                            label="Nazwa produktu",
+                            value="",
+                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "title", e.control.value)
+                        ),
+                        ft.TextField(
+                            label="Opis produktu",
+                            value="",
+                            multiline=True,
+                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "description", e.control.value)
+                        ),
+                        ft.Row([
+                            ft.TextField(
+                                label="Cena (PLN)",
+                                value=str(new_product.get("price", 0)),
+                                width=150,
+                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "price", float(e.control.value) if e.control.value.replace(".", "").isdigit() else 0)
+                            ),
+                            ft.TextField(
+                                label="ID oryginalnego dzieła",
+                                value=str(new_product.get("originalArtworkId", 1)),
+                                width=200,
+                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "originalArtworkId", int(e.control.value) if e.control.value.isdigit() else 1)
+                            )
+                        ]),
+                        ft.TextField(
+                            label="URL zakupu",
+                            value="",
+                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "purchaseUrl", e.control.value)
+                        ),
+                        ft.Switch(
+                            label="Dostępny",
+                            value=True,
+                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "available", e.control.value)
+                        ),
+                        ft.Text("Obraz produktu:", weight=ft.FontWeight.BOLD),
+                        self.create_image_picker(
+                            "",
+                            lambda path, idx=new_index: self.update_item_field(idx, "image", path)
+                        )
+                    ]),
+                    padding=15
+                )
+            )
+            
+            form_container.controls.insert(-2, product_card)
+            self.page.update()
 
-        def delete_product(index):
+        def delete_product_inline(index):
             def confirm_delete(e):
                 self.current_data.pop(index)
                 self.unsaved_changes = True
-                dialog.open = False
+                self.update_title()
+                self.update_buttons_state()
+                
+                if index + 2 < len(form_container.controls) - 2:
+                    form_container.controls.pop(index + 2)
+                    
+                    for i, card in enumerate(form_container.controls[2:-2], 0):
+                        if isinstance(card, ft.Card):
+                            title_row = card.content.content.controls[0]
+                            if isinstance(title_row, ft.Row) and len(title_row.controls) >= 2:
+                                title_text = title_row.controls[0]
+                                delete_button = title_row.controls[1]
+                                
+                                title_text.value = f"Produkt {i + 1}"
+                                delete_button.on_click = lambda e, idx=i: delete_product_inline(idx)
+                
+                self.page.close(dialog)
                 self.page.update()
-                self.show_shop_form()
 
             def cancel_delete(e):
-                dialog.open = False
-                self.page.update()
+                self.page.close(dialog)
 
             dialog = ft.AlertDialog(
                 modal=True,
@@ -681,12 +1136,15 @@ class AdminInterface:
                 ]
             )
             
-            self.page.dialog = dialog
-            dialog.open = True
-            self.page.update()
+            self.page.open(dialog)
+
+        # Kontener główny
+        form_container = ft.Column([
+            ft.Text("Edycja sklepu", size=24, weight=ft.FontWeight.BOLD),
+            ft.Divider(),
+        ], scroll=ft.ScrollMode.AUTO)
 
         # Lista produktów
-        products_list = []
         for i, product in enumerate(self.current_data):
             product_card = ft.Card(
                 content=ft.Container(
@@ -696,7 +1154,7 @@ class AdminInterface:
                             ft.IconButton(
                                 ft.Icons.DELETE,
                                 tooltip="Usuń produkt",
-                                on_click=lambda e, idx=i: delete_product(idx)
+                                on_click=lambda e, idx=i: delete_product_inline(idx)
                             )
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                         ft.TextField(
@@ -743,36 +1201,39 @@ class AdminInterface:
                     padding=15
                 )
             )
-            products_list.append(product_card)
+            form_container.controls.append(product_card)
 
         # Przyciski akcji
+        save_button = ft.ElevatedButton(
+            "Zapisz zmiany",
+            icon=ft.Icons.SAVE,
+            on_click=lambda e: self.validate_and_save_data(),
+            disabled=not self.unsaved_changes
+        )
+        
+        cancel_button = ft.OutlinedButton(
+            "Anuluj",
+            icon=ft.Icons.CANCEL,
+            on_click=lambda e: self.load_data() or self.show_shop_form(),
+            disabled=not self.unsaved_changes
+        )
+        
+        # Zapisz referencje do przycisków
+        self.current_save_button = save_button
+        self.current_cancel_button = cancel_button
+        
         action_buttons = ft.Row([
             ft.ElevatedButton(
                 "Dodaj nowy produkt",
                 icon=ft.Icons.ADD,
                 on_click=lambda e: add_new_product()
             ),
-            ft.ElevatedButton(
-                "Zapisz zmiany",
-                icon=ft.Icons.SAVE,
-                on_click=lambda e: self.validate_and_save_data()
-            ),
-            ft.OutlinedButton(
-                "Anuluj",
-                icon=ft.Icons.CANCEL,
-                on_click=lambda e: self.load_data() or self.show_shop_form()
-            )
+            save_button,
+            cancel_button
         ])
 
-        form_content = ft.Column([
-            ft.Text("Edycja sklepu", size=24, weight=ft.FontWeight.BOLD),
-            ft.Divider(),
-            *products_list,
-            ft.Divider(),
-            action_buttons
-        ], scroll=ft.ScrollMode.AUTO)
-
-        self.content_area.content = form_content
+        form_container.controls.extend([ft.Divider(), action_buttons])
+        self.content_area.content = form_container
         self.page.update()
 
     def validate_data(self, data_type, data):
@@ -786,6 +1247,10 @@ class AdminInterface:
                 errors.append("Zdjęcie artysty jest wymagane")
             if not data.get("biography") or len(data.get("biography", [])) == 0:
                 errors.append("Biografia jest wymagana")
+            
+            # Dodaj sprawdzenie długości
+            if len(data.get("artistName", "")) > 100:
+                errors.append("Imię i nazwisko artysty nie może być dłuższe niż 100 znaków")
                 
         elif data_type in ["featured", "gallery", "shop"]:
             if not isinstance(data, list):
@@ -797,14 +1262,19 @@ class AdminInterface:
                     if not item.get("image", "").strip():
                         errors.append(f"Element {i+1}: Obraz jest wymagany")
                     
+                    # Sprawdź długość tytułu
+                    if len(item.get("title", "")) > 200:
+                        errors.append(f"Element {i+1}: Tytuł nie może być dłuższy niż 200 znaków")
+                    
                     if data_type == "gallery":
-                        if not item.get("year") or not isinstance(item.get("year"), int):
-                            errors.append(f"Element {i+1}: Rok musi być liczbą")
+                        year = item.get("year")
+                        if not year or not isinstance(year, int) or year < 1900 or year > 2100:
+                            errors.append(f"Element {i+1}: Rok musi być liczbą między 1900 a 2100")
                     
                     if data_type == "shop":
                         price = item.get("price", 0)
-                        if not isinstance(price, (int, float)) or price < 0:
-                            errors.append(f"Element {i+1}: Cena musi być liczbą nieujemną")
+                        if not isinstance(price, (int, float)) or price < 0 or price > 1000000:
+                            errors.append(f"Element {i+1}: Cena musi być liczbą między 0 a 1,000,000")
         
         return errors
 
@@ -827,8 +1297,7 @@ class AdminInterface:
     def show_validation_error_dialog(self, error_message):
         """Pokazuje dialog z błędami walidacji"""
         def close_dialog(e):
-            dialog.open = False
-            self.page.update()
+            self.page.close(dialog)
 
         dialog = ft.AlertDialog(
             modal=True,
@@ -843,11 +1312,7 @@ class AdminInterface:
             ]
         )
         
-        self.page.dialog = dialog
-        dialog.open = True
-        self.page.update()
-
-
+        self.page.open(dialog)
 def main(page: ft.Page):
     AdminInterface(page)
 
