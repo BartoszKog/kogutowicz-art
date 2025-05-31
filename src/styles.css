@@ -311,45 +311,377 @@ html {
     text-justify: inter-word;
 }
 
-/* Dodatkowe zabezpieczenie przed sierotkami używając JavaScript hack w CSS */
-.artist-biography p::after {
-    content: "";
-    display: inline-block;
-    width: 0;
-    height: 0;
-    word-spacing: 1000px;
+/* FOCUS MODE STYLES - Tryb skupienia na obrazie */
+
+/* Overlay dla trybu skupienia */
+.focus-mode-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
 }
 
-/* Zapobiega łamaniu linii po pojedynczych literach i krótkich słowach */
-.artist-biography p,
-.artist-education li,
-.artist-achievements li {
-    text-wrap: pretty; /* Nowa właściwość CSS dla lepszego łamania tekstu */
+.focus-mode-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
 
-/* Fallback dla starszych przeglądarek */
-@supports not (text-wrap: pretty) {
-    .artist-biography p,
-    .artist-education li,
-    .artist-achievements li {
-        line-height: 1.6;
-        word-spacing: 0.1em;
-    }
+/* Kontener dla trybu skupienia */
+.focus-mode-container {
+    position: relative;
+    max-width: 90vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0.8) translateY(50px);
+    transition: all 0.3s ease-in-out;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-/* Dodatkowe style dla lepszej czytelności w sekcji About */
-.about-artist-content {
-    line-height: 1.7;
-    font-feature-settings: "kern" 1, "liga" 1;
-    text-rendering: optimizeLegibility;
+.focus-mode-overlay.active .focus-mode-container {
+    transform: scale(1) translateY(0);
 }
 
-/* Responsywne dostosowania dla sekcji About */
+/* Obraz w trybie skupienia */
+.focus-mode-image {
+    max-width: 100%;
+    max-height: 60vh;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    flex-shrink: 0;
+}
+
+/* Informacje o obrazie w trybie skupienia */
+.focus-mode-info {
+    background: transparent;
+    border-radius: 0;
+    padding: 1rem;
+    margin-top: 1rem;
+    max-width: 90vw;
+    width: 100%;
+    box-shadow: none;
+    text-align: center;
+    color: white;
+    flex-shrink: 0;
+    min-height: fit-content;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.focus-mode-info h3 {
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.focus-mode-details {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    line-height: 1.4;
+    overflow-wrap: break-word;
+}
+
+.focus-mode-description {
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    margin-top: 0.75rem;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    line-height: 1.4;
+    overflow-wrap: break-word;
+}
+
+.focus-mode-availability {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    margin-top: 0.5rem;
+    font-weight: 500;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    line-height: 1.4;
+    overflow-wrap: break-word;
+}
+
+/* Przyciski nawigacji - pozycjonowane względem overlay, a nie kontenera */
+.focus-nav-button {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    z-index: 10001;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0.8;
+}
+
+.focus-nav-button:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+}
+
+.focus-nav-button:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.focus-nav-button.prev {
+    left: 1rem;
+}
+
+.focus-nav-button.next {
+    right: 1rem;
+}
+
+/* Przycisk zamknięcia - pozycjonowany w rogu ekranu */
+.focus-close-button {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    z-index: 10001;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.focus-close-button:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Ikony SVG dla przycisków */
+.focus-nav-icon {
+    width: 24px;
+    height: 24px;
+    fill: #374151;
+    transition: fill 0.2s ease-in-out;
+}
+
+.focus-close-icon {
+    width: 20px;
+    height: 20px;
+    fill: #374151;
+    transition: fill 0.2s ease-in-out;
+}
+
+.focus-nav-button:hover .focus-nav-icon,
+.focus-close-button:hover .focus-close-icon {
+    fill: #1f2937;
+}
+
+/* Responsywność dla urządzeń mobilnych */
 @media (max-width: 768px) {
-    .artist-biography p,
-    .artist-education li,
-    .artist-achievements li {
-        text-align: left; /* Na mobile lepiej wygląda wyrównanie do lewej */
-        line-height: 1.6;
+    .focus-mode-overlay {
+        padding: 0.5rem;
     }
+    
+    .focus-mode-container {
+        max-height: 90vh;
+    }
+    
+    .focus-mode-image {
+        max-height: 50vh;
+    }
+    
+    .focus-mode-info {
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        max-width: 95vw;
+    }
+    
+    .focus-mode-info h3 {
+        font-size: clamp(1rem, 5vw, 1.25rem);
+        margin-bottom: 0.4rem;
+    }
+    
+    .focus-mode-details,
+    .focus-mode-description,
+    .focus-mode-availability {
+        font-size: clamp(0.75rem, 3vw, 0.85rem);
+    }
+    
+    .focus-nav-button {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .focus-nav-button.prev {
+        left: 0.5rem;
+    }
+    
+    .focus-nav-button.next {
+        right: 0.5rem;
+    }
+    
+    .focus-close-button {
+        top: 0.5rem;
+        right: 0.5rem;
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* Dodatkowe style dla bardzo małych ekranów */
+@media (max-width: 480px) {
+    .focus-mode-overlay {
+        padding: 0.25rem;
+    }
+    
+    .focus-mode-container {
+        max-height: 95vh;
+    }
+    
+    .focus-mode-image {
+        max-height: 45vh;
+    }
+    
+    .focus-mode-info {
+        padding: 0.5rem;
+        margin-top: 0.25rem;
+    }
+    
+    .focus-mode-info h3 {
+        font-size: clamp(0.9rem, 6vw, 1.1rem);
+    }
+    
+    .focus-mode-details,
+    .focus-mode-description,
+    .focus-mode-availability {
+        font-size: clamp(0.7rem, 3.5vw, 0.8rem);
+    }
+}
+
+/* Style dla ekranów o małej wysokości (landscape na telefonach) */
+@media (max-height: 600px) {
+    .focus-mode-container {
+        max-height: 90vh;
+    }
+    
+    .focus-mode-image {
+        max-height: 40vh;
+    }
+    
+    .focus-mode-info {
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .focus-mode-info h3 {
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+        margin-bottom: 0.25rem;
+    }
+    
+    .focus-mode-details,
+    .focus-mode-description,
+    .focus-mode-availability {
+        font-size: clamp(0.7rem, 2vw, 0.8rem);
+        margin-top: 0.25rem;
+    }
+}
+
+/* Style dla bardzo małych ekranów w orientacji landscape */
+@media (max-height: 480px) {
+    .focus-mode-image {
+        max-height: 35vh;
+    }
+    
+    .focus-mode-info {
+        padding: 0.25rem;
+        margin-top: 0.25rem;
+    }
+    
+    .focus-mode-info h3 {
+        font-size: clamp(0.8rem, 2.5vw, 1rem);
+        margin-bottom: 0.2rem;
+    }
+    
+    .focus-mode-details,
+    .focus-mode-description,
+    .focus-mode-availability {
+        font-size: clamp(0.65rem, 2vw, 0.75rem);
+        line-height: 1.3;
+        margin-top: 0.2rem;
+    }
+}
+
+/* Animacja ładowania obrazu */
+.focus-mode-image.loading {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+/* Wskaźnik ładowania dla obrazu */
+.focus-mode-image.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: focus-spin 1s linear infinite;
+}
+
+@keyframes focus-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Cursor pointer dla obrazów w galerii */
+.gallery-artworks .bg-white {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.gallery-artworks .bg-white:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Zapobieganie przewijaniu tła gdy modal jest otwarty */
+body.focus-mode-open {
+    overflow: hidden;
 }

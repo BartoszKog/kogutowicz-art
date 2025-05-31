@@ -109,9 +109,12 @@ function renderGalleryArtworks(artworks = galleryArtworks) {
 
   galleryContainer.innerHTML = '';
   
-  artworks.forEach(artwork => {
+  artworks.forEach((artwork, index) => {
     const artworkElement = document.createElement('div');
     artworkElement.className = 'bg-white rounded shadow-md overflow-hidden';
+    
+    // Dodaj atrybut z indeksem dla trybu skupienia
+    artworkElement.setAttribute('data-artwork-index', index);
     
     // Użyj funkcji correctImagePath do skorygowania ścieżki obrazu
     const correctedImagePath = correctImagePath(artwork.image);
@@ -130,6 +133,11 @@ function renderGalleryArtworks(artworks = galleryArtworks) {
         </p>
       </div>
     `;
+    
+    // Dodaj event listener dla trybu skupienia
+    artworkElement.addEventListener('click', () => {
+      openFocusMode(index, artworks);
+    });
     
     galleryContainer.appendChild(artworkElement);
   });
@@ -469,6 +477,242 @@ function setupMobileMenu() {
   });
 }
 
+// ===== TRYB SKUPIENIA NA OBRAZIE =====
+
+// Zmienne globalne dla trybu skupienia
+let focusModeState = {
+  isOpen: false,
+  currentIndex: 0,
+  artworks: [],
+  overlay: null
+};
+
+// Funkcja do otwierania trybu skupienia
+function openFocusMode(artworkIndex, artworks) {
+  focusModeState.currentIndex = artworkIndex;
+  focusModeState.artworks = artworks;
+  focusModeState.isOpen = true;
+  
+  // Zapobiegaj przewijaniu tła
+  document.body.classList.add('focus-mode-open');
+  
+  // Utwórz overlay jeśli nie istnieje
+  if (!focusModeState.overlay) {
+    createFocusModeOverlay();
+  }
+  
+  // Wyświetl aktualny obraz
+  displayCurrentArtwork();
+  
+  // Pokaż overlay
+  focusModeState.overlay.classList.add('active');
+  
+  // Dodaj event listenery
+  setupFocusModeEventListeners();
+}
+
+// Funkcja do zamykania trybu skupienia
+function closeFocusMode() {
+  if (!focusModeState.isOpen) return;
+  
+  focusModeState.isOpen = false;
+  document.body.classList.remove('focus-mode-open');
+  
+  if (focusModeState.overlay) {
+    focusModeState.overlay.classList.remove('active');
+    
+    // Usuń overlay po animacji
+    setTimeout(() => {
+      if (focusModeState.overlay && !focusModeState.isOpen) {
+        focusModeState.overlay.remove();
+        focusModeState.overlay = null;
+      }
+    }, 300);
+  }
+  
+  // Usuń event listenery
+  removeFocusModeEventListeners();
+}
+
+// Funkcja do tworzenia overlay
+function createFocusModeOverlay() {
+  const overlay = document.createElement('div');
+  overlay.className = 'focus-mode-overlay';
+  
+  overlay.innerHTML = `
+    <button class="focus-close-button" aria-label="Zamknij tryb skupienia">
+      <svg class="focus-close-icon" viewBox="0 0 24 24">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <button class="focus-nav-button prev" aria-label="Poprzedni obraz">
+      <svg class="focus-nav-icon" viewBox="0 0 24 24">
+        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <button class="focus-nav-button next" aria-label="Następny obraz">
+      <svg class="focus-nav-icon" viewBox="0 0 24 24">
+        <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div class="focus-mode-container">
+      <img class="focus-mode-image" src="" alt="" />
+      
+      <div class="focus-mode-info">
+        <h3 class="text-2xl font-bold mb-2"></h3>
+        <div class="focus-mode-details"></div>
+        <p class="focus-mode-description mt-3 text-gray-700"></p>
+        <p class="focus-mode-availability mt-2"></p>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+  focusModeState.overlay = overlay;
+  
+  // Dodaj event listenery dla przycisków
+  const closeButton = overlay.querySelector('.focus-close-button');
+  const prevButton = overlay.querySelector('.focus-nav-button.prev');
+  const nextButton = overlay.querySelector('.focus-nav-button.next');
+  
+  closeButton.addEventListener('click', closeFocusMode);
+  prevButton.addEventListener('click', () => navigateGallery('prev'));
+  nextButton.addEventListener('click', () => navigateGallery('next'));
+  
+  // Zamknij po kliknięciu na overlay (poza kontenerem)
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      closeFocusMode();
+    }
+  });
+}
+
+// Funkcja do wyświetlania aktualnego obrazu
+function displayCurrentArtwork() {
+  if (!focusModeState.overlay) return;
+  
+  const artwork = focusModeState.artworks[focusModeState.currentIndex];
+  if (!artwork) return;
+  
+  const image = focusModeState.overlay.querySelector('.focus-mode-image');
+  const title = focusModeState.overlay.querySelector('.focus-mode-info h3');
+  const details = focusModeState.overlay.querySelector('.focus-mode-details');
+  const description = focusModeState.overlay.querySelector('.focus-mode-description');
+  const availability = focusModeState.overlay.querySelector('.focus-mode-availability');
+  
+  // Ustaw obraz
+  image.classList.add('loading');
+  const correctedImagePath = correctImagePath(artwork.image);
+  image.src = correctedImagePath;
+  image.alt = artwork.title || 'Obraz';
+  
+  // Usuń efekt ładowania po załadowaniu obrazu
+  image.onload = () => {
+    image.classList.remove('loading');
+  };
+  
+  // Ustaw informacje
+  title.textContent = artwork.title || 'Bez tytułu';
+  
+  // Szczegóły techniczne
+  const detailsArray = [];
+  if (artwork.technique) detailsArray.push(artwork.technique);
+  if (artwork.dimensions) detailsArray.push(artwork.dimensions);
+  if (artwork.year) detailsArray.push(artwork.year);
+  
+  details.innerHTML = detailsArray.length > 0 
+    ? `<p class="text-gray-500">${detailsArray.join(' • ')}</p>`
+    : '';
+  
+  // Opis
+  description.textContent = artwork.description || '';
+  description.style.display = artwork.description ? 'block' : 'none';
+  
+  // Dostępność
+  availability.innerHTML = `
+    <span class="${artwork.available ? 'text-green-600' : 'text-gray-400'} font-semibold">
+      ${artwork.available ? 'Dostępny' : 'Niedostępny'}
+    </span>
+  `;
+  
+  // Zaktualizuj widoczność przycisków nawigacji
+  updateNavigationButtons();
+}
+
+// Funkcja do nawigacji w galerii
+function navigateGallery(direction) {
+  const totalArtworks = focusModeState.artworks.length;
+  
+  if (direction === 'next') {
+    focusModeState.currentIndex = (focusModeState.currentIndex + 1) % totalArtworks;
+  } else if (direction === 'prev') {
+    focusModeState.currentIndex = (focusModeState.currentIndex - 1 + totalArtworks) % totalArtworks;
+  }
+  
+  displayCurrentArtwork();
+}
+
+// Funkcja do aktualizowania przycisków nawigacji
+function updateNavigationButtons() {
+  if (!focusModeState.overlay) return;
+  
+  const prevButton = focusModeState.overlay.querySelector('.focus-nav-button.prev');
+  const nextButton = focusModeState.overlay.querySelector('.focus-nav-button.next');
+  
+  // Pokaż/ukryj przyciski nawigacji w zależności od liczby obrazów
+  const hasMultipleImages = focusModeState.artworks.length > 1;
+  prevButton.style.display = hasMultipleImages ? 'flex' : 'none';
+  nextButton.style.display = hasMultipleImages ? 'flex' : 'none';
+}
+
+// Event listenery dla trybu skupienia
+let focusModeKeyHandler;
+let focusModeResizeHandler;
+
+function setupFocusModeEventListeners() {
+  // Obsługa klawiszy
+  focusModeKeyHandler = (e) => {
+    if (!focusModeState.isOpen) return;
+    
+    switch (e.key) {
+      case 'Escape':
+        e.preventDefault();
+        closeFocusMode();
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        navigateGallery('prev');
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        navigateGallery('next');
+        break;
+    }
+  };
+  
+  // Obsługa resize
+  focusModeResizeHandler = () => {
+    if (focusModeState.isOpen) {
+      displayCurrentArtwork();
+    }
+  };
+  
+  document.addEventListener('keydown', focusModeKeyHandler);
+  window.addEventListener('resize', focusModeResizeHandler);
+}
+
+function removeFocusModeEventListeners() {
+  if (focusModeKeyHandler) {
+    document.removeEventListener('keydown', focusModeKeyHandler);
+  }
+  if (focusModeResizeHandler) {
+    window.removeEventListener('resize', focusModeResizeHandler);
+  }
+}
+
 // Uruchom pobieranie danych po załadowaniu dokumentu
 document.addEventListener('DOMContentLoaded', () => {
   fetchData();
@@ -484,5 +728,7 @@ export {
   getArtworkById,
   getProductById,
   filterArtworksByCategory,
-  setupMobileMenu
+  setupMobileMenu,
+  openFocusMode,
+  closeFocusMode
 };
