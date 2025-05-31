@@ -8,31 +8,5 @@
     "available": true,
     "originalArtworkId": 1,
     "purchaseUrl": "https://github.com/BartoszKog"
-  },
-  {
-    "id": 102,
-    "title": "Obraz 2.",
-    "description": "Reprodukcja na płotnie",
-    "price": 300,
-    "image": "images/featured/dwor.jpg",
-    "available": false,
-    "originalArtworkId": 6,
-    "purchaseUrl": "https://github.com/BartoszKog"
-  },
-  {
-    "id": 103,
-    "title": "sdg",
-    "price": 0,
-    "image": "images/featured/zamek.jpg",
-    "available": true,
-    "originalArtworkId": 1
-  },
-  {
-    "id": 104,
-    "title": "ff",
-    "price": 0,
-    "image": "images/gallery/A_pink_still_life_kko29.jpg",
-    "available": true,
-    "originalArtworkId": 1
   }
 ]
