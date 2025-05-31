@@ -7,7 +7,11 @@
     "dimensions": "60 x 80 cm",
     "year": 2022,
     "image": "images/featured/dwor.jpg",
-    "categories": ["architektura", "Łąkta Górna", "dwór"],
+    "categories": [
+      "architektura",
+      "Łąkta Górna",
+      "dwór"
+    ],
     "available": true
   },
   {
@@ -18,7 +22,11 @@
     "dimensions": "40 x 50 cm",
     "year": 2023,
     "image": "images/featured/zamek.jpg",
-    "categories": ["architektura", "Wiśnicz", "zamek"],
+    "categories": [
+      "architektura",
+      "Wiśnicz",
+      "zamek"
+    ],
     "available": true
   },
   {
@@ -27,7 +35,9 @@
     "dimensions": "30 x 30 cm",
     "year": 2004,
     "image": "images/gallery/martwa_natura_czerwone.jpg",
-    "categories": ["martwa natura"]
+    "categories": [
+      "martwa natura"
+    ]
   },
   {
     "id": 4,
@@ -35,7 +45,28 @@
     "dimensions": "40 x 60 cm",
     "year": 2011,
     "image": "images/gallery/Widok_z_okna_kko64.jpg",
-    "categories": ["Pejzaż", "Impresjonizm"],
+    "categories": [
+      "Pejzaż",
+      "Impresjonizm"
+    ],
     "available": false
+  },
+  {
+    "id": 5,
+    "title": "jakieś kwiatki",
+    "year": 2024,
+    "image": "images/gallery/A_pink_still_life_kko29.jpg",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false
+  },
+  {
+    "id": 6,
+    "title": "fbx",
+    "year": 2024,
+    "image": "images/gallery/Carmine_still_life_kko10.jpg",
+    "categories": [],
+    "available": true
   }
 ]
