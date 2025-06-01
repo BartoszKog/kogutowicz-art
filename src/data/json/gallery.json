@@ -1,20 +1,5 @@
 [
   {
-    "id": 1,
-    "title": "Dwór w Łąkcie Górnej",
-    "description": "Dwór w Łąkcie Górnej",
-    "technique": "Olej na płótnie",
-    "dimensions": "60 x 80 cm",
-    "year": 2022,
-    "image": "images/featured/dwor.jpg",
-    "categories": [
-      "Łąkta Górna",
-      "dwór",
-      "pejzaż lokalny"
-    ],
-    "available": true
-  },
-  {
     "id": 3,
     "title": "Martwa natura czerwona",
     "dimensions": "30 x 30 cm",
@@ -32,7 +17,6 @@
     "year": 2011,
     "image": "images/gallery/Widok_z_okna_kko64.jpg",
     "categories": [
-      "Pejzaż",
       "Impresjonizm",
       "pejzaż lokalny"
     ],
@@ -47,29 +31,32 @@
       "kwiaty",
       "martwa natura"
     ],
-    "available": false
+    "available": false,
+    "dimensions": "30 x 24 cm"
   },
   {
     "id": 6,
-    "title": "Martwa natura",
-    "year": 2024,
+    "title": "Martwa natura karminowa",
+    "year": 2012,
     "image": "images/gallery/Carmine_still_life_kko10.jpg",
     "categories": [
       "martwa natura"
     ],
-    "available": false
+    "available": false,
+    "dimensions": "30 x 24 cm"
   },
   {
     "id": 7,
-    "title": "Bochnia",
+    "title": "Rynek w Bochni",
     "description": "Rynek w Bochni",
-    "year": 2008,
+    "year": 2011,
     "image": "images/gallery/Bochnia_kko87_88308.jpg",
     "categories": [
-      "Bochnia",
-      "pejzaż lokalny"
+      "pejzaż lokalny",
+      "Bochnia"
     ],
-    "available": false
+    "available": false,
+    "dimensions": "30 x 40 cm"
   },
   {
     "id": 8,
@@ -77,7 +64,259 @@
     "year": 2024,
     "image": "images/gallery/Jan_Pawel_II_kko95_88316.jpg",
     "categories": [
-      "Motywy sakralne"
+      "postacie sakralne"
+    ],
+    "available": false,
+    "dimensions": "40 x 50 cm"
+  },
+  {
+    "id": 9,
+    "title": "Kościół w Chronowie",
+    "dimensions": "18 x 24 cm",
+    "year": 2024,
+    "image": "images/gallery/Kosciol_w_Chronowie.jpg",
+    "categories": [
+      "pejzaż lokalny"
+    ],
+    "available": false
+  },
+  {
+    "id": 10,
+    "title": "Martwa natura z pomarańczami",
+    "dimensions": "40 x 50 cm",
+    "year": 2024,
+    "image": "images/gallery/Still_Life_with_Oranges_kko50.jpg",
+    "categories": [
+      "martwa natura"
+    ],
+    "available": false
+  },
+  {
+    "id": 11,
+    "title": "Żegocina centrum",
+    "dimensions": "30 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/zegocina_centrum_kosciol.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Żegocina"
+    ],
+    "available": false
+  },
+  {
+    "id": 12,
+    "title": "Złota jesień",
+    "description": "Złota jesień w Żegocine",
+    "dimensions": "50 x 50 cm",
+    "year": 2024,
+    "image": "images/gallery/zegocina_kosciol.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Żegocina"
+    ],
+    "available": false
+  },
+  {
+    "id": 13,
+    "title": "Wawel",
+    "dimensions": "30 x 30 cm",
+    "year": 2024,
+    "image": "images/gallery/Wawel_kko35.jpg",
+    "categories": [
+      "Pejzaż lokalny",
+      "Kraków"
+    ],
+    "available": false
+  },
+  {
+    "id": 14,
+    "title": "Krakowski rynek",
+    "dimensions": "18  x 24 cm",
+    "year": 2024,
+    "image": "images/gallery/rynek_krk.jpg",
+    "categories": [
+      "Pejzaż lokalny",
+      "Kraków"
+    ],
+    "available": false
+  },
+  {
+    "id": 15,
+    "title": "Krakowskie gołębie",
+    "description": "Krakowskie gołębie na tle Kościoła Mariackiego",
+    "dimensions": "30 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Mariacki.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Kraków"
+    ],
+    "available": false
+  },
+  {
+    "id": 16,
+    "title": "Pelargonie",
+    "dimensions": "30 x 20 cm",
+    "year": 2024,
+    "image": "images/gallery/Geranium_kko54.jpg",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false
+  },
+  {
+    "id": 17,
+    "title": "Żółte róże",
+    "dimensions": "30 x 30 cm",
+    "year": 2024,
+    "image": "images/gallery/Zolte_roze_kko63.jpg",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false
+  },
+  {
+    "id": 18,
+    "title": "Bukiet",
+    "dimensions": "40 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Bukiet_kko71.jpg",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false
+  },
+  {
+    "id": 19,
+    "title": "Tulipany",
+    "dimensions": "30 x 20 cm",
+    "year": 2024,
+    "image": "images/gallery/Tulipany_kko72.jpg",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false
+  },
+  {
+    "id": 20,
+    "title": "Różowe malwy",
+    "dimensions": "30 x 20 cm",
+    "year": 2024,
+    "image": "images/gallery/Rozowe_malwy_kko88_88309.jpg",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false
+  },
+  {
+    "id": 21,
+    "title": "Narcyzy",
+    "dimensions": "50 x 50 cm",
+    "year": 2024,
+    "image": "images/gallery/Narcyzy_kko75.jpg",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false
+  },
+  {
+    "id": 22,
+    "title": "Rozdziele",
+    "dimensions": "30 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Rozdziele_kko65.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Rozdziele"
+    ],
+    "available": false
+  },
+  {
+    "id": 23,
+    "title": "Wiśnicz",
+    "description": "Zamek w Wiśniczu",
+    "dimensions": "30 x 50 cm",
+    "year": 2024,
+    "image": "images/gallery/Wisnicz_kko78.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Wiśnicz"
+    ],
+    "available": false
+  },
+  {
+    "id": 24,
+    "title": "Myślenice",
+    "description": "Rynek w Myślenicach",
+    "dimensions": "20 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Myslenice_kko79.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Myślenice"
+    ],
+    "available": true
+  },
+  {
+    "id": 25,
+    "title": "Wiśnicz",
+    "dimensions": "20 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Wisnicz_kko37.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Wiśnicz"
+    ],
+    "available": false
+  },
+  {
+    "id": 26,
+    "title": "Słoneczniki - koniec lata",
+    "description": "Koniec lata w Łąkcie Górnej",
+    "dimensions": "30 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Sloneczniki_koniec_lata_lakta_gorna.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Łąkta"
+    ],
+    "available": false
+  },
+  {
+    "id": 27,
+    "title": "Leonard",
+    "description": "Kościół św. Leonarda w Lipnicy Murowanej",
+    "dimensions": "24 x 30 cm",
+    "year": 2024,
+    "image": "images/gallery/Leonard_kko82.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Lipnica"
+    ],
+    "available": false
+  },
+  {
+    "id": 28,
+    "title": "Kościół w Laskowej",
+    "dimensions": "30 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Kosciol_w_Laskowej_kko83.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Laskowa"
+    ],
+    "available": false
+  },
+  {
+    "id": 29,
+    "title": "Leonard",
+    "description": "Kościół św. Leonarda w Lipnicy Murowanej",
+    "dimensions": "35 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Leonard_kko91.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Lipnica"
     ],
     "available": false
   }
