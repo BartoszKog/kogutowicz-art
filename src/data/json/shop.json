@@ -8,5 +8,15 @@
     "available": true,
     "originalArtworkId": 1,
     "purchaseUrl": "https://github.com/BartoszKog"
+  },
+  {
+    "id": 102,
+    "title": "Obraz 2.",
+    "description": "Żyd",
+    "price": 300.0,
+    "image": "images/gallery/Zyd_kko93.jpg",
+    "available": false,
+    "originalArtworkId": 1,
+    "purchaseUrl": "https://google.com"
   }
 ]

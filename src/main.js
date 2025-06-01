@@ -155,11 +155,10 @@ function renderShopProducts() {
     productElement.className = 'bg-white rounded shadow-md overflow-hidden';
     
     // Użyj funkcji correctImagePath do skorygowania ścieżki obrazu
-    const correctedImagePath = correctImagePath(product.image);
-      // Sprawdź czy produkt jest dostępny
+    const correctedImagePath = correctImagePath(product.image);    // Sprawdź czy produkt jest dostępny
     const isAvailable = product.available !== false;
     const buttonClass = isAvailable 
-      ? 'bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 inline-block'
+      ? 'shop-purchase-button bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 inline-block font-semibold transition-all duration-300 transform'
       : 'bg-gray-400 text-gray-600 px-4 py-2 rounded cursor-not-allowed inline-block';
     const buttonText = isAvailable ? 'Przejdź do zakupu' : 'Niedostępne';
     const buttonAttributes = isAvailable 
@@ -173,8 +172,7 @@ function renderShopProducts() {
       <div class="p-4">
         <h3 class="text-xl font-semibold mb-2">${product.title || 'Bez tytułu'}</h3>
         ${product.description ? `<p class="text-gray-600">${product.description}</p>` : ''}
-        ${product.price ? `<p class="text-purple-600 font-bold mt-2">${product.price} zł</p>` : ''}
-        <div class="mt-4 flex items-center justify-between">
+        ${product.price ? `<p class="text-purple-600 font-bold mt-2">${product.price} zł</p>` : ''}        <div class="mt-4 flex items-center justify-between">
           <a ${buttonAttributes} class="${buttonClass}">
             ${buttonText}
           </a>
