@@ -311,6 +311,77 @@ html {
     text-justify: inter-word;
 }
 
+/* Responsywna nazwa artysty - ograniczona do maksymalnie 2 linii */
+.about-artist-content h1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    
+    /* Zachowuj większy rozmiar czcionki jak najdłużej */
+    font-size: clamp(1.875rem, 6vw, 2.25rem);
+    
+    /* Maksymalna wysokość dla dwóch linii */
+    max-height: calc(1.3em * 2);
+    
+    /* Inteligentne łamanie tekstu - zapobiega sierotek i wdowom */
+    word-wrap: break-word;
+    hyphens: manual;
+    -webkit-hyphens: manual;
+    -ms-hyphens: manual;
+    word-break: normal;
+    
+    /* Balansowanie tekstu dla lepszego rozkładu */
+    text-wrap: balance;
+    -webkit-text-wrap: balance;
+    
+    /* Zapobiega krótkim słowom na początku/końcu linii */
+    orphans: 2;
+    widows: 2;
+    
+    /* Kontrola nad białymi znakami */
+    white-space: normal;
+    
+    /* Dodatkowe właściwości dla lepszego łamania */
+    overflow-wrap: break-word;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+/* Mniej agresywne breakpointy - pozwalaj na większą czcionkę dłużej */
+@media (max-width: 900px) {
+    .about-artist-content h1 {
+        font-size: clamp(1.75rem, 5.5vw, 2.125rem);
+    }
+}
+
+@media (max-width: 700px) {
+    .about-artist-content h1 {
+        font-size: clamp(1.5rem, 5vw, 1.875rem);
+    }
+}
+
+@media (max-width: 550px) {
+    .about-artist-content h1 {
+        font-size: clamp(1.25rem, 4.5vw, 1.625rem);
+    }
+}
+
+@media (max-width: 450px) {
+    .about-artist-content h1 {
+        font-size: clamp(1.125rem, 4vw, 1.375rem);
+    }
+}
+
+@media (max-width: 350px) {
+    .about-artist-content h1 {
+        font-size: clamp(1rem, 3.5vw, 1.25rem);
+    }
+}
+
 /* FOCUS MODE STYLES - Tryb skupienia na obrazie */
 
 /* Overlay dla trybu skupienia */
