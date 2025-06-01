@@ -600,7 +600,7 @@ html {
         max-width: 95vw;
     }
     
-    .focus-mode-info h3 {
+    .focus-mode_info h3 {
         font-size: clamp(1rem, 5vw, 1.25rem);
         margin-bottom: 0.4rem;
     }
@@ -872,5 +872,170 @@ body.focus-mode-open {
         width: 300px;
         height: 300px;
         opacity: 0;
+    }
+}
+
+/* ===== SEKCJA ABOUT - 3D EFEKT ZDJĘCIA ARTYSTY ===== */
+
+/* Kontener zdjęcia artysty z 3D efektem */
+.artist-photo {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform 0.2s ease-out;
+    cursor: default;
+    position: relative;
+    /* Usuń wszystkie tła z Tailwind */
+    background: none !important;
+    background-color: transparent !important;
+    /* Zachowaj oryginalne wymiary i proporcje */
+    height: 24rem; /* h-96 equivalent = 384px */
+    width: 100%;
+    /* Upewnij się, że kontener ma odpowiednie rozmiary */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* Dodaj niewidzialny padding dla transformacji 3D */
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+}
+
+/* Ukryj placeholder tekst gdy obraz jest załadowany */
+.artist-photo.has-image p {
+    display: none !important;
+}
+
+/* Usuń szare tło gdy obraz jest załadowany */
+.artist-photo.has-image {
+    background: none !important;
+    background-color: transparent !important;
+}
+
+/* Zdjęcie artysty z delikatnym 3D efektem */
+.artist-photo img {
+    transition: transform 0.2s ease-out, box-shadow 0.3s ease-out;
+    transform-origin: center center;
+    will-change: transform;
+    backface-visibility: hidden;
+    border-radius: 0.5rem;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Delikatny efekt świetlny */
+.artist-photo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        rgba(255, 255, 255, 0.05) 0%, 
+        rgba(255, 255, 255, 0.02) 50%, 
+        rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+    pointer-events: none;
+    z-index: 2;
+    border-radius: inherit;
+}
+
+/* Aktywacja efektu świetlnego */
+.artist-photo.active::before {
+    opacity: 1;
+}
+
+/* Zwiększenie cienia podczas aktywności */
+.artist-photo.active img {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2), 
+                0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsywność - lepsze zarządzanie layoutem */
+@media (max-width: 768px) {
+    /* Zmniejsz gap między elementami */
+    .about-artist-content .grid {
+        gap: 1.5rem; /* 6 -> 1.5rem */
+    }
+    
+    /* Zmniejsz wysokość obrazu na małych ekranach */
+    .artist-photo {
+        height: 18rem; /* 288px instead of 384px */
+        perspective: 800px;
+    }
+    
+    .artist-photo.active img {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 
+                    0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Dla średnich ekranów - dodatkowe dostosowania */
+@media (max-width: 992px) and (min-width: 769px) {
+    .artist-photo {
+        height: 20rem; /* 320px - pośredni rozmiar */
+    }
+}
+
+/* Dla bardzo małych ekranów - wyłączenie efektu 3D i zmiana układu */
+@media (max-width: 480px) {
+    .about-artist-content .grid {
+        gap: 1rem;
+        grid-template-columns: 1fr; /* Wymusza jedną kolumnę */
+    }
+    
+    .artist-photo {
+        height: 16rem; /* 256px - jeszcze mniejszy */
+        perspective: none;
+        max-width: 100%;
+        margin: 0 auto; /* Wyśrodkuj na małych ekranach */
+    }
+    
+    .artist-photo img {
+        transform: none !important;
+    }
+    
+    .artist-photo::before {
+        display: none;
+    }
+}
+
+/* ===== DODATKOWE RESPONSYWNE STYLE DLA ABOUT SEKCJI ===== */
+
+/* Zapobiega nachodzeniu tekstu na obrazek */
+@media (max-width: 640px) {
+    .about-artist-content .grid {
+        gap: 2rem; /* Większy gap na bardzo małych ekranach */
+        grid-template-columns: 1fr; /* Jedna kolumna */
+    }
+    
+    .about-artist-content .grid > div:first-child {
+        order: 1; /* Obrazek na górze */
+        margin-bottom: 1rem;
+    }
+    
+    .about-artist-content .grid > div:last-child {
+        order: 2; /* Tekst na dole */
+    }
+}
+
+/* Dodatkowe zabezpieczenie dla średnich ekranów */
+@media (max-width: 768px) and (min-width: 641px) {
+    .about-artist-content .grid {
+        gap: 2rem; /* Większy odstęp */
+    }
+}
+
+/* Zabezpieczenie przed zbyt wąskimi kolumnami */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .about-artist-content .grid {
+        gap: 1.5rem;
     }
 }

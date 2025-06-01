@@ -293,13 +293,38 @@ function renderArtistPage() {
   if (h1Element) {
     h1Element.textContent = artistData.artistName || "O Artyście";
   }
-  
   // Aktualizuj zdjęcie artysty
   if (artistPhotoContainer && artistData.artistPhoto) {
     artistPhotoContainer.innerHTML = `
       <img src="${correctImagePath(artistData.artistPhoto)}" alt="${artistData.artistName || 'Artysta'}" 
            class="w-full h-full object-cover rounded">
     `;
+    
+    // Dodaj klasę has-image żeby ukryć placeholder i tło
+    artistPhotoContainer.classList.add('has-image');
+    
+    // Inicjalizuj 3D efekt po załadowaniu obrazu
+    const img = artistPhotoContainer.querySelector('img');
+    if (img) {
+      img.onload = () => {
+        // Wyczyść poprzedni efekt jeśli istnieje
+        if (artistPhoto3DCleanup) {
+          artistPhoto3DCleanup();
+        }
+        // Uruchom nowy efekt 3D
+        artistPhoto3DCleanup = initialize3DArtistPhoto();
+      };
+      
+      // Jeśli obraz jest już załadowany
+      if (img.complete) {
+        // Wyczyść poprzedni efekt jeśli istnieje
+        if (artistPhoto3DCleanup) {
+          artistPhoto3DCleanup();
+        }
+        // Uruchom nowy efekt 3D
+        artistPhoto3DCleanup = initialize3DArtistPhoto();
+      }
+    }
   }
     // Aktualizuj biografię
   if (biographyContainer && artistData.biography && Array.isArray(artistData.biography) && artistData.biography.length > 0) {
@@ -714,6 +739,15 @@ function removeFocusModeEventListeners() {
 document.addEventListener('DOMContentLoaded', () => {
   fetchData();
   setupMobileMenu();
+  // 3D efekt będzie inicjalizowany w renderArtistPage()
+});
+
+// Cleanup przy opuszczeniu strony
+window.addEventListener('beforeunload', () => {
+  if (artistPhoto3DCleanup) {
+    artistPhoto3DCleanup();
+    artistPhoto3DCleanup = null;
+  }
 });
 
 // Eksport funkcji dla możliwości użycia w innych modułach
@@ -729,3 +763,95 @@ export {
   openFocusMode,
   closeFocusMode
 };
+
+// ===== 3D EFEKT ZDJĘCIA ARTYSTY - REAGUJE NA KURSOR =====
+
+// Funkcja do inicjalizacji 3D efektu dla zdjęcia artysty
+function initialize3DArtistPhoto() {
+  const artistPhoto = document.querySelector('.artist-photo');
+  if (!artistPhoto) return;
+
+  const img = artistPhoto.querySelector('img');
+  if (!img) return;
+  // Parametry efektu - delikatniejsze nachylenie niż w standardowych przykładach
+  const maxRotation = 2; // Zmniejszone 
+  const perspective = 1000;
+  
+  // Funkcja do obliczania transformacji na podstawie pozycji kursora
+  function updateTransform(e) {
+    // Pobierz pozycję i rozmiary elementu
+    const rect = artistPhoto.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    // Oblicz pozycję kursora względem centrum elementu
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    
+    // Oblicz różnicę od centrum (w pikselach)
+    const deltaX = mouseX - centerX;
+    const deltaY = mouseY - centerY;
+    
+    // Normalizuj do zakresu -1 do 1 na podstawie odległości od centrum ekranu
+    const screenCenterX = window.innerWidth / 2;
+    const screenCenterY = window.innerHeight / 2;
+    
+    // Użyj globalnej pozycji dla bardziej subtelnego efektu
+    const normalizedX = (mouseX - screenCenterX) / screenCenterX;
+    const normalizedY = (mouseY - screenCenterY) / screenCenterY;
+    
+    // Oblicz kąty rotacji (odwrócone dla naturalnego efektu)
+    const rotateY = normalizedX * maxRotation;
+    const rotateX = -normalizedY * maxRotation;
+    
+    // Zastosuj transformację
+    if (img) {
+      img.style.transform = `
+        perspective(${perspective}px)
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+        scale3d(1.02, 1.02, 1.02)
+      `;
+    }
+    
+    // Dodaj klasę active dla efektu świetlnego
+    artistPhoto.classList.add('active');
+  }
+  
+  // Funkcja do resetowania transformacji
+  function resetTransform() {
+    if (img) {
+      img.style.transform = `
+        perspective(${perspective}px)
+        rotateX(0deg)
+        rotateY(0deg)
+        scale3d(1, 1, 1)
+      `;
+    }
+    
+    // Usuń klasę active
+    artistPhoto.classList.remove('active');
+  }
+  
+  // Event listenery
+  document.addEventListener('mousemove', updateTransform);
+  
+  // Reset przy opuszczeniu okna przeglądarki
+  document.addEventListener('mouseleave', resetTransform);
+  
+  // Reset na urządzeniach dotykowych
+  document.addEventListener('touchstart', resetTransform);
+  document.addEventListener('touchend', resetTransform);
+  
+  // Cleanup function
+  return function cleanup() {
+    document.removeEventListener('mousemove', updateTransform);
+    document.removeEventListener('mouseleave', resetTransform);
+    document.removeEventListener('touchstart', resetTransform);
+    document.removeEventListener('touchend', resetTransform);
+    resetTransform();
+  };
+}
+
+// Globalna zmienna do przechowywania funkcji cleanup
+let artistPhoto3DCleanup = null;
