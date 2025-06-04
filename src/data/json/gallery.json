@@ -64,7 +64,7 @@
     "year": 2024,
     "image": "images/gallery/Jan_Pawel_II_kko95_88316.jpg",
     "categories": [
-      "postacie sakralne"
+      "motywy sakralne"
     ],
     "available": false,
     "dimensions": "40 x 50 cm"
@@ -255,7 +255,7 @@
       "pejzaż lokalny",
       "Myślenice"
     ],
-    "available": true
+    "available": false
   },
   {
     "id": 25,
@@ -319,5 +319,27 @@
       "Lipnica"
     ],
     "available": false
+  },
+  {
+    "id": 30,
+    "title": "Żyd",
+    "dimensions": "30 x 24 cm",
+    "year": 2011,
+    "image": "images/gallery/Zyd_kko93.jpg",
+    "categories": [
+      "postacie"
+    ],
+    "available": false
+  },
+  {
+    "id": 31,
+    "title": "Zamek w Wiśniczu",
+    "year": 2025,
+    "image": "images/gallery/img_20250525_184200805_hdr.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Wiśnicz"
+    ],
+    "available": true
   }
 ]

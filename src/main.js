@@ -774,7 +774,7 @@ function initialize3DArtistPhoto() {
   const img = artistPhoto.querySelector('img');
   if (!img) return;
   // Parametry efektu - delikatniejsze nachylenie niż w standardowych przykładach
-  const maxRotation = 2; // Zmniejszone 
+  const maxRotation = 3; // Zmniejszone 
   const perspective = 1000;
   
   // Funkcja do obliczania transformacji na podstawie pozycji kursora
