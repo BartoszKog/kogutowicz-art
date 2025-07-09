@@ -288,7 +288,8 @@ function renderArtistPage() {
   const artistPhotoContainer = document.querySelector('.artist-photo');
   const biographyContainer = document.querySelector('.artist-biography');
   const educationContainer = document.querySelector('.artist-education');
-  const achievementsContainer = document.querySelector('.artist-achievements');  // Aktualizuj tytuł strony
+  const achievementsContainer = document.querySelector('.artist-achievements');
+  const exhibitionsContainer = document.querySelector('.artist-exhibitions');  // Aktualizuj tytuł strony
   const h1Element = document.querySelector('h1');
   if (h1Element) {
     h1Element.textContent = artistData.artistName || "O Artyście";
@@ -365,6 +366,21 @@ function renderArtistPage() {
         const textWithNonBreakingSpaces = item.replace(/\b([aiozwunazeprzypod])\s+/gi, '$1&nbsp;');
         li.innerHTML = textWithNonBreakingSpaces;
         achievementsContainer.appendChild(li);
+      }
+    });
+  }
+  
+  // Aktualizuj wystawy
+  if (exhibitionsContainer && artistData.exhibitions && Array.isArray(artistData.exhibitions) && artistData.exhibitions.length > 0) {
+    exhibitionsContainer.innerHTML = '';
+    artistData.exhibitions.forEach(item => {
+      if (item && item.trim()) {
+        const li = document.createElement('li');
+        li.className = 'list-disc list-inside text-gray-700';
+        // Zabezpieczenie przed sierotkami - dodaj niełamliwe spacje po krótkich słowach
+        const textWithNonBreakingSpaces = item.replace(/\b([aiozwunazeprzypod])\s+/gi, '$1&nbsp;');
+        li.innerHTML = textWithNonBreakingSpaces;
+        exhibitionsContainer.appendChild(li);
       }
     });
   }

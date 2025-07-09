@@ -484,6 +484,34 @@ class AdminInterface:
             ])
             achievements_section.controls.append(row)
         
+        # Wybrane wystawy
+        exhibitions_section = ft.Column([
+            ft.Row([
+                ft.Text("Wybrane wystawy:", weight=ft.FontWeight.BOLD),
+                ft.IconButton(
+                    ft.Icons.ADD,
+                    tooltip="Dodaj wystawę",
+                    on_click=lambda e: self.add_list_item_inline("exhibitions", exhibitions_section)
+                )
+            ])
+        ])
+        
+        for i, item in enumerate(self.current_data.get("exhibitions", [])):
+            row = ft.Row([
+                ft.TextField(
+                    label=f"Wystawa {i+1}",
+                    value=item,
+                    expand=True,
+                    on_change=lambda e, idx=i: self.update_list_field("exhibitions", idx, e.control.value)
+                ),
+                ft.IconButton(
+                    ft.Icons.DELETE,
+                    tooltip="Usuń wystawę",
+                    on_click=lambda e, idx=i: self.remove_list_item_inline("exhibitions", idx, exhibitions_section)
+                )
+            ])
+            exhibitions_section.controls.append(row)
+        
         # Zawartość formularza
         form_content = ft.Column([
             ft.Text("Edycja sekcji 'O Artyście'", size=24, weight=ft.FontWeight.BOLD),
@@ -493,7 +521,8 @@ class AdminInterface:
             artist_photo,
             biography_section,
             education_section,
-            achievements_section
+            achievements_section,
+            exhibitions_section
         ], scroll=ft.ScrollMode.AUTO)
 
         self.content_area.content = form_content
@@ -574,6 +603,16 @@ class AdminInterface:
             multiline = False
             min_lines = 1
             max_lines = 1
+        elif list_name == "exhibitions":
+            label = f"Wystawa {new_index + 1}"
+            multiline = False
+            min_lines = 1
+            max_lines = 1
+        elif list_name == "exhibitions":
+            label = f"Wystawa {new_index + 1}"
+            multiline = False
+            min_lines = 1
+            max_lines = 1
         
         new_row = ft.Row([
             ft.TextField(
@@ -620,6 +659,10 @@ class AdminInterface:
                             text_field.label = f"Edukacja {i + 1}"
                         elif list_name == "achievements":
                             text_field.label = f"Osiągnięcie {i + 1}"
+                        elif list_name == "exhibitions":
+                            text_field.label = f"Wystawa {i + 1}"
+                        elif list_name == "exhibitions":
+                            text_field.label = f"Wystawa {i + 1}"
                         
                         # Zaktualizuj callback'i
                         text_field.on_change = lambda e, idx=i: self.update_list_field(list_name, idx, e.control.value)
@@ -695,7 +738,7 @@ class AdminInterface:
             self.update_title()
             self.update_buttons_state()
             
-            # Znajdź i usuń odpowiednią kartę
+            # Znaleźć i usuń odpowiednią kartę
             if index + 2 < len(items_container.controls):
                 items_container.controls.pop(index + 2)
                 
