@@ -11,18 +11,6 @@
     "available": true
   },
   {
-    "id": 5,
-    "title": "Róże",
-    "year": 2012,
-    "image": "images/gallery/A_pink_still_life_kko29.jpg",
-    "categories": [
-      "kwiaty",
-      "martwa natura"
-    ],
-    "available": false,
-    "dimensions": "30 x 24 cm"
-  },
-  {
     "id": 31,
     "title": "Zamek w Wiśniczu",
     "year": 2025,
@@ -33,6 +21,44 @@
     ],
     "available": true,
     "dimensions": "30 x 40 cm"
+  },
+  {
+    "id": 34,
+    "title": "Niepokuj",
+    "technique": "pastele",
+    "dimensions": "100 x 70 cm",
+    "year": 2012,
+    "image": "images/gallery/51532636_2753440501340563_6705984364846514176_n.jpg",
+    "categories": [
+      "postacie",
+      "pastele"
+    ],
+    "available": true
+  },
+  {
+    "id": 33,
+    "title": "Spotkanie Światów",
+    "technique": "Pastele",
+    "year": 2012,
+    "image": "images/gallery/51368236_2753441664673780_3536544013614055424_n.jpg",
+    "categories": [
+      "postacie",
+      "pastele"
+    ],
+    "available": true,
+    "dimensions": "50 x 70 cm"
+  },
+  {
+    "id": 5,
+    "title": "Róże",
+    "year": 2012,
+    "image": "images/gallery/A_pink_still_life_kko29.jpg",
+    "categories": [
+      "kwiaty",
+      "martwa natura"
+    ],
+    "available": false,
+    "dimensions": "30 x 24 cm"
   },
   {
     "id": 6,
@@ -351,17 +377,6 @@
     "dimensions": "30 x 24 cm",
     "year": 2011,
     "image": "images/gallery/Zyd_kko93.jpg",
-    "categories": [
-      "postacie"
-    ],
-    "available": false
-  },
-  {
-    "id": 33,
-    "title": "Jeszcze nieuzupełniony",
-    "technique": "Pastele",
-    "year": 2012,
-    "image": "images/gallery/51368236_2753441664673780_3536544013614055424_n.jpg",
     "categories": [
       "postacie"
     ],
