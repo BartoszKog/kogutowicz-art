@@ -11,18 +11,6 @@
     "available": true
   },
   {
-    "id": 4,
-    "title": "Widok z okna",
-    "dimensions": "40 x 60 cm",
-    "year": 2011,
-    "image": "images/gallery/Widok_z_okna_kko64.jpg",
-    "categories": [
-      "Impresjonizm",
-      "pejzaż lokalny"
-    ],
-    "available": false
-  },
-  {
     "id": 5,
     "title": "Róże",
     "year": 2012,
@@ -33,6 +21,18 @@
     ],
     "available": false,
     "dimensions": "30 x 24 cm"
+  },
+  {
+    "id": 31,
+    "title": "Zamek w Wiśniczu",
+    "year": 2025,
+    "image": "images/gallery/img_20250525_184200805_hdr.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Wiśnicz"
+    ],
+    "available": true,
+    "dimensions": "30 x 40 cm"
   },
   {
     "id": 6,
@@ -68,6 +68,18 @@
     ],
     "available": false,
     "dimensions": "40 x 50 cm"
+  },
+  {
+    "id": 4,
+    "title": "Widok z okna",
+    "dimensions": "40 x 60 cm",
+    "year": 2011,
+    "image": "images/gallery/Widok_z_okna_kko64.jpg",
+    "categories": [
+      "Impresjonizm",
+      "pejzaż lokalny"
+    ],
+    "available": false
   },
   {
     "id": 9,
@@ -117,13 +129,25 @@
     "available": false
   },
   {
+    "id": 32,
+    "title": "Złote Mendle w Cieniu Kościoła",
+    "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie",
+    "year": 2011,
+    "image": "images/gallery/Mendle_kko38.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Żegocina"
+    ],
+    "available": false
+  },
+  {
     "id": 13,
     "title": "Wawel",
     "dimensions": "30 x 30 cm",
     "year": 2011,
     "image": "images/gallery/Wawel_kko35.jpg",
     "categories": [
-      "Pejzaż lokalny",
+      "pejzaż lokalny",
       "Kraków"
     ],
     "available": false
@@ -135,7 +159,7 @@
     "year": 2011,
     "image": "images/gallery/rynek_krk.jpg",
     "categories": [
-      "Pejzaż lokalny",
+      "pejzaż lokalny",
       "Kraków"
     ],
     "available": false
@@ -333,26 +357,13 @@
     "available": false
   },
   {
-    "id": 31,
-    "title": "Zamek w Wiśniczu",
-    "year": 2025,
-    "image": "images/gallery/img_20250525_184200805_hdr.jpg",
+    "id": 33,
+    "title": "Jeszcze nieuzupełniony",
+    "technique": "Pastele",
+    "year": 2012,
+    "image": "images/gallery/51368236_2753441664673780_3536544013614055424_n.jpg",
     "categories": [
-      "pejzaż lokalny",
-      "Wiśnicz"
-    ],
-    "available": true,
-    "dimensions": "30 x 40 cm"
-  },
-  {
-    "id": 32,
-    "title": "Złote Mendle w Cieniu Kościoła",
-    "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie",
-    "year": 2011,
-    "image": "images/gallery/Mendle_kko38.jpg",
-    "categories": [
-      "pejzaż lokalny",
-      "Żegocina"
+      "postacie"
     ],
     "available": false
   }

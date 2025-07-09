@@ -138,16 +138,20 @@ class AdminInterface:
     def load_data(self):
         """Ładuje dane z pliku JSON"""
         try:
+            self._loading_data = True  # Ustaw flagę ładowania
             json_file = self.json_path / f"{self.current_file}.json"
             with open(json_file, 'r', encoding='utf-8') as f:
                 self.current_data = json.load(f)
             self.unsaved_changes = False
             self.update_title()
             self.update_buttons_state()
+            self._loading_data = False  # Wyłącz flagę ładowania
         except FileNotFoundError:
+            self._loading_data = False
             self.show_message("Błąd: Nie znaleziono pliku JSON", "#f44336")
             self.current_data = None
         except json.JSONDecodeError:
+            self._loading_data = False
             self.show_message("Błąd: Nieprawidłowy format JSON", "#f44336")
             self.current_data = None
 
@@ -282,15 +286,115 @@ class AdminInterface:
         self.action_buttons_container.content = ft.Row(buttons, spacing=10)
         self.page.update()
 
+    def get_used_images(self):
+        """Zwraca listę ścieżek obrazów już używanych w galerii"""
+        used_images = set()
+        
+        # Sprawdź wszystkie sekcje danych
+        try:
+            # Sprawdź gallery.json
+            gallery_path = self.json_path / "gallery.json"
+            if gallery_path.exists():
+                with open(gallery_path, 'r', encoding='utf-8') as f:
+                    gallery_data = json.load(f)
+                    for item in gallery_data:
+                        if isinstance(item, dict) and "image" in item:
+                            used_images.add(item["image"])
+            
+            # Sprawdź featured.json
+            featured_path = self.json_path / "featured.json"
+            if featured_path.exists():
+                with open(featured_path, 'r', encoding='utf-8') as f:
+                    featured_data = json.load(f)
+                    for item in featured_data:
+                        if isinstance(item, dict) and "image" in item:
+                            used_images.add(item["image"])
+            
+            # Sprawdź shop.json
+            shop_path = self.json_path / "shop.json"
+            if shop_path.exists():
+                with open(shop_path, 'r', encoding='utf-8') as f:
+                    shop_data = json.load(f)
+                    for item in shop_data:
+                        if isinstance(item, dict) and "image" in item:
+                            used_images.add(item["image"])
+            
+            # Sprawdź about.json (artistPhoto)
+            about_path = self.json_path / "about.json"
+            if about_path.exists():
+                with open(about_path, 'r', encoding='utf-8') as f:
+                    about_data = json.load(f)
+                    if "artistPhoto" in about_data:
+                        used_images.add(about_data["artistPhoto"])
+            
+        except Exception as e:
+            print(f"Błąd podczas sprawdzania używanych obrazów: {e}")
+        
+        return used_images
+
     def create_image_picker(self, current_image="", on_change=None):
         """Tworzy komponent wyboru obrazu"""
+        
+        # Funkcja pomocnicza do obliczania rozmiaru pliku
+        def get_image_info(image_path):
+            """Zwraca informacje o obrazie (rozmiar pliku)"""
+            if not image_path:
+                return ""
+            
+            try:
+                full_path = self.base_path / image_path
+                if full_path.exists():
+                    file_size_bytes = full_path.stat().st_size
+                    if file_size_bytes < 1024:
+                        file_size = f"{file_size_bytes} B"
+                    elif file_size_bytes < 1024 * 1024:
+                        file_size = f"{file_size_bytes / 1024:.1f} KB"
+                    else:
+                        file_size = f"{file_size_bytes / (1024 * 1024):.1f} MB"
+                    return f"Rozmiar: {file_size}"
+                else:
+                    return "Plik nie istnieje"
+            except:
+                return "Błąd odczytu pliku"
+        
+        # Pole tekstowe na ścieżkę
+        image_field = ft.TextField(
+            label="Ścieżka do obrazu",
+            value=current_image,
+            read_only=True,
+            expand=True
+        )
+        
+        # Wyświetlanie obrazu z informacją o rozmiarze
+        image_display = ft.Image(
+            src=f"../{current_image}" if current_image else "",
+            width=150,
+            height=150,
+            fit=ft.ImageFit.COVER,
+            visible=bool(current_image)
+        )
+        
+        # Dodaj informacje o pliku pod obrazem
+        image_info_text = ft.Text(
+            get_image_info(current_image),
+            size=12,
+            color="#757575",
+            visible=bool(current_image)
+        )
+        
+        # Funkcja do aktualizacji wyświetlania obrazu
+        def update_image_display(image_path):
+            image_display.src = f"../{image_path}" if image_path else ""
+            image_display.visible = bool(image_path)
+            image_info_text.value = get_image_info(image_path)
+            image_info_text.visible = bool(image_path)
+        
         def pick_image(e):
             def close_picker(e):
                 self.page.close(picker_dialog)
 
             def select_image(image_path):
-                image_display.src = f"../{image_path}"
-                image_display.visible = True  # Upewnij się, że obraz jest widoczny
+                update_image_display(image_path)
                 image_field.value = image_path
                 if on_change:
                     on_change(image_path)
@@ -306,6 +410,9 @@ class AdminInterface:
                 return
                 
             image_list = ft.Column(scroll=ft.ScrollMode.AUTO, height=400)
+            
+            # Pobierz listę już używanych obrazów
+            used_images = self.get_used_images()
             
             # Dodaj informację gdy brak obrazów
             has_images = False
@@ -325,11 +432,38 @@ class AdminInterface:
                         
                         for img_file in folder_images:
                             rel_path = f"images/{folder}/{img_file.name}"
+                            is_used = rel_path in used_images
+                            
+                            # Oblicz rozmiar pliku
+                            try:
+                                file_size_bytes = img_file.stat().st_size
+                                if file_size_bytes < 1024:
+                                    file_size = f"{file_size_bytes} B"
+                                elif file_size_bytes < 1024 * 1024:
+                                    file_size = f"{file_size_bytes / 1024:.1f} KB"
+                                else:
+                                    file_size = f"{file_size_bytes / (1024 * 1024):.1f} MB"
+                            except:
+                                file_size = "Nieznany rozmiar"
+                            
+                            # Ustal kolory w zależności od tego, czy obraz jest używany
+                            if is_used:
+                                # Obraz już używany - podświetl na żółto/pomarańczowo
+                                tile_color = "#fff3e0"  # Jasnopomarańczowy
+                                subtitle_text = f"{img_file.suffix.upper()} • {file_size} (UŻYWANY)"
+                                subtitle_color = "#ff9800"  # Pomarańczowy
+                            else:
+                                # Obraz nie używany - normalny kolor
+                                tile_color = None
+                                subtitle_text = f"{img_file.suffix.upper()} • {file_size}"
+                                subtitle_color = None
+                            
                             image_list.controls.append(
                                 ft.ListTile(
                                     leading=ft.Image(src=f"../{rel_path}", width=50, height=50, fit=ft.ImageFit.COVER),
                                     title=ft.Text(img_file.name),
-                                    subtitle=ft.Text(f"Rozszerzenie: {img_file.suffix.upper()}"),
+                                    subtitle=ft.Text(subtitle_text, color=subtitle_color),
+                                    bgcolor=tile_color,
                                     on_click=lambda e, path=rel_path: select_image(path)
                                 )
                             )
@@ -339,11 +473,34 @@ class AdminInterface:
                     ft.Text("Brak dostępnych obrazów. Dodaj pliki do folderów images/featured lub images/gallery", 
                            color="#757575", text_align=ft.TextAlign.CENTER)
                 )
+            else:
+                # Dodaj legendę na górze
+                legend = ft.Container(
+                    content=ft.Column([
+                        ft.Text("Legenda:", weight=ft.FontWeight.BOLD, size=14),
+                        ft.Row([
+                            ft.Container(
+                                content=ft.Text("Obraz już używany", size=12),
+                                bgcolor="#fff3e0",
+                                padding=ft.padding.symmetric(horizontal=8, vertical=4),
+                                border_radius=4
+                            ),
+                            ft.Container(
+                                content=ft.Text("Obraz dostępny", size=12),
+                                bgcolor="#f5f5f5",
+                                padding=ft.padding.symmetric(horizontal=8, vertical=4),
+                                border_radius=4
+                            )
+                        ])
+                    ]),
+                    margin=ft.margin.only(bottom=10)
+                )
+                image_list.controls.insert(0, legend)
             
             picker_dialog = ft.AlertDialog(
                 modal=True,
                 title=ft.Text("Wybierz obraz"),
-                content=ft.Container(content=image_list, width=500),
+                content=ft.Container(content=image_list, width=600, height=500),
                 actions=[
                     ft.TextButton("Anuluj", on_click=close_picker)
                 ]
@@ -351,33 +508,100 @@ class AdminInterface:
             
             self.page.open(picker_dialog)
 
-        # Pole tekstowe na ścieżkę
-        image_field = ft.TextField(
-            label="Ścieżka do obrazu",
-            value=current_image,
-            read_only=True,
-            expand=True
-        )
-        
-        # Wyświetlanie obrazu
-        image_display = ft.Image(
-            src=f"../{current_image}" if current_image else "",
-            width=150,
-            height=150,
-            fit=ft.ImageFit.COVER,
-            visible=bool(current_image)
-        )
-        
         # Kontener do aktualizacji obrazu
         image_container = ft.Column([
             ft.Row([
                 image_field,
                 ft.ElevatedButton("Wybierz obraz", on_click=pick_image)
             ]),
-            image_display
+            image_display,
+            image_info_text
         ])
         
         return image_container
+
+    def get_existing_categories(self):
+        """Zwraca listę wszystkich unikalnych kategorii z galerii"""
+        categories = set()
+        
+        if self.current_data and isinstance(self.current_data, list):
+            for item in self.current_data:
+                if isinstance(item, dict) and "categories" in item:
+                    item_categories = item["categories"]
+                    if isinstance(item_categories, list):
+                        for cat in item_categories:
+                            if cat and cat.strip():
+                                categories.add(cat.strip())
+        
+        return sorted(list(categories))
+
+    def create_category_selector(self, current_categories=None, on_change=None):
+        """Tworzy selektor kategorii z Dropdown i prostym interfejsem"""
+        if current_categories is None:
+            current_categories = []
+        
+        existing_categories = self.get_existing_categories()
+        
+        # Pole tekstowe pokazujące aktualne kategorie
+        categories_text = ft.TextField(
+            label="Kategorie (oddzielone przecinkami)",
+            value=", ".join(current_categories),
+            multiline=True,
+            min_lines=1,
+            max_lines=3
+        )
+        
+        # Dropdown z istniejącymi kategoriami
+        dropdown = ft.Dropdown(
+            label="Wybierz z istniejących kategorii",
+            options=[ft.dropdown.Option(cat) for cat in existing_categories],
+            width=300
+        )
+        
+        def add_category_from_dropdown(e):
+            """Dodaje kategorię z dropdown do pola tekstowego"""
+            if dropdown.value:
+                current_cats = [cat.strip() for cat in categories_text.value.split(",") if cat.strip()]
+                if dropdown.value not in current_cats:
+                    current_cats.append(dropdown.value)
+                    categories_text.value = ", ".join(current_cats)
+                    if on_change:
+                        on_change(current_cats)
+                    categories_text.update()
+                dropdown.value = None
+                dropdown.update()
+        
+        def on_text_change(e):
+            """Obsługuje zmiany w polu tekstowym kategorii"""
+            # Sprawdź czy to nie jest inicjalizacja (bez aktywnej edycji)
+            if hasattr(self, '_loading_data') and self._loading_data:
+                return
+                
+            current_cats = [cat.strip() for cat in e.control.value.split(",") if cat.strip()]
+            if on_change:
+                on_change(current_cats)
+        
+        categories_text.on_change = on_text_change
+        
+        # Kontener z informacją o dostępnych kategoriach
+        info_text = ft.Text(
+            f"Dostępne kategorie: {', '.join(existing_categories)}" if existing_categories else "Brak istniejących kategorii",
+            size=12,
+            color="#757575"
+        )
+        
+        return ft.Column([
+            categories_text,
+            ft.Row([
+                dropdown,
+                ft.ElevatedButton(
+                    "Dodaj",
+                    on_click=add_category_from_dropdown,
+                    height=40
+                )
+            ]),
+            info_text
+        ])
 
     def show_about_form(self):
         """Pokazuje formularz edycji sekcji 'O Artyście'"""
@@ -690,11 +914,34 @@ class AdminInterface:
                 content=ft.Column([
                     ft.Row([
                         ft.Text(f"Element {new_index + 1}", weight=ft.FontWeight.BOLD),
-                        ft.IconButton(
-                            ft.Icons.DELETE,
-                            tooltip="Usuń element",
-                            on_click=lambda e, idx=new_index: self.delete_featured_item_inline(idx, items_container)
-                        )
+                        ft.Row([
+                            ft.Text("Pozycja:", size=12),
+                            ft.TextField(
+                                value=str(new_index + 1),
+                                width=60,
+                                height=40,
+                                text_align=ft.TextAlign.CENTER,
+                                input_filter=ft.NumbersOnlyInputFilter(),
+                                on_submit=lambda e, idx=new_index: self.move_to_position(idx, e.control.value)
+                            ),
+                            ft.IconButton(
+                                ft.Icons.KEYBOARD_ARROW_UP,
+                                tooltip="Przesuń w górę",
+                                disabled=new_index == 0,  # Wyłącz dla pierwszego elementu
+                                on_click=lambda e, idx=new_index: self.move_item_up(idx)
+                            ),
+                            ft.IconButton(
+                                ft.Icons.KEYBOARD_ARROW_DOWN,
+                                tooltip="Przesuń w dół",
+                                disabled=new_index == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                on_click=lambda e, idx=new_index: self.move_item_down(idx)
+                            ),
+                            ft.IconButton(
+                                ft.Icons.DELETE,
+                                tooltip="Usuń element",
+                                on_click=lambda e, idx=new_index: self.delete_featured_item_inline(idx, items_container)
+                            )
+                        ])
                     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                     ft.TextField(
                         label="Tytuł",
@@ -789,11 +1036,35 @@ class AdminInterface:
                     content=ft.Column([
                         ft.Row([
                             ft.Text(f"Element {i+1}", weight=ft.FontWeight.BOLD),
-                            ft.IconButton(
-                                ft.Icons.DELETE,
-                                tooltip="Usuń element",
-                                on_click=lambda e, idx=i: self.delete_featured_item_inline(idx, form_container)
-                            )
+                            ft.Row([
+                                ft.Text("Pozycja:", size=12),
+                                ft.TextField(
+                                    value=str(i+1),
+                                    width=60,
+                                    height=40,
+                                    text_align=ft.TextAlign.CENTER,
+                                    input_filter=ft.NumbersOnlyInputFilter(),
+                                    on_submit=lambda e, idx=i: self.move_to_position(idx, e.control.value),
+                                    on_blur=lambda e, idx=i: self.move_to_position(idx, e.control.value)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_UP,
+                                    tooltip="Przesuń w górę",
+                                    disabled=i == 0,  # Wyłącz dla pierwszego elementu
+                                    on_click=lambda e, idx=i: self.move_item_up(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_DOWN,
+                                    tooltip="Przesuń w dół",
+                                    disabled=i == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                    on_click=lambda e, idx=i: self.move_item_down(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.DELETE,
+                                    tooltip="Usuń element",
+                                    on_click=lambda e, idx=i: self.delete_featured_item_inline(idx, form_container)
+                                )
+                            ])
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                         ft.TextField(
                             label="Tytuł",
@@ -856,11 +1127,35 @@ class AdminInterface:
                     content=ft.Column([
                         ft.Row([
                             ft.Text(f"Dzieło {new_index + 1}", weight=ft.FontWeight.BOLD),
-                            ft.IconButton(
-                                ft.Icons.DELETE,
-                                tooltip="Usuń dzieło",
-                                on_click=lambda e, idx=new_index: delete_artwork_inline(idx)
-                            )
+                            ft.Row([
+                                ft.Text("Pozycja:", size=12),
+                                ft.TextField(
+                                    value=str(new_index + 1),
+                                    width=60,
+                                    height=40,
+                                    text_align=ft.TextAlign.CENTER,
+                                    input_filter=ft.NumbersOnlyInputFilter(),
+                                    on_submit=lambda e, idx=new_index: self.move_to_position(idx, e.control.value),
+                                    on_blur=lambda e, idx=new_index: self.move_to_position(idx, e.control.value)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_UP,
+                                    tooltip="Przesuń w górę",
+                                    disabled=new_index == 0,  # Wyłącz dla pierwszego elementu
+                                    on_click=lambda e, idx=new_index: self.move_item_up(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_DOWN,
+                                    tooltip="Przesuń w dół",
+                                    disabled=new_index == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                    on_click=lambda e, idx=new_index: self.move_item_down(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.DELETE,
+                                    tooltip="Usuń dzieło",
+                                    on_click=lambda e, idx=new_index: delete_artwork_inline(idx)
+                                )
+                            ])
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                         ft.Row([
                             ft.TextField(
@@ -896,10 +1191,9 @@ class AdminInterface:
                                 on_change=lambda e, idx=new_index: self.update_item_field(idx, "dimensions", e.control.value)
                             )
                         ]),
-                        ft.TextField(
-                            label="Kategorie (oddzielone przecinkami)",
-                            value="",
-                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "categories", [cat.strip() for cat in e.control.value.split(",")])
+                        self.create_category_selector(
+                            [],
+                            lambda categories, idx=new_index: self.update_item_field(idx, "categories", categories)
                         ),
                         ft.Switch(
                             label="Dostępne",
@@ -980,11 +1274,35 @@ class AdminInterface:
                     content=ft.Column([
                         ft.Row([
                             ft.Text(f"Dzieło {i+1}", weight=ft.FontWeight.BOLD),
-                            ft.IconButton(
-                                ft.Icons.DELETE,
-                                tooltip="Usuń dzieło",
-                                on_click=lambda e, idx=i: delete_artwork_inline(idx)
-                            )
+                            ft.Row([
+                                ft.Text("Pozycja:", size=12),
+                                ft.TextField(
+                                    value=str(i+1),
+                                    width=60,
+                                    height=40,
+                                    text_align=ft.TextAlign.CENTER,
+                                    input_filter=ft.NumbersOnlyInputFilter(),
+                                    on_submit=lambda e, idx=i: self.move_to_position(idx, e.control.value),
+                                    on_blur=lambda e, idx=i: self.move_to_position(idx, e.control.value)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_UP,
+                                    tooltip="Przesuń w górę",
+                                    disabled=i == 0,  # Wyłącz dla pierwszego elementu
+                                    on_click=lambda e, idx=i: self.move_item_up(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_DOWN,
+                                    tooltip="Przesuń w dół",
+                                    disabled=i == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                    on_click=lambda e, idx=i: self.move_item_down(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.DELETE,
+                                    tooltip="Usuń dzieło",
+                                    on_click=lambda e, idx=i: delete_artwork_inline(idx)
+                                )
+                            ])
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                         ft.Row([
                             ft.TextField(
@@ -1020,10 +1338,9 @@ class AdminInterface:
                                 on_change=lambda e, idx=i: self.update_item_field(idx, "dimensions", e.control.value)
                             )
                         ]),
-                        ft.TextField(
-                            label="Kategorie (oddzielone przecinkami)",
-                            value=", ".join(artwork.get("categories", [])),
-                            on_change=lambda e, idx=i: self.update_item_field(idx, "categories", [cat.strip() for cat in e.control.value.split(",")])
+                        self.create_category_selector(
+                            artwork.get("categories", []),
+                            lambda categories, idx=i: self.update_item_field(idx, "categories", categories)
                         ),
                         ft.Switch(
                             label="Dostępne",
@@ -1079,11 +1396,35 @@ class AdminInterface:
                     content=ft.Column([
                         ft.Row([
                             ft.Text(f"Produkt {new_index + 1}", weight=ft.FontWeight.BOLD),
-                            ft.IconButton(
-                                ft.Icons.DELETE,
-                                tooltip="Usuń produkt",
-                                on_click=lambda e, idx=new_index: delete_product_inline(idx)
-                            )
+                            ft.Row([
+                                ft.Text("Pozycja:", size=12),
+                                ft.TextField(
+                                    value=str(new_index + 1),
+                                    width=60,
+                                    height=40,
+                                    text_align=ft.TextAlign.CENTER,
+                                    input_filter=ft.NumbersOnlyInputFilter(),
+                                    on_submit=lambda e, idx=new_index: self.move_to_position(idx, e.control.value),
+                                    on_blur=lambda e, idx=new_index: self.move_to_position(idx, e.control.value)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_UP,
+                                    tooltip="Przesuń w górę",
+                                    disabled=new_index == 0,  # Wyłącz dla pierwszego elementu
+                                    on_click=lambda e, idx=new_index: self.move_item_up(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_DOWN,
+                                    tooltip="Przesuń w dół",
+                                    disabled=new_index == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                    on_click=lambda e, idx=new_index: self.move_item_down(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.DELETE,
+                                    tooltip="Usuń produkt",
+                                    on_click=lambda e, idx=new_index: delete_product_inline(idx)
+                                )
+                            ])
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                         ft.TextField(
                             label="Nazwa produktu",
@@ -1194,11 +1535,35 @@ class AdminInterface:
                     content=ft.Column([
                         ft.Row([
                             ft.Text(f"Produkt {i+1}", weight=ft.FontWeight.BOLD),
-                            ft.IconButton(
-                                ft.Icons.DELETE,
-                                tooltip="Usuń produkt",
-                                on_click=lambda e, idx=i: delete_product_inline(idx)
-                            )
+                            ft.Row([
+                                ft.Text("Pozycja:", size=12),
+                                ft.TextField(
+                                    value=str(i+1),
+                                    width=60,
+                                    height=40,
+                                    text_align=ft.TextAlign.CENTER,
+                                    input_filter=ft.NumbersOnlyInputFilter(),
+                                    on_submit=lambda e, idx=i: self.move_to_position(idx, e.control.value),
+                                    on_blur=lambda e, idx=i: self.move_to_position(idx, e.control.value)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_UP,
+                                    tooltip="Przesuń w górę",
+                                    disabled=i == 0,  # Wyłącz dla pierwszego elementu
+                                    on_click=lambda e, idx=i: self.move_item_up(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_DOWN,
+                                    tooltip="Przesuń w dół",
+                                    disabled=i == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                    on_click=lambda e, idx=i: self.move_item_down(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.DELETE,
+                                    tooltip="Usuń produkt",
+                                    on_click=lambda e, idx=i: delete_product_inline(idx)
+                                )
+                            ])
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                         ft.TextField(
                             label="Nazwa produktu",
@@ -1341,6 +1706,185 @@ class AdminInterface:
             if self.unsaved_changes:
                 self.validate_and_save_data()
             e.page.update()
+
+    def move_item_up(self, index):
+        """Przesuwa element w górę na liście"""
+        if index > 0 and index < len(self.current_data):
+            # Zamień miejscami z poprzednim elementem
+            self.current_data[index], self.current_data[index - 1] = \
+                self.current_data[index - 1], self.current_data[index]
+            self.unsaved_changes = True
+            self.update_title()
+            self.update_buttons_state()
+            # Odśwież odpowiedni formularz w zależności od aktualnej sekcji
+            self.refresh_current_form()
+            # Przewiń do nowej pozycji elementu
+            self.scroll_to_item(index - 1)
+
+    def move_item_down(self, index):
+        """Przesuwa element w dół na liście"""
+        if index >= 0 and index < len(self.current_data) - 1:
+            # Zamień miejscami z następnym elementem
+            self.current_data[index], self.current_data[index + 1] = \
+                self.current_data[index + 1], self.current_data[index]
+            self.unsaved_changes = True
+            self.update_title()
+            self.update_buttons_state()
+            # Odśwież odpowiedni formularz w zależności od aktualnej sekcji
+            self.refresh_current_form()
+            # Przewiń do nowej pozycji elementu
+            self.scroll_to_item(index + 1)
+
+    def move_to_position(self, current_index, new_position_str):
+        """Przenosi element na określoną pozycję"""
+        try:
+            # Sprawdź czy wartość to liczba całkowita
+            if not new_position_str or not new_position_str.strip():
+                return
+            
+            new_position = int(new_position_str.strip())
+            
+            # Sprawdź czy pozycja jest w prawidłowym zakresie (1-indexed)
+            if new_position < 1 or new_position > len(self.current_data):
+                self.show_message(f"Pozycja musi być między 1 a {len(self.current_data)}", "#f44336")
+                return
+            
+            # Konwertuj do 0-indexed
+            new_index = new_position - 1
+            
+            # Jeśli pozycja się nie zmieniła, nic nie rób
+            if current_index == new_index:
+                return
+            
+            # Zapobiegaj podwójnemu wykonaniu - dodaj sprawdzenie czy operacja już trwa
+            if hasattr(self, '_moving_in_progress') and self._moving_in_progress:
+                return
+            
+            self._moving_in_progress = True
+            
+            # Przemieszczaj element krok po kroku w kierunku docelowej pozycji
+            if current_index < new_index:
+                # Przemieszczaj w dół (w kierunku większych indeksów)
+                for i in range(current_index, new_index):
+                    self.current_data[i], self.current_data[i + 1] = \
+                        self.current_data[i + 1], self.current_data[i]
+            else:
+                # Przemieszczaj w górę (w kierunku mniejszych indeksów)
+                for i in range(current_index, new_index, -1):
+                    self.current_data[i], self.current_data[i - 1] = \
+                        self.current_data[i - 1], self.current_data[i]
+            
+            self.unsaved_changes = True
+            self.update_title()
+            self.update_buttons_state()
+            
+            # Odśwież formularz
+            self.refresh_current_form()
+            
+            # Przewiń do nowej pozycji
+            self.scroll_to_item(new_index)
+            
+            # Resetuj flagę po krótkim opóźnieniu
+            def reset_flag():
+                self._moving_in_progress = False
+            
+            timer = threading.Timer(0.5, reset_flag)
+            timer.start()
+            
+        except ValueError:
+            self.show_message("Pozycja musi być liczbą całkowitą", "#f44336")
+            if hasattr(self, '_moving_in_progress'):
+                self._moving_in_progress = False
+
+    def scroll_to_item(self, item_index):
+        """Przewija do określonego elementu"""
+        def do_scroll():
+            try:
+                # Alternatywne podejście - używamy scroll_to z bardziej precyzyjnymi wartościami
+                if hasattr(self.content_area, 'content'):
+                    # Różne wysokości dla różnych sekcji
+                    if self.current_file == "gallery":
+                        # Galeria ma większe karty z wieloma polami
+                        item_height = 750  # Zwiększona wysokość dla galerii
+                        header_height = 80
+                        # Przewiń więcej w górę, aby pokazać więcej kontekstu
+                        viewport_offset_ratio = 0.15  # Pokazuj element bliżej góry (mniej w dół)
+                    elif self.current_file == "shop":
+                        # Sklep ma średnie karty
+                        item_height = 650
+                        header_height = 80
+                        viewport_offset_ratio = 0.2
+                    else:
+                        # Featured i about mają mniejsze karty
+                        item_height = 550
+                        header_height = 80
+                        viewport_offset_ratio = 0.25
+                    
+                    # Oblicz pozycję tak, aby element był lepiej widoczny
+                    viewport_height = self.page.window.height - 200  # Wysokość okna minus UI
+                    target_offset = max(0, header_height + (item_index * item_height) - (viewport_height * viewport_offset_ratio))
+                    
+                    # Przewiń do obliczonej pozycji
+                    if hasattr(self.content_area.content, 'scroll_to'):
+                        self.content_area.content.scroll_to(offset=target_offset, duration=300)
+                    elif hasattr(self.content_area.content, 'scroll'):
+                        # Alternatywne podejście - ustaw scroll bezpośrednio
+                        self.content_area.content.scroll = ft.ScrollMode.AUTO
+                    
+                    self.page.update()
+                    
+                    # Dodatkowe podświetlenie elementu (opcjonalne)
+                    self.highlight_moved_item(item_index)
+                    
+            except Exception as e:
+                print(f"Błąd podczas przewijania: {e}")
+        
+        # Opóźnione przewijanie, aby dać czas na odświeżenie interfejsu
+        timer = threading.Timer(0.3, do_scroll)
+        timer.start()
+
+    def highlight_moved_item(self, item_index):
+        """Tymczasowo podświetla przeniesiony element"""
+        def remove_highlight():
+            try:
+                # Usuń podświetlenie po 2 sekundach
+                if hasattr(self.content_area, 'content') and hasattr(self.content_area.content, 'controls'):
+                    # Znajdź kartę elementu i przywróć normalny kolor
+                    cards = [ctrl for ctrl in self.content_area.content.controls if isinstance(ctrl, ft.Card)]
+                    if item_index + 2 < len(self.content_area.content.controls):  # +2 bo są nagłówek i divider
+                        target_control = self.content_area.content.controls[item_index + 2]
+                        if isinstance(target_control, ft.Card):
+                            if hasattr(target_control, 'bgcolor'):
+                                target_control.bgcolor = None
+                                self.page.update()
+            except:
+                pass
+        
+        try:
+            # Podświetl element na żółto przez 2 sekundy
+            if hasattr(self.content_area, 'content') and hasattr(self.content_area.content, 'controls'):
+                if item_index + 2 < len(self.content_area.content.controls):  # +2 bo są nagłówek i divider
+                    target_control = self.content_area.content.controls[item_index + 2]
+                    if isinstance(target_control, ft.Card):
+                        target_control.bgcolor = "#fff3e0"  # Jasnopomarańczowy
+                        self.page.update()
+                        
+                        # Usuń podświetlenie po 2 sekundach
+                        timer = threading.Timer(2.0, remove_highlight)
+                        timer.start()
+        except:
+            pass
+
+    def refresh_current_form(self):
+        """Odświeża aktualnie wyświetlany formularz"""
+        if self.current_file == "about":
+            self.show_about_form()
+        elif self.current_file == "featured":
+            self.show_featured_form()
+        elif self.current_file == "gallery":
+            self.show_gallery_form()
+        elif self.current_file == "shop":
+            self.show_shop_form()
 
 def main(page: ft.Page):
     AdminInterface(page)
