@@ -343,5 +343,17 @@
     ],
     "available": true,
     "dimensions": "30 x 40 cm"
+  },
+  {
+    "id": 32,
+    "title": "Złote Mendle w Cieniu Kościoła",
+    "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie",
+    "year": 2011,
+    "image": "images/gallery/Mendle_kko38.jpg",
+    "categories": [
+      "pejzaż lokalny",
+      "Żegocina"
+    ],
+    "available": false
   }
 ]
