@@ -289,7 +289,9 @@ function renderArtistPage() {
   const biographyContainer = document.querySelector('.artist-biography');
   const educationContainer = document.querySelector('.artist-education');
   const achievementsContainer = document.querySelector('.artist-achievements');
-  const exhibitionsContainer = document.querySelector('.artist-exhibitions');  // Aktualizuj tytuł strony
+  const exhibitionsContainer = document.querySelector('.artist-exhibitions');
+
+  // Aktualizuj tytuł strony
   const h1Element = document.querySelector('h1');
   if (h1Element) {
     h1Element.textContent = artistData.artistName || "O Artyście";
