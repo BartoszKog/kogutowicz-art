@@ -25,7 +25,7 @@
   {
     "id": 5,
     "title": "Róże",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/A_pink_still_life_kko29.jpg",
     "categories": [
       "kwiaty",
@@ -37,7 +37,7 @@
   {
     "id": 6,
     "title": "Martwa natura karminowa",
-    "year": 2012,
+    "year": 2008,
     "image": "images/gallery/Carmine_still_life_kko10.jpg",
     "categories": [
       "martwa natura"
@@ -61,7 +61,7 @@
   {
     "id": 8,
     "title": "Jan Paweł II",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/Jan_Pawel_II_kko95_88316.jpg",
     "categories": [
       "motywy sakralne"
@@ -73,7 +73,7 @@
     "id": 9,
     "title": "Kościół w Chronowie",
     "dimensions": "18 x 24 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Kosciol_w_Chronowie.jpg",
     "categories": [
       "pejzaż lokalny"
@@ -84,7 +84,7 @@
     "id": 10,
     "title": "Martwa natura z pomarańczami",
     "dimensions": "40 x 50 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Still_Life_with_Oranges_kko50.jpg",
     "categories": [
       "martwa natura"
@@ -95,7 +95,7 @@
     "id": 11,
     "title": "Żegocina centrum",
     "dimensions": "30 x 40 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/zegocina_centrum_kosciol.jpg",
     "categories": [
       "pejzaż lokalny",
@@ -108,7 +108,7 @@
     "title": "Złota jesień",
     "description": "Złota jesień w Żegocine",
     "dimensions": "50 x 50 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/zegocina_kosciol.jpg",
     "categories": [
       "pejzaż lokalny",
@@ -120,7 +120,7 @@
     "id": 13,
     "title": "Wawel",
     "dimensions": "30 x 30 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Wawel_kko35.jpg",
     "categories": [
       "Pejzaż lokalny",
@@ -132,7 +132,7 @@
     "id": 14,
     "title": "Krakowski rynek",
     "dimensions": "18  x 24 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/rynek_krk.jpg",
     "categories": [
       "Pejzaż lokalny",
@@ -157,7 +157,7 @@
     "id": 16,
     "title": "Pelargonie",
     "dimensions": "30 x 20 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Geranium_kko54.jpg",
     "categories": [
       "kwiaty"
@@ -168,7 +168,7 @@
     "id": 17,
     "title": "Żółte róże",
     "dimensions": "30 x 30 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Zolte_roze_kko63.jpg",
     "categories": [
       "kwiaty"
@@ -179,7 +179,7 @@
     "id": 18,
     "title": "Bukiet",
     "dimensions": "40 x 40 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Bukiet_kko71.jpg",
     "categories": [
       "kwiaty"
@@ -190,7 +190,7 @@
     "id": 19,
     "title": "Tulipany",
     "dimensions": "30 x 20 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Tulipany_kko72.jpg",
     "categories": [
       "kwiaty"
@@ -201,7 +201,7 @@
     "id": 20,
     "title": "Różowe malwy",
     "dimensions": "30 x 20 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Rozowe_malwy_kko88_88309.jpg",
     "categories": [
       "kwiaty"
@@ -212,7 +212,7 @@
     "id": 21,
     "title": "Narcyzy",
     "dimensions": "50 x 50 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Narcyzy_kko75.jpg",
     "categories": [
       "kwiaty"
@@ -223,7 +223,7 @@
     "id": 22,
     "title": "Rozdziele",
     "dimensions": "30 x 40 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Rozdziele_kko65.jpg",
     "categories": [
       "pejzaż lokalny",
@@ -236,7 +236,7 @@
     "title": "Wiśnicz",
     "description": "Zamek w Wiśniczu",
     "dimensions": "30 x 50 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Wisnicz_kko78.jpg",
     "categories": [
       "pejzaż lokalny",
@@ -249,7 +249,7 @@
     "title": "Myślenice",
     "description": "Rynek w Myślenicach",
     "dimensions": "20 x 40 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Myslenice_kko79.jpg",
     "categories": [
       "pejzaż lokalny",
@@ -261,7 +261,7 @@
     "id": 25,
     "title": "Wiśnicz",
     "dimensions": "20 x 40 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Wisnicz_kko37.jpg",
     "categories": [
       "pejzaż lokalny",
@@ -274,7 +274,7 @@
     "title": "Słoneczniki - koniec lata",
     "description": "Koniec lata w Łąkcie Górnej",
     "dimensions": "30 x 40 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Sloneczniki_koniec_lata_lakta_gorna.jpg",
     "categories": [
       "pejzaż lokalny",
@@ -287,7 +287,7 @@
     "title": "Leonard",
     "description": "Kościół św. Leonarda w Lipnicy Murowanej",
     "dimensions": "24 x 30 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Leonard_kko82.jpg",
     "categories": [
       "pejzaż lokalny",
@@ -299,20 +299,21 @@
     "id": 28,
     "title": "Kościół w Laskowej",
     "dimensions": "30 x 40 cm",
-    "year": 2024,
+    "year": 2011,
     "image": "images/gallery/Kosciol_w_Laskowej_kko83.jpg",
     "categories": [
       "pejzaż lokalny",
       "Laskowa"
     ],
-    "available": false
+    "available": false,
+    "description": "Kościół w Laskowej jesienią"
   },
   {
     "id": 29,
     "title": "Leonard",
     "description": "Kościół św. Leonarda w Lipnicy Murowanej",
     "dimensions": "35 x 40 cm",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/Leonard_kko91.jpg",
     "categories": [
       "pejzaż lokalny",
@@ -340,6 +341,7 @@
       "pejzaż lokalny",
       "Wiśnicz"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "30 x 40 cm"
   }
 ]
