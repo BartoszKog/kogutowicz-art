@@ -1003,7 +1003,7 @@ class HeroSlider {
     this.slides = [];
     this.slideImages = [];
     this.autoPlayInterval = null;
-    this.autoPlayDelay = 5000; // 5 sekund
+    this.autoPlayDelay = 8000; // 8 sekund
     this.container = document.getElementById('slider-container');
     this.dotsContainer = document.getElementById('slider-dots');
     this.prevButton = document.getElementById('prev-slide');
