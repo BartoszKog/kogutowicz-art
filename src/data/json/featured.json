@@ -1,18 +1,26 @@
 [
   {
     "id": 1,
-    "title": "Krajobrazy",
-    "description": "Kolekcja obrazow przedstawiajacych piekne krajobrazy",
+    "title": "Pejzaż lokalny",
+    "description": "Malownicze widoki okolicznych miejsc, uchwycone w różnych porach roku.",
     "image": "images/featured/pejzaż_lokalny.webp"
   },
   {
     "id": 7,
-    "title": "Postacie",
+    "title": "Człowiek",
+    "description": "Portrety i sceny z życia, ukazujące emocje i charakter postaci.",
     "image": "images/featured/postacie.webp"
   },
   {
     "id": 8,
     "title": "Martwa natura",
+    "description": "Kompozycje przedmiotów codziennego użytku, oddające ich piękno i harmonię.",
     "image": "images/featured/martwa_natura.webp"
+  },
+  {
+    "id": 9,
+    "title": "Botaniczne opowieści",
+    "description": "Piękne przedstawienia roślin i kwiatów",
+    "image": "images/featured/botanika.webp"
   }
 ]
