@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Artystyczne</title>
-  <script type="module" crossorigin src="/kogutowicz-art/assets/main-C-kcLpe6.js"></script>
-  <link rel="stylesheet" crossorigin href="/kogutowicz-art/assets/main-C8XthXtY.css">
+  <script type="module" crossorigin src="/kogutowicz-art/assets/main-BuwPaxEp.js"></script>
+  <link rel="stylesheet" crossorigin href="/kogutowicz-art/assets/main-CepD14uF.css">
 </head>
 <body class="bg-gray-50">
     <header class="bg-white shadow">
@@ -47,12 +47,46 @@
     </header>
 
     <main class="flex-1">
-        <div class="container mx-auto px-6 py-8">
-            <h1 class="text-4xl font-bold text-gray-800 mb-8">Witaj w moim świecie sztuki</h1>
+        <!-- Pełnoekranowy slider z obrazami -->
+        <section id="hero-slider" class="relative h-screen overflow-hidden">
+            <div id="slider-container" class="relative w-full h-full">
+                <!-- Obrazy będą dodawane dynamicznie przez JavaScript -->
+            </div>
             
+            <!-- Overlay z tekstem powitalnym -->
+            <div class="absolute inset-0 flex items-center justify-center z-10">
+                <div class="text-center text-white px-6">
+                    <!-- Zawartość będzie generowana dynamicznie przez JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Kontrolki slidera -->
+            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20">
+                <div id="slider-dots" class="flex space-x-2">
+                    <!-- Punkty będą dodawane dynamicznie -->
+                </div>
+            </div>
+            
+            <!-- Strzałki nawigacyjne -->
+            <button id="prev-slide" class="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 bg-white bg-opacity-20 hover:bg-opacity-40 text-white p-3 rounded-full transition-all duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <button id="next-slide" class="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 bg-white bg-opacity-20 hover:bg-opacity-40 text-white p-3 rounded-full transition-all duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </section>
+
+        <!-- Sekcja z wyróżnionymi pracami -->
+        <div class="container mx-auto px-6 py-16">
             <section class="mb-12">
-                <p class="text-lg text-gray-700 mb-6">
-                    Witaj na mojej osobistej stronie artystycznej. Znajdziesz tu kolekcję moich najlepszych prac i projektów.
+                <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Wyróżnione Prace</h2>
+                <p class="text-lg text-gray-700 mb-8 text-center max-w-3xl mx-auto">
+                    Poznaj moje najlepsze dzieła - od nastrojowych pejzaży po portrety pełne emocji. 
+                    Każda praca opowiada swoją unikalną historię.
                 </p>
                 
                 <div class="featured-artworks grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
