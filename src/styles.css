@@ -88,12 +88,6 @@ footer {
     outline-offset: 2px;
 }
 
-/* Ensure proper z-index for mobile menu */
-header {
-    position: relative;
-    z-index: 1000;
-}
-
 /* Smooth scrolling for better UX */
 html {
     scroll-behavior: smooth;
@@ -1039,3 +1033,197 @@ body.focus-mode-open {
         gap: 1.5rem;
     }
 }
+
+/* CSS Custom Properties */
+:root {
+    --header-height: 72px; /* Przybliżona wysokość nagłówka */
+}
+
+/* Header fixed height for calculations */
+header {
+    position: relative;
+    z-index: 1000;
+    min-height: var(--header-height);
+}
+
+/* Hero Slider Styles */
+#hero-slider {
+    height: calc(100vh - var(--header-height));
+    min-height: 500px; /* Minimalna wysokość dla małych ekranów */
+    position: relative;
+}
+
+#slider-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #1a1a1a; /* Fallback kolor tła */
+}
+
+.slider-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+    z-index: 1; /* Pod overlay */
+    object-fit: cover;
+}
+
+.slider-image.active {
+    opacity: 1;
+}
+
+/* Slider dots */
+.slider-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.slider-dot.active {
+    background-color: white;
+    transform: scale(1.2);
+}
+
+/* Hero text animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeInUp 1.2s ease-out 0.5s forwards;
+}
+
+.animate-fade-in-delay {
+    animation: fadeInUp 1.2s ease-out 1s forwards;
+}
+
+.animate-fade-in-delay-2 {
+    animation: fadeInUp 1.2s ease-out 1.5s forwards;
+}
+
+/* Navigation arrows hover effects */
+#prev-slide:hover,
+#next-slide:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+#prev-slide:active,
+#next-slide:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* Mobile responsiveness for hero section */
+@media (max-width: 768px) {
+    :root {
+        --header-height: 80px; /* Nieco wyższy na mobile z powodu potencjalnego menu */
+    }
+    
+    #hero-slider {
+        min-height: 400px; /* Mniejsza minimalna wysokość na mobile */
+    }
+    
+    .slider-dots {
+        bottom: 20px;
+    }
+    
+    #prev-slide,
+    #next-slide {
+        display: none;
+    }
+    
+    /* Smaller text on mobile */
+    #hero-slider h1 {
+        font-size: 2.5rem;
+    }
+    
+    #hero-slider p {
+        font-size: 1.125rem;
+    }
+}
+
+/* Preloader for images */
+.slider-image-preloader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Smooth transitions for featured artworks section */
+.featured-artworks {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease-out;
+}
+
+.featured-artworks.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Enhanced card hover effects */
+.artwork-card {
+    transition: all 0.3s ease;
+    transform: translateY(0);
+}
+
+.artwork-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Hero text overlay styles */
+#hero-slider .text-center h1 {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(0, 0, 0, 0.7),
+        0 0 16px rgba(0, 0, 0, 0.5);
+    color: white;
+    font-weight: 700;
+}
+
+#hero-slider .text-center p {
+    text-shadow: 
+        1px 1px 3px rgba(0, 0, 0, 0.9),
+        0 0 6px rgba(0, 0, 0, 0.7),
+        0 0 12px rgba(0, 0, 0, 0.4);
+    color: white;
+    font-weight: 500;
+}
+
+#hero-slider .text-center a {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Usunięte prostokątne tło - tylko cienie na tekście */

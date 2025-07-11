@@ -21,23 +21,35 @@ function correctImagePath(imagePath) {
   const basePath = getBasePath();
   const currentPath = window.location.pathname;
   
+  console.log('correctImagePath:', { imagePath, basePath, currentPath });
+  
   // Usuń wiodące "/" jeśli występuje w ścieżce obrazu
   const cleanImagePath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+  
+  let finalPath;
   
   // Jeśli jesteśmy na podstronie (pages/), dodaj odpowiednie prefiksy
   if (currentPath.includes('/pages/') || currentPath.includes('/gallery.html') || 
       currentPath.includes('/about.html') || currentPath.includes('/shop.html')) {
     if (basePath) {
       // Na GitHub Pages dla podstron
-      return `${basePath}/${cleanImagePath}`;
+      finalPath = `${basePath}/${cleanImagePath}`;
     } else {
       // Lokalnie dla podstron
-      return `../../${cleanImagePath}`;
+      finalPath = `../../${cleanImagePath}`;
     }
   } else {
     // Strona główna
-    return `${basePath}/${cleanImagePath}`;
+    if (basePath) {
+      finalPath = `${basePath}/${cleanImagePath}`;
+    } else {
+      // Lokalnie na stronie głównej - po prostu użyj relatywnej ścieżki
+      finalPath = `./${cleanImagePath}`;
+    }
   }
+  
+  console.log('correctImagePath wynik:', finalPath);
+  return finalPath;
 }
 
 // Funkcja do pobierania danych z plików JSON
@@ -195,6 +207,50 @@ function getProductById(id) {
   return shopProducts.find(product => product.id === id);
 }
 
+// Funkcja pomocnicza do konwersji URL-friendly slug z powrotem na oryginalną kategorię
+function decodeUrlToCategory(urlSlug, availableCategories) {
+  if (!urlSlug) return null;
+  
+  // Dekoduj URL - zamień myślniki na spacje
+  const decodedSlug = urlSlug.replace(/-/g, ' ');
+  
+  // Sprawdź czy to dokładnie pasuje do którejś kategorii
+  if (availableCategories.includes(decodedSlug)) {
+    return decodedSlug;
+  }
+  
+  // Jeśli nie, spróbuj dopasować po konwersji polskich znaków
+  const slugWithoutPolish = decodedSlug
+    .replace(/a/g, 'ą')
+    .replace(/c/g, 'ć')
+    .replace(/e/g, 'ę')
+    .replace(/l/g, 'ł')
+    .replace(/n/g, 'ń')
+    .replace(/o/g, 'ó')
+    .replace(/s/g, 'ś')
+    .replace(/z/g, 'ź');
+  
+  // Sprawdź różne warianty polskich znaków
+  for (const category of availableCategories) {
+    const categoryNormalized = category
+      .replace(/ą/g, 'a')
+      .replace(/ć/g, 'c')
+      .replace(/ę/g, 'e')
+      .replace(/ł/g, 'l')
+      .replace(/ń/g, 'n')
+      .replace(/ó/g, 'o')
+      .replace(/ś/g, 's')
+      .replace(/ź/g, 'z')
+      .replace(/ż/g, 'z');
+    
+    if (categoryNormalized === decodedSlug) {
+      return category;
+    }
+  }
+  
+  return null;
+}
+
 // Funkcja do filtrowania artworków po kategorii
 function filterArtworksByCategory(category) {
   if (!category) return galleryArtworks;
@@ -243,6 +299,8 @@ function setupCategoryFilters() {
   allButton.addEventListener('click', () => {
     renderGalleryArtworks();
     highlightActiveFilter(allButton);
+    // Aktualizuj URL hash
+    window.history.replaceState(null, null, window.location.pathname);
   });
   filterContainer.appendChild(allButton);
   
@@ -257,6 +315,19 @@ function setupCategoryFilters() {
       const filteredArtworks = filterArtworksByCategory(category);
       renderGalleryArtworks(filteredArtworks);
       highlightActiveFilter(button);
+      // Aktualizuj URL hash - użyj tej samej konwersji co w hero sliderze
+      const urlFriendlyCategory = category
+        .replace(/ą/g, 'a')
+        .replace(/ć/g, 'c')
+        .replace(/ę/g, 'e')
+        .replace(/ł/g, 'l')
+        .replace(/ń/g, 'n')
+        .replace(/ó/g, 'o')
+        .replace(/ś/g, 's')
+        .replace(/ź/g, 'z')
+        .replace(/ż/g, 'z')
+        .replace(/\s+/g, '-');
+      window.history.replaceState(null, null, `${window.location.pathname}#${urlFriendlyCategory}`);
     });
     filterContainer.appendChild(button);  });
   
@@ -269,8 +340,34 @@ function setupCategoryFilters() {
     activeButton.className = 'category-chip category-chip-active';
   }
   
-  // Domyślnie podświetl "Wszystkie"
-  highlightActiveFilter(allButton);
+  // Sprawdź, czy URL zawiera hash z kategorią
+  const urlHash = window.location.hash.substring(1); // Usuń # z początku
+  // Dekoduj URL hash do oryginalnej kategorii
+  const decodedCategory = decodeUrlToCategory(urlHash, sortedCategories);
+  let initialCategory = null;
+  let activeButton = allButton;
+  
+  if (decodedCategory && decodedCategory !== 'wszystkie') {
+    // Znajdź przycisk odpowiadający kategorii z hash
+    const categoryButton = Array.from(filterContainer.querySelectorAll('.category-chip'))
+      .find(btn => btn.getAttribute('data-category') === decodedCategory);
+    
+    if (categoryButton) {
+      initialCategory = decodedCategory;
+      activeButton = categoryButton;
+    }
+  }
+  
+  // Zastosuj odpowiedni filtr
+  if (initialCategory) {
+    const filteredArtworks = filterArtworksByCategory(initialCategory);
+    renderGalleryArtworks(filteredArtworks);
+  } else {
+    renderGalleryArtworks();
+  }
+  
+  // Podświetl odpowiedni przycisk
+  highlightActiveFilter(activeButton);
   
   // Usuń stan ładowania po krótkim opóźnieniu dla animacji
   setTimeout(() => {
@@ -351,7 +448,7 @@ function renderArtistPage() {
         const li = document.createElement('li');
         li.className = 'list-disc list-inside text-gray-700';
         // Zabezpieczenie przed sierotkami - dodaj niełamliwe spacje po krótkich słowach
-        const textWithNonBreakingSpaces = item.replace(/\b([aiozwunazeprzypod])\s+/gi, '$1&nbsp;');
+        const textWithNonBreakingSpaces = item.replace(/\b([aiozwunazeprypod])\s+/gi, '$1&nbsp;');
         li.innerHTML = textWithNonBreakingSpaces;
         educationContainer.appendChild(li);
       }
@@ -380,7 +477,7 @@ function renderArtistPage() {
         const li = document.createElement('li');
         li.className = 'list-disc list-inside text-gray-700';
         // Zabezpieczenie przed sierotkami - dodaj niełamliwe spacje po krótkich słowach
-        const textWithNonBreakingSpaces = item.replace(/\b([aiozwunazeprzypod])\s+/gi, '$1&nbsp;');
+        const textWithNonBreakingSpaces = item.replace(/\b([aiozwunazeprypod])\s+/gi, '$1&nbsp;');
         li.innerHTML = textWithNonBreakingSpaces;
         exhibitionsContainer.appendChild(li);
       }
@@ -755,8 +852,28 @@ function removeFocusModeEventListeners() {
 
 // Uruchom pobieranie danych po załadowaniu dokumentu
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOMContentLoaded - inicjalizacja rozpoczęta');
   fetchData();
   setupMobileMenu();
+  
+  // Inicjalizuj slider tylko na stronie głównej
+  const currentPath = window.location.pathname;
+  const isHomePage = currentPath === '/' || currentPath.endsWith('/index.html') || 
+                     currentPath === '' || currentPath.includes('kogutowicz-art') && !currentPath.includes('/pages/');
+  
+  console.log('Ścieżka:', currentPath, 'Czy strona główna:', isHomePage);
+  
+  if (isHomePage) {
+    console.log('Inicjalizuję hero slider...');
+    // Inicjalizuj hero slider
+    heroSlider = new HeroSlider();
+    
+    // Inicjalizuj obserwator dla sekcji featured artworks
+    observeFeaturedArtworks();
+  } else {
+    console.log('Nie jestem na stronie głównej, pomijam slider');
+  }
+  
   // 3D efekt będzie inicjalizowany w renderArtistPage()
 });
 
@@ -765,6 +882,11 @@ window.addEventListener('beforeunload', () => {
   if (artistPhoto3DCleanup) {
     artistPhoto3DCleanup();
     artistPhoto3DCleanup = null;
+  }
+  
+  if (heroSlider) {
+    heroSlider.destroy();
+    heroSlider = null;
   }
 });
 
@@ -873,3 +995,379 @@ function initialize3DArtistPhoto() {
 
 // Globalna zmienna do przechowywania funkcji cleanup
 let artistPhoto3DCleanup = null;
+
+// Slider functionality for homepage hero section
+class HeroSlider {
+  constructor() {
+    this.currentSlide = 0;
+    this.slides = [];
+    this.slideImages = [];
+    this.autoPlayInterval = null;
+    this.autoPlayDelay = 5000; // 5 sekund
+    this.container = document.getElementById('slider-container');
+    this.dotsContainer = document.getElementById('slider-dots');
+    this.prevButton = document.getElementById('prev-slide');
+    this.nextButton = document.getElementById('next-slide');
+    this.overlayContent = document.querySelector('#hero-slider .text-center');
+    
+    console.log('HeroSlider konstruktor:', {
+      container: this.container,
+      overlayContent: this.overlayContent,
+      dotsContainer: this.dotsContainer
+    });
+    
+    // Będziemy używać danych z featured.json
+    this.featuredData = [];
+    
+    this.init();
+  }
+
+  async init() {
+    console.log('HeroSlider.init() rozpoczęty');
+    if (!this.container) {
+      console.error('Brak kontenera slidera!');
+      return;
+    }
+    
+    // Pokazuj loader
+    this.showLoader();
+    
+    try {
+      console.log('Czekam na dane featured...');
+      // Poczekaj aż dane featured zostaną załadowane
+      await this.waitForFeaturedData();
+      console.log('Dane featured załadowane:', this.featuredData);
+      
+      console.log('Rozpoczynam preload obrazów...');
+      // Preload images
+      await this.preloadImages();
+      console.log('Obrazy preloadowane');
+      
+      // Ukryj loader
+      this.hideLoader();
+      
+      console.log('Tworzę slides...');
+      // Utwórz slides
+      this.createSlides();
+      
+      console.log('Tworzę dots...');
+      // Utwórz dots
+      this.createDots();
+      
+      console.log('Dodaję event listenery...');
+      // Dodaj event listenery
+      this.addEventListeners();
+      
+      console.log('Pokazuję pierwszy slide...');
+      // Pokaż pierwszy slide
+      this.showSlide(0);
+      
+      console.log('Rozpoczynam autoplay...');
+      // Rozpocznij autoplay
+      this.startAutoPlay();
+      
+      console.log('HeroSlider inicjalizacja zakończona pomyślnie');
+      
+    } catch (error) {
+      console.error('Błąd podczas inicjalizacji slidera:', error);
+      this.hideLoader();
+    }
+  }
+
+  async waitForFeaturedData() {
+    console.log('Czekam na featuredArtworks...', featuredArtworks);
+    let attempts = 0;
+    const maxAttempts = 50; // 5 sekund maksymalnie
+    
+    // Poczekaj aż dane featured zostaną załadowane
+    while ((!featuredArtworks || featuredArtworks.length === 0) && attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      attempts++;
+      if (attempts % 10 === 0) {
+        console.log(`Próba ${attempts}/50 - featuredArtworks:`, featuredArtworks);
+      }
+    }
+    
+    if (!featuredArtworks || featuredArtworks.length === 0) {
+      throw new Error('Nie udało się załadować danych featured po 5 sekundach');
+    }
+    
+    this.featuredData = featuredArtworks;
+    console.log('Dane featured załadowane pomyślnie:', this.featuredData);
+  }
+
+  showLoader() {
+    if (this.container) {
+      this.container.innerHTML = `
+        <div class="slider-image-preloader">
+          <div class="spinner"></div>
+        </div>
+      `;
+    }
+  }
+
+  hideLoader() {
+    const loader = this.container?.querySelector('.slider-image-preloader');
+    if (loader) {
+      loader.remove();
+    }
+  }
+
+  async preloadImages() {
+    console.log('Rozpoczynam ładowanie obrazów featured:', this.featuredData);
+    
+    const imagePromises = this.featuredData.map(artwork => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          console.log(`Załadowano obraz: ${artwork.title} - ${img.src}`);
+          resolve({ img, artwork });
+        };
+        img.onerror = () => {
+          console.error(`Błąd ładowania obrazu: ${artwork.image}`);
+          reject(new Error(`Nie można załadować obrazu: ${artwork.image}`));
+        };
+        const correctedPath = correctImagePath(artwork.image);
+        console.log(`Próba załadowania: ${artwork.image} -> ${correctedPath}`);
+        img.src = correctedPath;
+      });
+    });
+
+    const results = await Promise.all(imagePromises);
+    this.slideImages = results;
+    console.log('Wszystkie obrazy załadowane:', this.slideImages);
+  }
+
+  createSlides() {
+    console.log('createSlides rozpoczęte, container:', this.container);
+    
+    this.slideImages.forEach(({ img, artwork }, index) => {
+      const slideElement = document.createElement('img');
+      slideElement.className = 'slider-image';
+      slideElement.src = img.src;
+      slideElement.alt = artwork.title;
+      slideElement.loading = 'eager';
+      slideElement.style.objectFit = 'cover';
+      slideElement.style.width = '100%';
+      slideElement.style.height = '100%';
+      
+      // Dodaj do kontenera
+      this.container.appendChild(slideElement);
+      this.slides.push({ element: slideElement, artwork });
+    });
+    
+    console.log('createSlides zakończone. Liczba slajdów:', this.slides.length);
+  }
+
+  createDots() {
+    if (!this.dotsContainer) return;
+    
+    this.dotsContainer.innerHTML = '';
+    
+    this.slides.forEach((_, index) => {
+      const dot = document.createElement('button');
+      dot.className = 'slider-dot';
+      dot.setAttribute('aria-label', `Przejdź do slajdu ${index + 1}`);
+      dot.addEventListener('click', () => this.goToSlide(index));
+      
+      this.dotsContainer.appendChild(dot);
+    });
+  }
+
+  addEventListeners() {
+    if (this.prevButton) {
+      this.prevButton.addEventListener('click', () => this.prevSlide());
+    }
+    
+    if (this.nextButton) {
+      this.nextButton.addEventListener('click', () => this.nextSlide());
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        this.prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        this.nextSlide();
+      }
+    });
+    
+    // Pause autoplay on hover
+    if (this.container) {
+      this.container.addEventListener('mouseenter', () => this.pauseAutoPlay());
+      this.container.addEventListener('mouseleave', () => this.startAutoPlay());
+    }
+    
+    // Touch/swipe support for mobile
+    this.addTouchSupport();
+  }
+
+  addTouchSupport() {
+    if (!this.container) return;
+    
+    let startX = 0;
+    let startY = 0;
+    let endX = 0;
+    let endY = 0;
+    
+    this.container.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    });
+    
+    this.container.addEventListener('touchend', (e) => {
+      endX = e.changedTouches[0].clientX;
+      endY = e.changedTouches[0].clientY;
+      
+      const deltaX = startX - endX;
+      const deltaY = Math.abs(startY - endY);
+      
+      // Tylko jeśli ruch jest bardziej poziomy niż pionowy
+      if (Math.abs(deltaX) > 50 && deltaY < 100) {
+        if (deltaX > 0) {
+          this.nextSlide();
+        } else {
+          this.prevSlide();
+        }
+      }
+    });
+  }
+
+  showSlide(index) {
+    if (index < 0 || index >= this.slides.length) return;
+    
+    console.log(`Pokazuję slide ${index}/${this.slides.length - 1}`);
+    
+    // Ukryj wszystkie slides
+    this.slides.forEach((slide, i) => {
+      slide.element.classList.remove('active');
+      console.log(`Slide ${i} ukryty:`, slide.element);
+    });
+    
+    // Pokaż wybrany slide
+    this.slides[index].element.classList.add('active');
+    console.log(`Slide ${index} pokazany:`, this.slides[index].element);
+    
+    // Aktualizuj tekst overlay
+    this.updateOverlayContent(index);
+    
+    // Aktualizuj dots
+    this.updateDots(index);
+    
+    this.currentSlide = index;
+  }
+
+  updateOverlayContent(index) {
+    if (!this.overlayContent) return;
+    
+    const artwork = this.slides[index].artwork;
+    const categorySlug = this.getCategorySlug(artwork.title);
+    
+    this.overlayContent.innerHTML = `
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 opacity-0 animate-fade-in">${artwork.title}</h1>
+      <p class="text-xl md:text-2xl mb-8 opacity-0 animate-fade-in-delay">
+        ${artwork.description}
+      </p>
+      <div class="opacity-0 animate-fade-in-delay-2">
+        <a href="./src/pages/gallery.html#${categorySlug}" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105">
+          Zobacz w Galerii
+        </a>
+      </div>
+    `;
+  }
+
+  getCategorySlug(title) {
+    // Mapowanie tytułów featured na kategorie z gallery.json
+    const categoryMap = {
+      'Pejzaż lokalny': 'pejzaż lokalny',
+      'Człowiek': 'postacie', 
+      'Martwa natura': 'martwa natura',
+      'Botaniczne opowieści': 'kwiaty'
+    };
+    
+    const category = categoryMap[title] || 'wszystkie';
+    
+    // Zamień polskie znaki na łacińskie i spacje na myślniki dla URL-friendly hash
+    return category
+      .replace(/ą/g, 'a')
+      .replace(/ć/g, 'c')
+      .replace(/ę/g, 'e')
+      .replace(/ł/g, 'l')
+      .replace(/ń/g, 'n')
+      .replace(/ó/g, 'o')
+      .replace(/ś/g, 's')
+      .replace(/ź/g, 'z')
+      .replace(/ż/g, 'z')
+      .replace(/\s+/g, '-');
+  }
+
+  updateDots(activeIndex) {
+    if (!this.dotsContainer) return;
+    
+    const dots = this.dotsContainer.querySelectorAll('.slider-dot');
+    dots.forEach((dot, index) => {
+      dot.classList.toggle('active', index === activeIndex);
+    });
+  }
+
+  nextSlide() {
+    const nextIndex = (this.currentSlide + 1) % this.slides.length;
+    this.goToSlide(nextIndex);
+  }
+
+  prevSlide() {
+    const prevIndex = this.currentSlide === 0 ? this.slides.length - 1 : this.currentSlide - 1;
+    this.goToSlide(prevIndex);
+  }
+
+  goToSlide(index) {
+    this.showSlide(index);
+    this.restartAutoPlay();
+  }
+
+  startAutoPlay() {
+    this.pauseAutoPlay(); // Upewnij się, że nie ma podwójnego autoplay
+    this.autoPlayInterval = setInterval(() => {
+      this.nextSlide();
+    }, this.autoPlayDelay);
+  }
+
+  pauseAutoPlay() {
+    if (this.autoPlayInterval) {
+      clearInterval(this.autoPlayInterval);
+      this.autoPlayInterval = null;
+    }
+  }
+
+  restartAutoPlay() {
+    this.pauseAutoPlay();
+    this.startAutoPlay();
+  }
+
+  destroy() {
+    this.pauseAutoPlay();
+    // Usuń event listenery jeśli potrzeba
+  }
+}
+
+// Initialize hero slider on homepage
+let heroSlider = null;
+
+// Function to animate featured artworks when they come into view
+function observeFeaturedArtworks() {
+  const featuredSection = document.querySelector('.featured-artworks');
+  if (!featuredSection) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  });
+
+  observer.observe(featuredSection);
+}
