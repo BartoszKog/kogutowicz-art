@@ -3,18 +3,16 @@
     "id": 1,
     "title": "Krajobrazy",
     "description": "Kolekcja obrazow przedstawiajacych piekne krajobrazy",
-    "image": "images/featured/sterta.jpg"
+    "image": "images/featured/pejzaż_lokalny.webp"
   },
   {
     "id": 7,
-    "title": "Róże",
-    "image": "images/gallery/A_pink_still_life_kko29.jpg",
-    "description": "Martwa natura"
+    "title": "Postacie",
+    "image": "images/featured/postacie.webp"
   },
   {
     "id": 8,
-    "title": "Jan Paweł II",
-    "image": "images/gallery/Jan_Pawel_II_kko95_88316.jpg",
-    "description": "Przykład postaci sakralnej"
+    "title": "Martwa natura",
+    "image": "images/featured/martwa_natura.webp"
   }
 ]
