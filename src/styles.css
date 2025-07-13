@@ -1079,6 +1079,46 @@ header {
     height: 100%;
     overflow: hidden;
     background-color: #1a1a1a; /* Fallback kolor tła */
+    /* Wskazówki dotykowe dla mobilnych */
+    touch-action: pan-y pinch-zoom; /* Zezwól na przewijanie pionowe, ale przechwytuj poziome */
+    cursor: grab;
+}
+
+/* Wskazówka wizualna dla urządzeń dotykowych */
+@media (hover: none) and (pointer: coarse) {
+    #slider-container {
+        position: relative;
+    }
+    
+    #slider-container::after {
+        content: '';
+        position: absolute;
+        bottom: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        border-radius: 2px;
+        z-index: 5;
+        animation: swipeHint 3s ease-in-out infinite;
+    }
+    
+    @keyframes swipeHint {
+        0%, 100% { 
+            opacity: 0;
+            width: 40px;
+        }
+        50% { 
+            opacity: 1;
+            width: 60px;
+        }
+    }
+    
+    /* Ukryj wskazówkę po pierwszym dotknięciu */
+    #slider-container.touched::after {
+        display: none;
+    }
 }
 
 .slider-image {

@@ -1209,26 +1209,117 @@ class HeroSlider {
     let startY = 0;
     let endX = 0;
     let endY = 0;
+    let isDragging = false;
+    let startTime = 0;
+    let hasBeenTouched = false;
+    
+    // Minimalne wartości dla wykrycia swipe
+    const minSwipeDistance = 30; // piksele
+    const maxSwipeTime = 1000; // milisekundy
+    const maxVerticalMovement = 100; // piksele
     
     this.container.addEventListener('touchstart', (e) => {
+      // Zapobiegaj domyślnemu zachowaniu przeglądarki
+      e.preventDefault();
+      
+      // Dodaj klasę touched po pierwszym dotknięciu (ukryje wskazówkę swipe)
+      if (!hasBeenTouched) {
+        this.container.classList.add('touched');
+        hasBeenTouched = true;
+      }
+      
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
-    });
+      startTime = Date.now();
+      isDragging = true;
+      
+      // Zatrzymaj autoplay podczas dotykania
+      this.pauseAutoPlay();
+      
+      console.log('Touch start:', { startX, startY });
+    }, { passive: false });
+    
+    this.container.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      
+      // Zapobiegaj przewijaniu strony podczas swipe
+      e.preventDefault();
+      
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      
+      // Sprawdź czy ruch jest bardziej poziomy niż pionowy
+      const deltaX = Math.abs(currentX - startX);
+      const deltaY = Math.abs(currentY - startY);
+      
+      // Jeśli ruch jest bardziej pionowy, anuluj swipe
+      if (deltaY > deltaX && deltaY > 20) {
+        isDragging = false;
+        this.startAutoPlay(); // Wznów autoplay
+        return;
+      }
+    }, { passive: false });
     
     this.container.addEventListener('touchend', (e) => {
+      if (!isDragging) {
+        this.startAutoPlay(); // Wznów autoplay jeśli swipe został anulowany
+        return;
+      }
+      
       endX = e.changedTouches[0].clientX;
       endY = e.changedTouches[0].clientY;
+      const endTime = Date.now();
       
       const deltaX = startX - endX;
       const deltaY = Math.abs(startY - endY);
+      const swipeTime = endTime - startTime;
+      const swipeDistance = Math.abs(deltaX);
       
-      // Tylko jeśli ruch jest bardziej poziomy niż pionowy
-      if (Math.abs(deltaX) > 50 && deltaY < 100) {
+      console.log('Touch end:', { 
+        deltaX, 
+        deltaY, 
+        swipeTime, 
+        swipeDistance,
+        minDistance: minSwipeDistance,
+        maxTime: maxSwipeTime,
+        maxVertical: maxVerticalMovement
+      });
+      
+      // Sprawdź czy to jest prawidłowy swipe
+      const isValidSwipe = 
+        swipeDistance >= minSwipeDistance && // Wystarczająca odległość
+        swipeTime <= maxSwipeTime && // Nie za wolno
+        deltaY <= maxVerticalMovement; // Nie za dużo ruchu pionowego
+      
+      if (isValidSwipe) {
+        console.log('Valid swipe detected:', deltaX > 0 ? 'left (next)' : 'right (prev)');
+        
+        // Swipe w lewo = następny slajd
+        // Swipe w prawo = poprzedni slájd
         if (deltaX > 0) {
           this.nextSlide();
         } else {
           this.prevSlide();
         }
+        
+        // Dodaj małe opóźnienie przed wznowieniem autoplay
+        setTimeout(() => {
+          this.startAutoPlay();
+        }, 500);
+      } else {
+        console.log('Invalid swipe - resuming autoplay immediately');
+        this.startAutoPlay(); // Wznów autoplay natychmiast
+      }
+      
+      isDragging = false;
+    });
+    
+    // Obsługa anulowania dotyku (np. gdy użytkownik wyjdzie palcem poza ekran)
+    this.container.addEventListener('touchcancel', () => {
+      if (isDragging) {
+        console.log('Touch cancelled');
+        isDragging = false;
+        this.startAutoPlay(); // Wznów autoplay
       }
     });
   }
