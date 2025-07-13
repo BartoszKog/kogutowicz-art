@@ -1134,11 +1134,13 @@ header {
     }
     
     #hero-slider {
-        min-height: 400px; /* Mniejsza minimalna wysokość na mobile */
+        height: calc(100vh - var(--header-height) - 60px); /* Dodatkowe 60px dla pasków przeglądarki */
+        min-height: 350px; /* Mniejsza minimalna wysokość na mobile */
+        max-height: calc(100vh - 120px); /* Maksymalna wysokość żeby kropki były widoczne */
     }
     
     .slider-dots {
-        bottom: 20px;
+        bottom: 15px; /* Bliżej do dolnej krawędzi */
     }
     
     #prev-slide,
@@ -1153,6 +1155,32 @@ header {
     
     #hero-slider p {
         font-size: 1.125rem;
+    }
+}
+
+/* Dodatkowe ograniczenia dla bardzo małych ekranów */
+@media (max-width: 480px) {
+    #hero-slider {
+        height: calc(100vh - var(--header-height) - 80px); /* Jeszcze więcej miejsca dla bardzo małych ekranów */
+        min-height: 300px;
+        max-height: calc(100vh - 140px);
+    }
+    
+    .slider-dots {
+        bottom: 10px; /* Jeszcze bliżej na bardzo małych ekranach */
+    }
+    
+    #hero-slider h1 {
+        font-size: 2rem; /* Jeszcze mniejszy tekst */
+    }
+    
+    #hero-slider p {
+        font-size: 1rem;
+    }
+    
+    #hero-slider .text-center a {
+        padding: 0.5rem 1.5rem; /* Mniejszy przycisk */
+        font-size: 0.875rem;
     }
 }
 
