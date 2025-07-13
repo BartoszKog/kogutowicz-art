@@ -1080,8 +1080,54 @@ header {
     overflow: hidden;
     background-color: #1a1a1a; /* Fallback kolor tła */
     /* Wskazówki dotykowe dla mobilnych */
-    touch-action: pan-y pinch-zoom; /* Zezwól na przewijanie pionowe, ale przechwytuj poziome */
+    touch-action: manipulation; /* Wyłącza domyślne gesty, ale pozwala na własne */
     cursor: grab;
+    /* Wyłączenie zaznaczania tekstu i menu kontekstowego */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none; /* Wyłącza menu kontekstowe na iOS */
+    -webkit-tap-highlight-color: transparent; /* Usuwa highlight przy tapnięciu */
+}
+
+#slider-container * {
+    /* Wyłączenie zaznaczania dla wszystkich elementów w sliderze */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: none; /* Wyłącza wszystkie interakcje z elementami wewnątrz */
+}
+
+/* Przywróć pointer-events dla przycisków nawigacji */
+#slider-container .slider-dot,
+#slider-container #prev-slide,
+#slider-container #next-slide {
+    pointer-events: auto;
+}
+
+.slider-image {
+    /* Zapobieganie przeciąganiu obrazów */
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    /* Zapobieganie menu kontekstowemu */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Zapobieganie highlighting */
+    -webkit-tap-highlight-color: transparent;
+    /* Dodatkowe właściwości dla mobile */
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    pointer-events: none;
 }
 
 /* Wskazówka wizualna dla urządzeń dotykowych */
@@ -1291,6 +1337,17 @@ header {
 }
 
 /* Hero text overlay styles */
+#hero-slider .text-center {
+    /* Wyłączenie zaznaczania tekstu */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: auto; /* Pozwól na kliknięcie w przycisk */
+}
+
 #hero-slider .text-center h1 {
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.9),
@@ -1298,6 +1355,10 @@ header {
         0 0 16px rgba(0, 0, 0, 0.5);
     color: white;
     font-weight: 700;
+    /* Wyłączenie zaznaczania */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
 #hero-slider .text-center p {
@@ -1307,11 +1368,20 @@ header {
         0 0 12px rgba(0, 0, 0, 0.4);
     color: white;
     font-weight: 500;
+    /* Wyłączenie zaznaczania */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
 #hero-slider .text-center a {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    /* Przywróć interakcje dla przycisku */
+    pointer-events: auto;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
 /* Usunięte prostokątne tło - tylko cienie na tekście */
