@@ -462,7 +462,7 @@ function renderArtistPage() {
         const li = document.createElement('li');
         li.className = 'list-disc list-inside text-gray-700';
         // Zabezpieczenie przed sierotkami - dodaj niełamliwe spacje po krótkich słowach
-        const textWithNonBreakingSpaces = item.replace(/\b([aiozwunazeprzypod])\s+/gi, '$1&nbsp;');
+        const textWithNonBreakingSpaces = item.replace(/\b([aiozwunazeprypod])\s+/gi, '$1&nbsp;');
         li.innerHTML = textWithNonBreakingSpaces;
         achievementsContainer.appendChild(li);
       }
@@ -1175,14 +1175,28 @@ class HeroSlider {
   }
 
   addEventListeners() {
+    console.log('Dodaję event listenery dla slidera...');
+    
+    // Sprawdź czy wszystkie elementy są dostępne
+    console.log('Elementy slidera:', {
+      container: !!this.container,
+      prevButton: !!this.prevButton,
+      nextButton: !!this.nextButton,
+      dotsContainer: !!this.dotsContainer
+    });
+    
     if (this.prevButton) {
       this.prevButton.addEventListener('click', () => this.prevSlide());
+    } else {
+      console.warn('Brak przycisku prev!');
     }
     
     if (this.nextButton) {
       this.nextButton.addEventListener('click', () => this.nextSlide());
+    } else {
+      console.warn('Brak przycisku next!');
     }
-    
+
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowLeft') {
@@ -1191,7 +1205,7 @@ class HeroSlider {
         this.nextSlide();
       }
     });
-    
+
     // Pause autoplay on hover
     if (this.container) {
       this.container.addEventListener('mouseenter', () => this.pauseAutoPlay());
@@ -1200,10 +1214,24 @@ class HeroSlider {
     
     // Touch/swipe support for mobile
     this.addTouchSupport();
+    
+    // Dodaj też obsługę pointer events jako fallback
+    this.addPointerSupport();
+    
+    console.log('Event listenery zostały dodane');
   }
 
   addTouchSupport() {
-    if (!this.container) return;
+    if (!this.container) {
+      console.error('Brak kontenera dla touch support');
+      return;
+    }
+    
+    console.log('Inicjalizuję touch support dla kontenera:', this.container);
+    
+    // Test czy touch events są w ogóle dostępne
+    const supportsTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    console.log('Urządzenie obsługuje touch events:', supportsTouch);
     
     let startX = 0;
     let startY = 0;
@@ -1212,15 +1240,18 @@ class HeroSlider {
     let isDragging = false;
     let startTime = 0;
     let hasBeenTouched = false;
+    let isHorizontalSwipe = false;
     
-    // Minimalne wartości dla wykrycia swipe
-    const minSwipeDistance = 30; // piksele
-    const maxSwipeTime = 1000; // milisekundy
-    const maxVerticalMovement = 100; // piksele
+    // Minimalne wartości dla wykrycia swipe - zmniejszone dla lepszej responsywności
+    const minSwipeDistance = 50; // zwiększone z 30 na 50 pikseli
+    const maxSwipeTime = 800; // zmniejszone z 1000 na 800 milisekund
+    const maxVerticalMovement = 150; // zwiększone z 100 na 150 pikseli
+    const minHorizontalMovement = 30; // minimalne przesunięcie poziome aby rozpocząć swipe
     
     this.container.addEventListener('touchstart', (e) => {
-      // Zapobiegaj domyślnemu zachowaniu przeglądarki
-      e.preventDefault();
+      console.log('🎯 TouchStart event otrzymany!', e);
+      
+      // Nie blokujemy preventDefault() na start, pozwalamy przeglądarce określić czy to scroll czy swipe
       
       // Dodaj klasę touched po pierwszym dotknięciu (ukryje wskazówkę swipe)
       if (!hasBeenTouched) {
@@ -1232,18 +1263,16 @@ class HeroSlider {
       startY = e.touches[0].clientY;
       startTime = Date.now();
       isDragging = true;
+      isHorizontalSwipe = false;
       
       // Zatrzymaj autoplay podczas dotykania
       this.pauseAutoPlay();
       
-      console.log('Touch start:', { startX, startY });
-    }, { passive: false });
+      console.log('Touch start:', { startX, startY, timestamp: startTime });
+    }, { passive: true }); // passive: true pozwala przeglądarce na optymalizację
     
     this.container.addEventListener('touchmove', (e) => {
       if (!isDragging) return;
-      
-      // Zapobiegaj przewijaniu strony podczas swipe
-      e.preventDefault();
       
       const currentX = e.touches[0].clientX;
       const currentY = e.touches[0].clientY;
@@ -1252,15 +1281,31 @@ class HeroSlider {
       const deltaX = Math.abs(currentX - startX);
       const deltaY = Math.abs(currentY - startY);
       
-      // Jeśli ruch jest bardziej pionowy, anuluj swipe
-      if (deltaY > deltaX && deltaY > 20) {
-        isDragging = false;
-        this.startAutoPlay(); // Wznów autoplay
-        return;
+      console.log('Touch move:', { currentX, currentY, deltaX, deltaY });
+      
+      // Określ czy to poziomy swipe dopiero po pewnym ruchu
+      if (deltaX > minHorizontalMovement || deltaY > minHorizontalMovement) {
+        if (deltaX > deltaY) {
+          // To jest poziomy swipe - teraz możemy blokować scrollowanie
+          if (!isHorizontalSwipe) {
+            isHorizontalSwipe = true;
+            console.log('Wykryto poziomy swipe - blokuję scrollowanie');
+          }
+          e.preventDefault();
+        } else {
+          // To jest pionowy scroll - anuluj swipe
+          console.log('Wykryto pionowy scroll - anuluj swipe');
+          isDragging = false;
+          this.startAutoPlay();
+          return;
+        }
       }
-    }, { passive: false });
+    }, { passive: false }); // passive: false aby móc używać preventDefault()
     
     this.container.addEventListener('touchend', (e) => {
+      console.log('🎯 TouchEnd event otrzymany!', e);
+      console.log('Touch end - isDragging:', isDragging);
+      
       if (!isDragging) {
         this.startAutoPlay(); // Wznów autoplay jeśli swipe został anulowany
         return;
@@ -1275,24 +1320,29 @@ class HeroSlider {
       const swipeTime = endTime - startTime;
       const swipeDistance = Math.abs(deltaX);
       
-      console.log('Touch end:', { 
+      console.log('Touch end details:', { 
+        startX, 
+        endX,
         deltaX, 
         deltaY, 
         swipeTime, 
         swipeDistance,
         minDistance: minSwipeDistance,
         maxTime: maxSwipeTime,
-        maxVertical: maxVerticalMovement
+        maxVertical: maxVerticalMovement,
+        isHorizontalSwipe
       });
       
       // Sprawdź czy to jest prawidłowy swipe
       const isValidSwipe = 
+        isHorizontalSwipe && // Musi być oznaczony jako poziomy swipe
         swipeDistance >= minSwipeDistance && // Wystarczająca odległość
         swipeTime <= maxSwipeTime && // Nie za wolno
         deltaY <= maxVerticalMovement; // Nie za dużo ruchu pionowego
       
       if (isValidSwipe) {
-        console.log('Valid swipe detected:', deltaX > 0 ? 'left (next)' : 'right (prev)');
+        const direction = deltaX > 0 ? 'left (next)' : 'right (prev)';
+        console.log('✅ Valid swipe detected:', direction);
         
         // Swipe w lewo = następny slajd
         // Swipe w prawo = poprzedni slájd
@@ -1307,21 +1357,160 @@ class HeroSlider {
           this.startAutoPlay();
         }, 500);
       } else {
-        console.log('Invalid swipe - resuming autoplay immediately');
+        console.log('❌ Invalid swipe - reasons:', {
+          notHorizontal: !isHorizontalSwipe,
+          tooShort: swipeDistance < minSwipeDistance,
+          tooSlow: swipeTime > maxSwipeTime,
+          tooVertical: deltaY > maxVerticalMovement
+        });
         this.startAutoPlay(); // Wznów autoplay natychmiast
       }
       
       isDragging = false;
-    });
+      isHorizontalSwipe = false;
+    }, { passive: true });
     
     // Obsługa anulowania dotyku (np. gdy użytkownik wyjdzie palcem poza ekran)
     this.container.addEventListener('touchcancel', () => {
       if (isDragging) {
         console.log('Touch cancelled');
         isDragging = false;
+        isHorizontalSwipe = false;
         this.startAutoPlay(); // Wznów autoplay
       }
-    });
+    }, { passive: true });
+    
+    console.log('Touch support został dodany do kontenera');
+  }
+
+  addPointerSupport() {
+    if (!this.container || !('PointerEvent' in window)) {
+      console.log('Pointer events nie są dostępne lub brak kontenera');
+      return;
+    }
+    
+    console.log('Dodaję pointer events jako dodatkowe wsparcie dla gestów');
+    
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+    let startTime = 0;
+    let isHorizontalSwipe = false;
+    
+    const minSwipeDistance = 50;
+    const maxSwipeTime = 800;
+    const maxVerticalMovement = 150;
+    const minHorizontalMovement = 30;
+    
+    this.container.addEventListener('pointerdown', (e) => {
+      // Tylko dla touch pointers
+      if (e.pointerType !== 'touch') return;
+      
+      console.log('🎯 PointerDown (touch) event otrzymany!', e);
+      
+      startX = e.clientX;
+      startY = e.clientY;
+      startTime = Date.now();
+      isDragging = true;
+      isHorizontalSwipe = false;
+      
+      this.pauseAutoPlay();
+      
+      // Przechwytuj pointer dla lepszej kontroli
+      this.container.setPointerCapture(e.pointerId);
+      
+      console.log('Pointer start:', { startX, startY, timestamp: startTime });
+    }, { passive: true });
+    
+    this.container.addEventListener('pointermove', (e) => {
+      if (!isDragging || e.pointerType !== 'touch') return;
+      
+      const currentX = e.clientX;
+      const currentY = e.clientY;
+      
+      const deltaX = Math.abs(currentX - startX);
+      const deltaY = Math.abs(currentY - startY);
+      
+      console.log('Pointer move:', { currentX, currentY, deltaX, deltaY });
+      
+      if (deltaX > minHorizontalMovement || deltaY > minHorizontalMovement) {
+        if (deltaX > deltaY) {
+          if (!isHorizontalSwipe) {
+            isHorizontalSwipe = true;
+            console.log('Wykryto poziomy swipe (pointer) - blokuję scrollowanie');
+          }
+          e.preventDefault();
+        } else {
+          console.log('Wykryto pionowy scroll (pointer) - anuluj swipe');
+          isDragging = false;
+          this.startAutoPlay();
+          return;
+        }
+      }
+    }, { passive: false });
+    
+    this.container.addEventListener('pointerup', (e) => {
+      if (!isDragging || e.pointerType !== 'touch') return;
+      
+      console.log('🎯 PointerUp (touch) event otrzymany!', e);
+      
+      const endX = e.clientX;
+      const endY = e.clientY;
+      const endTime = Date.now();
+      
+      const deltaX = startX - endX;
+      const deltaY = Math.abs(startY - endY);
+      const swipeTime = endTime - startTime;
+      const swipeDistance = Math.abs(deltaX);
+      
+      console.log('Pointer end details:', { 
+        startX, 
+        endX,
+        deltaX, 
+        deltaY, 
+        swipeTime, 
+        swipeDistance,
+        isHorizontalSwipe
+      });
+      
+      const isValidSwipe = 
+        isHorizontalSwipe && 
+        swipeDistance >= minSwipeDistance && 
+        swipeTime <= maxSwipeTime && 
+        deltaY <= maxVerticalMovement;
+      
+      if (isValidSwipe) {
+        const direction = deltaX > 0 ? 'left (next)' : 'right (prev)';
+        console.log('✅ Valid pointer swipe detected:', direction);
+        
+        if (deltaX > 0) {
+          this.nextSlide();
+        } else {
+          this.prevSlide();
+        }
+        
+        setTimeout(() => {
+          this.startAutoPlay();
+        }, 500);
+      } else {
+        console.log('❌ Invalid pointer swipe');
+        this.startAutoPlay();
+      }
+      
+      isDragging = false;
+      isHorizontalSwipe = false;
+    }, { passive: true });
+    
+    this.container.addEventListener('pointercancel', (e) => {
+      if (isDragging && e.pointerType === 'touch') {
+        console.log('Pointer cancelled');
+        isDragging = false;
+        isHorizontalSwipe = false;
+        this.startAutoPlay();
+      }
+    }, { passive: true });
+    
+    console.log('Pointer support został dodany');
   }
 
   showSlide(index) {
