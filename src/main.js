@@ -1161,33 +1161,25 @@ function setupFeaturedScrolling() {
     // Wyłącz na bardzo szerokich ekranach
     if (window.innerWidth >= 2200) return;
     
-    if (!touchStartX || !touchStartY || !isHorizontalSwipe) {
-      touchStartX = 0;
-      touchStartY = 0;
-      isHorizontalSwipe = false;
-      return;
-    }
+    // Proste czyszczenie zmiennych - bez momentum scrolling
+    touchStartX = 0;
+    touchStartY = 0;
+    isHorizontalSwipe = false;
+    touchStartTime = 0;
+    initialScrollLeft = 0;
+  }, { passive: true });
 
-    const touchEndX = e.changedTouches[0].clientX;
-    const touchEndTime = Date.now();
+  // Obsługa przerwania touch (np. gdy przychodzi telefon)
+  featuredContainer.addEventListener('touchcancel', (e) => {
+    // Wyłącz na bardzo szerokich ekranach
+    if (window.innerWidth >= 2200) return;
     
-    const deltaX = touchStartX - touchEndX;
-    const swipeTime = touchEndTime - touchStartTime;
-    const swipeDistance = Math.abs(deltaX);
-    const swipeVelocity = swipeDistance / swipeTime; // piksele na milisekundę
-    
-    // Jeśli to był szybki swipe, dodaj momentum scrolling
-    if (swipeVelocity > 0.5 && swipeDistance > 30 && swipeTime < 300) {
-      const momentum = Math.min(swipeVelocity * 100, 300); // maksymalnie 300px momentum
-      const direction = deltaX > 0 ? 1 : -1;
-      const targetScroll = featuredContainer.scrollLeft + (momentum * direction);
-      
-      featuredContainer.scrollTo({
-        left: Math.max(0, Math.min(targetScroll, featuredContainer.scrollWidth - featuredContainer.clientWidth)),
-        behavior: 'smooth'
-      });
+    // Przywróć oryginalną pozycję jeśli touch został przerwany
+    if (initialScrollLeft !== 0) {
+      featuredContainer.scrollLeft = initialScrollLeft;
     }
     
+    // Wyczyść zmienne
     touchStartX = 0;
     touchStartY = 0;
     isHorizontalSwipe = false;
@@ -1892,8 +1884,6 @@ class HeroSlider {
 
   showSlide(index) {
     if (index < 0 || index >= this.slides.length) return;
-    
-    console.log(`Pokazuję slide ${index}/${this.slides.length - 1}`);
     
     // Ukryj wszystkie slides
     this.slides.forEach((slide, i) => {
