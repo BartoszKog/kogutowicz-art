@@ -80,16 +80,24 @@
         </section>
 
         <!-- Sekcja z wyróżnionymi pracami -->
-        <div class="container mx-auto px-6 py-16">
+        <div class="py-16">
             <section class="mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Wyróżnione Prace</h2>
-                <p class="text-lg text-gray-700 mb-8 text-center max-w-3xl mx-auto">
-                    Poznaj moje prace - od nastrojowych pejzaży po portrety pełne emocji. 
-                    Każda praca opowiada swoją unikalną historię.
-                </p>
+                <div class="container mx-auto px-6">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Wyróżnione Prace</h2>
+                    <p class="text-lg text-gray-700 mb-8 text-center max-w-3xl mx-auto">
+                        Poznaj moje prace - od nastrojowych pejzaży po portrety pełne emocji. 
+                        Każda praca opowiada swoją unikalną historię.
+                    </p>
+                </div>
                 
-                <div class="featured-artworks grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Zawartość będzie generowana dynamicznie przez JavaScript -->
+                <div class="featured-artworks-container overflow-hidden">
+                    <div class="featured-artworks horizontal-scroll">
+                        <!-- Zawartość będzie generowana dynamicznie przez JavaScript -->
+                    </div>
+                </div>
+                <!-- Desktop scroll hint (tylko na desktopie) -->
+                <div class="desktop-scroll-hint hidden md:block text-center mt-4 text-sm text-gray-500">
+                    <span class="opacity-70">Przesuń kursor na boki aby przewijać kolekcję</span>
                 </div>
             </section>
         </div>

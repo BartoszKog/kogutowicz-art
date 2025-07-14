@@ -94,24 +94,48 @@ function renderFeaturedArtworks() {
 
   featuredContainer.innerHTML = '';
   
-  featuredArtworks.forEach(artwork => {
+  featuredArtworks.forEach((artwork, index) => {
     const artworkElement = document.createElement('div');
-    artworkElement.className = 'bg-white rounded shadow-md overflow-hidden';
+    artworkElement.className = 'featured-artwork-item';
+    
+    // Dodaj atrybut z indeksem dla trybu skupienia
+    artworkElement.setAttribute('data-artwork-index', index);
     
     // Użyj funkcji correctImagePath do skorygowania ścieżki obrazu
     const correctedImagePath = correctImagePath(artwork.image);
-      artworkElement.innerHTML = `
-      <div class="h-64 bg-gray-200 flex items-center justify-center overflow-hidden">
-        <img src="${correctedImagePath}" alt="${artwork.title || 'Obraz'}" class="w-full h-full object-cover">
+    
+    artworkElement.innerHTML = `
+      <div class="featured-artwork-image">
+        <img src="${correctedImagePath}" alt="${artwork.title || 'Obraz'}" loading="lazy">
       </div>
-      <div class="p-4">
-        <h3 class="text-xl font-semibold mb-2">${artwork.title || 'Bez tytułu'}</h3>
-        ${artwork.description ? `<p class="text-gray-600">${artwork.description}</p>` : ''}
+      <div class="featured-artwork-info">
+        <h3>${artwork.title || 'Bez tytułu'}</h3>
+        ${artwork.description ? `<p>${artwork.description}</p>` : ''}
       </div>
     `;
     
+    // Dodaj event listener dla trybu skupienia
+    artworkElement.addEventListener('click', () => {
+      openFocusMode(index, featuredArtworks);
+    });
+    
+    // Dodaj hover effect z lepszą responsywnością
+    artworkElement.addEventListener('mouseenter', () => {
+      artworkElement.style.transform = 'translateY(-4px)';
+    });
+    
+    artworkElement.addEventListener('mouseleave', () => {
+      artworkElement.style.transform = 'translateY(0)';
+    });
+    
     featuredContainer.appendChild(artworkElement);
   });
+  
+  // Dodaj funkcjonalność smooth scrolling dla featured artworks
+  setupFeaturedScrolling();
+  
+  // Dodaj inteligentne wyśrodkowanie kafelków
+  setupSmartCentering();
 }
 
 // Funkcja do renderowania dzieł w galerii
@@ -434,7 +458,7 @@ function renderArtistPage() {
         const p = document.createElement('p');
         p.className = 'text-gray-700 mb-4';
         // Zabezpieczenie przed sierotkami - dodaj niełamliwe spacje po krótkich słowach
-        const textWithNonBreakingSpaces = paragraph.replace(/\b([aiozwunazeprzypod])\s+/gi, '$1&nbsp;');
+        const textWithNonBreakingSpaces = paragraph.replace(/\b([aiozwunazeprypod])\s+/gi, '$1&nbsp;');
         p.innerHTML = textWithNonBreakingSpaces;
         biographyContainer.appendChild(p);
       }
@@ -500,6 +524,7 @@ function initializeApp() {
   } else {
     // Strona główna
     renderFeaturedArtworks();
+    setupGlobalScrollBehavior();
   }
 }
 
@@ -848,6 +873,460 @@ function removeFocusModeEventListeners() {
   if (focusModeResizeHandler) {
     window.removeEventListener('resize', focusModeResizeHandler);
   }
+}
+
+// Funkcja do konfiguracji scrollowania dla featured artworks
+function setupFeaturedScrolling() {
+  // ===== KONFIGURACJA CZUŁOŚCI SCROLLOWANIA =====
+  // INSTRUKCJA: Aby zmienić czułość scrollowania, modyfikuj wartości poniżej
+  // 
+  // deadZone: Im mniejsza wartość, tym mniejsza strefa martwa w środku
+  // maxSpeed: Im większa wartość, tym szybsze scrollowanie na skrajach
+  // minSpeed: Prędkość tuż za strefą martwą
+  // edgeBoost: Mnożnik prędkości na samych krawędziach (1.0 = bez boostu)
+  // accelerationCurve: 1.0 = liniowa, >1.0 = bardziej agresywna na skrajach
+  // animationInterval: Mniejsza wartość = płynniejsza animacja (ale więcej CPU)
+  const SCROLL_CONFIG = {
+    // Strefy martwe (wartości 0-1, gdzie 0 = brak strefy martwej, 1 = cały kontener)
+    deadZone: {
+      small: 0.08,   // < 600px szerokości
+      medium: 0.12,  // 600-900px szerokości
+      large: 0.15    // > 900px szerokości
+    },
+    
+    // Maksymalne prędkości scrollowania (piksele na ramkę)
+    maxSpeed: {
+      small: 120,      // < 600px szerokości
+      medium: 130,     // 600-900px szerokości
+      large: 140       // > 900px szerokości
+    },
+    
+    // Minimalna prędkość tuż za strefą martwą
+    minSpeed: 300,
+    
+    // Boost prędkości na skrajach (mnożnik gdy kursor jest bardzo blisko krawędzi)
+    edgeBoost: 100,
+    
+    // Próg dla określenia "krawędzi" (0.9 = ostatnie 10% szerokości)
+    edgeThreshold: 0.8,
+    
+    // Krzywa przyspieszenia (1.0 = liniowa, >1.0 = bardziej agresywna na skrajach)
+    accelerationCurve: 1,
+    
+    // Częstotliwość animacji (ms) - mniejsza wartość = płynniejsza animacja
+    animationInterval: 12,
+    
+    // Czułość wheel scroll (mnożnik dla kółka myszy)
+    wheelSensitivity: {
+      small: 95,    // < 600px szerokości
+      medium: 85,   // 600-900px szerokości
+      large: 75     // > 900px szerokości
+    },
+    
+    // Skok dla nawigacji klawiaturą (piksele)
+    keyboardJump: {
+      small: 200,    // < 600px szerokości
+      medium: 250,   // 600-900px szerokości
+      large: 300     // > 900px szerokości
+    }
+  };
+  // ===== KONIEC KONFIGURACJI =====
+
+  const featuredContainer = document.querySelector('.featured-artworks.horizontal-scroll');
+  const featuredWrapper = document.querySelector('.featured-artworks-container');
+  if (!featuredContainer || !featuredWrapper) return;
+
+  let isScrolling = false;
+  let scrollTimeout;
+  let autoScrollInterval = null;
+  
+  // Funkcja do wykrywania czy to urządzenie mobilne
+  const isMobileDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           ('ontouchstart' in window) || 
+           (navigator.maxTouchPoints > 0);
+  };
+
+  // Desktop mouse hover scrolling (tylko na desktopie i nie na bardzo szerokich ekranach)
+  if (!isMobileDevice()) {
+    // Sprawdź czy ekran nie jest zbyt szeroki (powyżej 2200px wyłączamy funkcjonalność)
+    const isVeryWideScreen = () => window.innerWidth >= 2200;
+    
+    let mouseX = 0;
+    let isHovering = false;
+    
+    featuredWrapper.addEventListener('mouseenter', () => {
+      if (isVeryWideScreen()) return; // Wyłącz na bardzo szerokich ekranach
+      isHovering = true;
+    });
+    
+    featuredWrapper.addEventListener('mouseleave', () => {
+      isHovering = false;
+      if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
+      }
+    });
+    
+    featuredWrapper.addEventListener('mousemove', (e) => {
+      if (!isHovering || isVeryWideScreen()) return; // Wyłącz na bardzo szerokich ekranach
+      
+      const rect = featuredWrapper.getBoundingClientRect();
+      const relativeX = e.clientX - rect.left;
+      const containerWidth = rect.width;
+      const centerPoint = containerWidth / 2;
+      
+      // Określ pozycję kursora względem centrum (od -1 do 1)
+      const position = (relativeX - centerPoint) / centerPoint;
+      
+      // Adaptacyjna strefa martwa w zależności od szerokości okna
+      let deadZone;
+      if (containerWidth < 600) {
+        deadZone = SCROLL_CONFIG.deadZone.small;
+      } else if (containerWidth < 900) {
+        deadZone = SCROLL_CONFIG.deadZone.medium;
+      } else {
+        deadZone = SCROLL_CONFIG.deadZone.large;
+      }
+      
+      if (Math.abs(position) < deadZone) {
+        // W strefie martwej - zatrzymaj auto scroll
+        if (autoScrollInterval) {
+          clearInterval(autoScrollInterval);
+          autoScrollInterval = null;
+        }
+        return;
+      }
+      
+      // Oblicz prędkość scrollowania z wykładniczą krzywą dla lepszej czułości
+      const normalizedPosition = (Math.abs(position) - deadZone) / (1 - deadZone);
+      
+      // Użyj funkcji potęgowej dla bardziej agresywnego scrollowania na skrajach
+      const accelerationCurve = Math.pow(normalizedPosition, SCROLL_CONFIG.accelerationCurve);
+      
+      // Dodatkowo zwiększ prędkość gdy kursor jest bardzo blisko krawędzi
+      const isAtEdge = Math.abs(position) > SCROLL_CONFIG.edgeThreshold;
+      const edgeBoost = isAtEdge ? SCROLL_CONFIG.edgeBoost : 1.0;
+      
+      // Adaptacyjna maksymalna prędkość w zależności od szerokości ekranu
+      let baseMaxSpeed;
+      if (containerWidth < 600) {
+        baseMaxSpeed = SCROLL_CONFIG.maxSpeed.small;
+      } else if (containerWidth < 900) {
+        baseMaxSpeed = SCROLL_CONFIG.maxSpeed.medium;
+      } else {
+        baseMaxSpeed = SCROLL_CONFIG.maxSpeed.large;
+      }
+      
+      const maxSpeed = baseMaxSpeed * edgeBoost;
+      const minSpeed = SCROLL_CONFIG.minSpeed;
+      
+      const speed = minSpeed + (maxSpeed - minSpeed) * accelerationCurve;
+      // Debug info (możesz usunąć po testach)
+      // console.log(`Width: ${containerWidth}, DeadZone: ${deadZone.toFixed(2)}, Position: ${position.toFixed(2)}, Speed: ${speed.toFixed(1)}`);
+      
+      const direction = position > 0 ? 1 : -1; // 1 = w prawo, -1 = w lewo
+      
+      // Zatrzymaj poprzedni interval
+      if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+      }
+      
+      // Rozpocznij nowy auto scroll z wyższą częstotliwością
+      autoScrollInterval = setInterval(() => {
+        if (!isHovering) {
+          clearInterval(autoScrollInterval);
+          autoScrollInterval = null;
+          return;
+        }
+        
+        const scrollAmount = speed * direction;
+        featuredContainer.scrollLeft += scrollAmount;
+        
+        // Sprawdź czy doszliśmy do końca
+        const isAtStart = featuredContainer.scrollLeft <= 0;
+        const isAtEnd = featuredContainer.scrollLeft >= (featuredContainer.scrollWidth - featuredContainer.clientWidth);
+        
+        if ((direction < 0 && isAtStart) || (direction > 0 && isAtEnd)) {
+          clearInterval(autoScrollInterval);
+          autoScrollInterval = null;
+        }
+      }, SCROLL_CONFIG.animationInterval);
+    });
+  }
+
+  // Smooth scrolling behavior (wheel event)
+  featuredContainer.addEventListener('wheel', (e) => {
+    // Wyłącz na bardzo szerokich ekranach
+    if (window.innerWidth >= 2200) return;
+    
+    // Pozwól na normalne scrollowanie pionowe gdy doszliśmy do końca horizontal scroll
+    const isAtStart = featuredContainer.scrollLeft === 0;
+    const isAtEnd = featuredContainer.scrollLeft >= (featuredContainer.scrollWidth - featuredContainer.clientWidth);
+    
+    // Jeśli scrollujemy poziomo (wheel delta X) lub jesteśmy w środku contentu
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY) || (!isAtStart && !isAtEnd)) {
+      e.preventDefault();
+      
+      // Adaptacyjna czułość scrollowania w zależności od szerokości okna
+      const containerWidth = featuredContainer.getBoundingClientRect().width;
+      let scrollMultiplier;
+      if (containerWidth < 600) {
+        scrollMultiplier = SCROLL_CONFIG.wheelSensitivity.small;
+      } else if (containerWidth < 900) {
+        scrollMultiplier = SCROLL_CONFIG.wheelSensitivity.medium;
+      } else {
+        scrollMultiplier = SCROLL_CONFIG.wheelSensitivity.large;
+      }
+      
+      const scrollAmount = e.deltaY * scrollMultiplier;
+      featuredContainer.scrollLeft += scrollAmount;
+      
+      // Oznacz, że scrollujemy poziomo
+      isScrolling = true;
+      
+      // Reset flag po krótkiej przerwie
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+      }, 150);
+    }
+  }, { passive: false });
+
+  // Touch support for mobile
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let isHorizontalSwipe = false;
+
+  featuredContainer.addEventListener('touchstart', (e) => {
+    // Wyłącz na bardzo szerokich ekranach
+    if (window.innerWidth >= 2200) return;
+    
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    isHorizontalSwipe = false;
+  }, { passive: true });
+
+  featuredContainer.addEventListener('touchmove', (e) => {
+    // Wyłącz na bardzo szerokich ekranach
+    if (window.innerWidth >= 2200) return;
+    
+    if (!touchStartX || !touchStartY) return;
+
+    const touchCurrentX = e.touches[0].clientX;
+    const touchCurrentY = e.touches[0].clientY;
+    
+    const deltaX = touchStartX - touchCurrentX;
+    const deltaY = touchStartY - touchCurrentY;
+
+    // Określ czy to horizontal swipe
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+      isHorizontalSwipe = true;
+      e.preventDefault(); // Zapobiegaj scrollowaniu strony
+    }
+  }, { passive: false });
+
+  featuredContainer.addEventListener('touchend', () => {
+    touchStartX = 0;
+    touchStartY = 0;
+    isHorizontalSwipe = false;
+  }, { passive: true });
+
+  // Keyboard navigation
+  featuredContainer.addEventListener('keydown', (e) => {
+    // Wyłącz na bardzo szerokich ekranach
+    if (window.innerWidth >= 2200) return;
+    
+    // Adaptacyjna prędkość nawigacji klawiaturą
+    const containerWidth = featuredContainer.getBoundingClientRect().width;
+    let keyboardScrollAmount;
+    if (containerWidth < 600) {
+      keyboardScrollAmount = SCROLL_CONFIG.keyboardJump.small;
+    } else if (containerWidth < 900) {
+      keyboardScrollAmount = SCROLL_CONFIG.keyboardJump.medium;
+    } else {
+      keyboardScrollAmount = SCROLL_CONFIG.keyboardJump.large;
+    }
+    
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      featuredContainer.scrollLeft -= keyboardScrollAmount;
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      featuredContainer.scrollLeft += keyboardScrollAmount;
+    }
+  });
+
+  // Make container focusable for keyboard navigation (tylko jeśli nie jest bardzo szeroki ekran)
+  if (window.innerWidth < 1600) {
+    featuredContainer.setAttribute('tabindex', '0');
+  }
+
+  // Funkcja do zarządzania podpowiedzią desktop scroll
+  function setupDesktopScrollHint() {
+    const hint = document.querySelector('.desktop-scroll-hint');
+    const container = document.querySelector('.featured-artworks-container');
+    const featuredContainer = document.querySelector('.featured-artworks.horizontal-scroll');
+    
+    if (!hint || !container || !featuredContainer || isMobileDevice()) return;
+    
+    let hintTimeout;
+    let hasInteracted = false;
+    
+    // Funkcja sprawdzająca czy przewijanie jest potrzebne
+    function checkIfScrollingNeeded() {
+      const containerWidth = featuredContainer.clientWidth;
+      const scrollWidth = featuredContainer.scrollWidth;
+      return scrollWidth > containerWidth;
+    }
+    
+    // Funkcja do pokazywania/ukrywania podpowiedzi w zależności od potrzeby przewijania
+    function updateHintVisibility() {
+      const needsScrolling = checkIfScrollingNeeded();
+      
+      if (!needsScrolling) {
+        // Jeśli nie potrzeba przewijania, ukryj podpowiedź
+        hint.style.display = 'none';
+      } else {
+        // Jeśli potrzeba przewijania, pokaż podpowiedź (jeśli użytkownik jeszcze nie wchodził w interakcję)
+        hint.style.display = 'block';
+        if (!hasInteracted) {
+          // Pokaż podpowiedź po chwili
+          setTimeout(() => {
+            if (!hasInteracted && checkIfScrollingNeeded()) {
+              hint.classList.add('visible');
+            }
+          }, 2000);
+        }
+      }
+    }
+    
+    // Sprawdź przy załadowaniu
+    updateHintVisibility();
+    
+    // Sprawdź przy zmianie rozmiaru okna
+    window.addEventListener('resize', () => {
+      setTimeout(updateHintVisibility, 100);
+    });
+    
+    // Sprawdź gdy obrazy się załadują
+    const images = featuredContainer.querySelectorAll('img');
+    images.forEach(img => {
+      if (img.complete) {
+        updateHintVisibility();
+      } else {
+        img.addEventListener('load', updateHintVisibility);
+      }
+    });
+    
+    // Ukryj podpowiedź po pierwszej interakcji
+    const hideHintOnInteraction = () => {
+      hasInteracted = true;
+      hint.classList.remove('visible');
+      
+      setTimeout(() => {
+        hint.style.display = 'none';
+      }, 500);
+    };
+    
+    container.addEventListener('mouseenter', hideHintOnInteraction, { once: true });
+    featuredContainer.addEventListener('wheel', hideHintOnInteraction, { once: true });
+  }
+  
+  // Wywołaj funkcję setup podpowiedzi
+  setupDesktopScrollHint();
+  
+  // Obsługa zmiany rozmiaru okna - dostosuj funkcjonalność do nowej szerokości
+  const handleResize = () => {
+    const isVeryWide = window.innerWidth >= 1600;
+    
+    if (isVeryWide) {
+      // Zatrzymaj auto scroll jeśli jest aktywny
+      if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
+      }
+      // Usuń tabindex na bardzo szerokich ekranach
+      featuredContainer.removeAttribute('tabindex');
+    } else {
+      // Przywróć tabindex na węższych ekranach
+      featuredContainer.setAttribute('tabindex', '0');
+    }
+  };
+  
+  window.addEventListener('resize', handleResize);
+  handleResize(); // Wywołaj od razu na start
+  
+  // Ustaw obsługę resize dla smooth scrolling
+  setupFeaturedResizeHandler();
+}
+
+// Enhanced scroll behavior for the entire page when featured section is in view
+function setupGlobalScrollBehavior() {
+  const featuredSection = document.querySelector('.featured-artworks-container');
+  if (!featuredSection) return;
+
+  let featuredSectionInView = false;
+
+  // Observe when featured section enters/leaves viewport
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      featuredSectionInView = entry.isIntersecting;
+    });
+  }, {
+    threshold: 0.3,
+    rootMargin: '0px'
+  });
+
+  observer.observe(featuredSection);
+
+  // Global wheel event handler
+  window.addEventListener('wheel', (e) => {
+    if (!featuredSectionInView) return;
+
+    const featuredContainer = document.querySelector('.featured-artworks.horizontal-scroll');
+    if (!featuredContainer) return;
+
+    const isAtStart = featuredContainer.scrollLeft === 0;
+    const isAtEnd = featuredContainer.scrollLeft >= (featuredContainer.scrollWidth - featuredContainer.clientWidth);
+
+    // Jeśli scrollujemy w dół i jesteśmy na początku horizontal scroll
+    if (e.deltaY > 0 && isAtStart) {
+      // Pozwól na normalne scrollowanie w dół
+      return;
+    }
+
+    // Jeśli scrollujemy w górę i jesteśmy na końcu horizontal scroll
+    if (e.deltaY < 0 && isAtEnd) {
+      // Pozwól na normalne scrollowanie w górę
+      return;
+    }
+
+    // W przeciwnym razie, scrolluj horizontalnie jeśli to jest główny kierunek
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY) * 0.5) {
+      e.preventDefault();
+      featuredContainer.scrollLeft += e.deltaY;
+    }
+  }, { passive: false });
+}
+
+// Function to animate featured artworks when they come into view
+function observeFeaturedArtworks() {
+  const featuredSection = document.querySelector('.featured-artworks');
+  if (!featuredSection) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  });
+
+  observer.observe(featuredSection);
 }
 
 // Uruchom pobieranie danych po załadowaniu dokumentu
@@ -1465,24 +1944,66 @@ class HeroSlider {
   }
 }
 
+// Funkcja do inteligentnego wyśrodkowania kafelków
+function setupSmartCentering() {
+  const featuredContainer = document.querySelector('.featured-artworks.horizontal-scroll');
+  if (!featuredContainer) return;
+
+  function checkAndApplyCentering() {
+    // Sprawdź czy wszystkie kafelki się mieszczą bez przewijania
+    const containerWidth = featuredContainer.clientWidth;
+    const scrollWidth = featuredContainer.scrollWidth;
+    const needsScrolling = scrollWidth > containerWidth;
+    
+    // Jeśli nie potrzeba przewijania, wyśrodkuj kafelki
+    if (!needsScrolling) {
+      featuredContainer.style.justifyContent = 'center';
+    } else {
+      featuredContainer.style.justifyContent = 'flex-start';
+    }
+  }
+
+  // Sprawdź przy załadowaniu
+  checkAndApplyCentering();
+  
+  // Sprawdź przy zmianie rozmiaru okna
+  window.addEventListener('resize', () => {
+    setTimeout(checkAndApplyCentering, 100);
+  });
+  
+  // Sprawdź gdy obrazy się załadują
+  const images = featuredContainer.querySelectorAll('img');
+  images.forEach(img => {
+    if (img.complete) {
+      checkAndApplyCentering();
+    } else {
+      img.addEventListener('load', checkAndApplyCentering);
+    }
+  });
+}
+
 // Initialize hero slider on homepage
 let heroSlider = null;
 
-// Function to animate featured artworks when they come into view
-function observeFeaturedArtworks() {
-  const featuredSection = document.querySelector('.featured-artworks');
-  if (!featuredSection) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+// Event listener dla zmiany rozmiaru okna (resize) - dla featured scrolling
+function setupFeaturedResizeHandler() {
+  const featuredContainer = document.querySelector('.featured-artworks.horizontal-scroll');
+  if (!featuredContainer) return;
+  
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    // Debounce resize events
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      // Jeśli auto scroll jest aktywny, zatrzymaj go i pozwól na ponowne uruchomienie
+      if (typeof autoScrollInterval !== 'undefined' && autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
       }
-    });
-  }, {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
+      
+      // Log debug info po resize (opcjonalne)
+      const newWidth = featuredContainer.getBoundingClientRect().width;
+      // console.log(`Window resized. New container width: ${newWidth}px. New config will be applied on next interaction.`);
+    }, 250);
   });
-
-  observer.observe(featuredSection);
 }

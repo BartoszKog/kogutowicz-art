@@ -1384,4 +1384,355 @@ header {
     -webkit-touch-callout: none;
 }
 
-/* Usunięte prostokątne tło - tylko cienie na tekście */
+/* FEATURED ARTWORKS HORIZONTAL SCROLL */
+.featured-artworks-container {
+    position: relative;
+    width: 100%;
+    background: linear-gradient(90deg, white 0%, transparent 2%, transparent 98%, white 100%);
+    background-size: 100% 100%;
+}
+
+.featured-artworks.horizontal-scroll {
+    display: flex;
+    gap: 1.5rem; /* Zmniejszono z 1.5rem */
+    padding: 1rem 2rem 1rem 2rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+
+/* Na bardzo dużych ekranach (ultrawide) wyłącz przewijanie */
+@media (min-width: 2200px) {
+    .featured-artworks.horizontal-scroll {
+        overflow-x: visible; /* Wyłącz przewijanie na bardzo szerokich ekranach */
+        /* justify-content zostanie ustawione przez JavaScript */
+    }
+}
+
+.featured-artworks.horizontal-scroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.featured-artwork-item {
+    flex: 0 0 auto;
+    width: 350px; /* Zmniejszono z 380px dla lepszego dopasowania */
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.featured-artwork-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.featured-artwork-item:active {
+    transform: translateY(-2px);
+}
+
+.featured-artwork-image {
+    width: 100%;
+    height: 240px; /* Zmniejszono z 260px */
+    background-color: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.featured-artwork-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.featured-artwork-item:hover .featured-artwork-image img {
+    transform: scale(1.05);
+}
+
+.featured-artwork-info {
+    padding: 1rem;
+}
+
+.featured-artwork-info h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.featured-artwork-info p {
+    color: #6b7280;
+    line-height: 1.5;
+    font-size: 0.875rem;
+}
+
+/* Responsive design for featured artworks */
+@media (max-width: 768px) {
+    .featured-artwork-item {
+        width: 320px; /* Zwiększono z 280px */
+    }
+    
+    .featured-artworks.horizontal-scroll {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .featured-artwork-image {
+        height: 220px; /* Zwiększono z 180px */
+    }
+}
+
+/* Medium screens - laptopy (większe kafelki, wyrównane do lewej) */
+@media (min-width: 769px) and (max-width: 1280px) {
+    .featured-artwork-item {
+        width: 380px; /* Zmniejszono z 420px */
+    }
+    
+    .featured-artworks.horizontal-scroll {
+        padding: 1rem 2rem 1rem 2rem;
+        gap: 1.5rem; /* Zmniejszono gap */
+        justify-content: flex-start; /* Wyrównanie do lewej */
+    }
+    
+    .featured-artwork-image {
+        height: 280px; /* Zmniejszono z 300px */
+    }
+}
+
+/* Large screens - duże monitory (wyrównane do lewej z paddingiem) */
+@media (min-width: 1281px) and (max-width: 1599px) {
+    .featured-artwork-item {
+        width: 380px; /* Zmniejszono z 400px dla lepszego dopasowania */
+    }
+    
+    .featured-artworks.horizontal-scroll {
+        padding: 1rem 2rem 1rem 2rem;
+        gap: 1.5rem; /* Zmniejszono gap */
+        justify-content: flex-start; /* Zmieniono z center na flex-start */
+    }
+    
+    .featured-artwork-image {
+        height: 260px; /* Zmniejszono z 280px */
+    }
+}
+
+/* Extra large screens - bardzo duże monitory (ale nie ultra-wide) */
+@media (min-width: 1600px) and (max-width: 2199px) {
+    .featured-artwork-item {
+        width: 400px; /* Większe kafelki na bardzo dużych ekranach */
+    }
+    
+    .featured-artworks.horizontal-scroll {
+        padding: 1rem 2rem 1rem 2rem;
+        gap: 2rem;
+        justify-content: flex-start; /* Nadal wyrównanie do lewej */
+    }
+    
+    .featured-artwork-image {
+        height: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .featured-artwork-item {
+        width: 280px; /* Zwiększono z 220px */
+    }
+    
+    .featured-artworks.horizontal-scroll {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+    
+    .featured-artwork-image {
+        height: 180px; /* Zwiększono z 140px */
+    }
+}
+
+/* Scroll animations and smooth transitions */
+.featured-artworks-container::before,
+.featured-artworks-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.featured-artworks-container::before {
+    left: 0;
+    background: linear-gradient(90deg, white 0%, transparent 100%);
+}
+
+.featured-artworks-container::after {
+    right: 0;
+    background: linear-gradient(270deg, white 0%, transparent 100%);
+}
+
+/* Desktop cursor-based scrolling zones */
+@media (hover: hover) and (pointer: fine) {
+  .featured-artworks-container {
+    position: relative;
+    cursor: default;
+  }
+  
+  .featured-artworks-container::before,
+  .featured-artworks-container::after {
+    transition: opacity 0.3s ease;
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+  }
+  
+  .featured-artworks-container::before {
+    left: 0;
+    background: linear-gradient(90deg, 
+      rgba(139, 92, 246, 0.12) 0%,
+      rgba(139, 92, 246, 0.06) 50%,
+      transparent 100%);
+  }
+  
+  .featured-artworks-container::after {
+    right: 0;
+    background: linear-gradient(270deg, 
+      rgba(139, 92, 246, 0.12) 0%,
+      rgba(139, 92, 246, 0.06) 50%,
+      transparent 100%);
+  }
+  
+  .featured-artworks-container:hover::before,
+  .featured-artworks-container:hover::after {
+    opacity: 1;
+  }
+  
+  /* Cursor change on hover */
+  .featured-artworks-container:hover {
+    cursor: grab;
+  }
+  
+  .featured-artworks-container:active {
+    cursor: grabbing;
+  }
+}
+
+/* Wyłącz strefy scrollowania na bardzo szerokich ekranach gdzie obrazy są wyśrodkowane */
+@media (min-width: 2200px) {
+  .featured-artworks-container::before,
+  .featured-artworks-container::after {
+    display: none !important;
+  }
+  
+  .featured-artworks-container:hover {
+    cursor: default !important;
+  }
+}
+
+/* Mobile-specific styles */
+@media (hover: none) and (pointer: coarse) {
+  .featured-artworks-container::before,
+  .featured-artworks-container::after {
+    display: none;
+  }
+  
+  .featured-artworks.horizontal-scroll {
+    scroll-snap-type: x mandatory;
+  }
+  
+  .featured-artwork-item {
+    scroll-snap-align: start;
+  }
+}
+
+/* Enhanced mobile touch scrolling */
+@media (max-width: 768px) {
+  .featured-artworks.horizontal-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139, 92, 246, 0.3) transparent;
+  }
+  
+  .featured-artworks.horizontal-scroll::-webkit-scrollbar {
+    display: block;
+    height: 4px;
+  }
+  
+  .featured-artworks.horizontal-scroll::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+  }
+  
+  .featured-artworks.horizontal-scroll::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.4);
+    border-radius: 2px;
+  }
+  
+  .featured-artworks.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.6);
+  }
+}
+
+/* Desktop scroll hint */
+.desktop-scroll-hint {
+  transition: opacity 0.3s ease;
+  font-size: 0.875rem;
+  color: #6b7280;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.desktop-scroll-hint.visible {
+  opacity: 1;
+}
+
+/* Responsive dead zone and scroll behavior adjustments */
+@media (max-width: 600px) {
+  .featured-artworks-container::before,
+  .featured-artworks-container::after {
+    width: 60px; /* mniejsze strefy na małych ekranach */
+  }
+  
+  .featured-artworks-container::before {
+    background: linear-gradient(90deg, 
+      rgba(139, 92, 246, 0.15) 0%,
+      rgba(139, 92, 246, 0.08) 40%,
+      transparent 100%);
+  }
+  
+  .featured-artworks-container::after {
+    background: linear-gradient(270deg, 
+      rgba(139, 92, 246, 0.15) 0%,
+      rgba(139, 92, 246, 0.08) 40%,
+      transparent 100%);
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1279px) {
+  .featured-artworks-container::before,
+  .featured-artworks-container::after {
+    width: 70px; /* średnie strefy na średnich ekranach */
+  }
+}
+
+/* Na dużych ekranach (laptopy) większe strefy dla lepszej kontroli */
+@media (min-width: 1280px) and (max-width: 1599px) {
+  .featured-artworks-container::before,
+  .featured-artworks-container::after {
+    width: 90px; /* większe strefy na dużych laptopach */
+  }
+}
+
+/* Hero Slider Styles */
