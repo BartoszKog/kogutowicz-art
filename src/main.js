@@ -116,7 +116,7 @@ function renderFeaturedArtworks() {
     
     // Dodaj event listener dla trybu skupienia
     artworkElement.addEventListener('click', () => {
-      openFocusMode(index, featuredArtworks);
+      openFocusMode(index, featuredArtworks, 'featured');
     });
     
     // Dodaj hover effect z lepszą responsywnością
@@ -172,7 +172,7 @@ function renderGalleryArtworks(artworks = galleryArtworks) {
     
     // Dodaj event listener dla trybu skupienia
     artworkElement.addEventListener('click', () => {
-      openFocusMode(index, artworks);
+      openFocusMode(index, artworks, 'gallery');
     });
     
     galleryContainer.appendChild(artworkElement);
@@ -646,14 +646,16 @@ let focusModeState = {
   isOpen: false,
   currentIndex: 0,
   artworks: [],
-  overlay: null
+  overlay: null,
+  source: 'gallery' // Domyślnie gallery
 };
 
 // Funkcja do otwierania trybu skupienia
-function openFocusMode(artworkIndex, artworks) {
+function openFocusMode(artworkIndex, artworks, source = 'gallery') {
   focusModeState.currentIndex = artworkIndex;
   focusModeState.artworks = artworks;
   focusModeState.isOpen = true;
+  focusModeState.source = source; // Dodaj informację o źródle
   
   // Zapobiegaj przewijaniu tła
   document.body.classList.add('focus-mode-open');
@@ -793,12 +795,17 @@ function displayCurrentArtwork() {
   description.textContent = artwork.description || '';
   description.style.display = artwork.description ? 'block' : 'none';
   
-  // Dostępność
-  availability.innerHTML = `
-    <span class="${artwork.available ? 'text-green-600' : 'text-gray-400'} font-semibold">
-      ${artwork.available ? 'Dostępny' : 'Niedostępny'}
-    </span>
-  `;
+  // Dostępność - pokaż tylko dla galerii, ukryj dla featured artworks
+  if (focusModeState.source === 'gallery') {
+    availability.innerHTML = `
+      <span class="${artwork.available ? 'text-green-600' : 'text-gray-400'} font-semibold">
+        ${artwork.available ? 'Dostępny' : 'Niedostępny'}
+      </span>
+    `;
+  } else {
+    // Dla featured artworks ukryj sekcję dostępności
+    availability.innerHTML = '';
+  }
   
   // Zaktualizuj widoczność przycisków nawigacji
   updateNavigationButtons();
@@ -1093,10 +1100,12 @@ function setupFeaturedScrolling() {
     }
   }, { passive: false });
 
-  // Touch support for mobile
+  // Touch support for mobile - ulepszona wersja
   let touchStartX = 0;
   let touchStartY = 0;
   let isHorizontalSwipe = false;
+  let touchStartTime = 0;
+  let initialScrollLeft = 0;
 
   featuredContainer.addEventListener('touchstart', (e) => {
     // Wyłącz na bardzo szerokich ekranach
@@ -1104,7 +1113,15 @@ function setupFeaturedScrolling() {
     
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
     isHorizontalSwipe = false;
+    initialScrollLeft = featuredContainer.scrollLeft;
+    
+    // Zatrzymaj autoScroll jeśli jest aktywny
+    if (autoScrollInterval) {
+      clearInterval(autoScrollInterval);
+      autoScrollInterval = null;
+    }
   }, { passive: true });
 
   featuredContainer.addEventListener('touchmove', (e) => {
@@ -1116,20 +1133,66 @@ function setupFeaturedScrolling() {
     const touchCurrentX = e.touches[0].clientX;
     const touchCurrentY = e.touches[0].clientY;
     
-    const deltaX = touchStartX - touchCurrentX;
-    const deltaY = touchStartY - touchCurrentY;
+    const deltaX = touchCurrentX - touchStartX;
+    const deltaY = touchCurrentY - touchStartY;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
 
-    // Określ czy to horizontal swipe
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
-      isHorizontalSwipe = true;
-      e.preventDefault(); // Zapobiegaj scrollowaniu strony
+    // Określ kierunek swipe tylko raz na początku
+    if (!isHorizontalSwipe && (absDeltaX > 15 || absDeltaY > 15)) {
+      if (absDeltaX > absDeltaY && absDeltaX > 15) {
+        isHorizontalSwipe = true;
+        // Tylko teraz próbuj preventDefault
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+      }
+    }
+    
+    // Jeśli to horizontal swipe, wykonaj scrollowanie ręcznie
+    if (isHorizontalSwipe && e.cancelable) {
+      e.preventDefault();
+      const newScrollLeft = initialScrollLeft - deltaX;
+      featuredContainer.scrollLeft = Math.max(0, Math.min(newScrollLeft, featuredContainer.scrollWidth - featuredContainer.clientWidth));
     }
   }, { passive: false });
 
-  featuredContainer.addEventListener('touchend', () => {
+  featuredContainer.addEventListener('touchend', (e) => {
+    // Wyłącz na bardzo szerokich ekranach
+    if (window.innerWidth >= 2200) return;
+    
+    if (!touchStartX || !touchStartY || !isHorizontalSwipe) {
+      touchStartX = 0;
+      touchStartY = 0;
+      isHorizontalSwipe = false;
+      return;
+    }
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndTime = Date.now();
+    
+    const deltaX = touchStartX - touchEndX;
+    const swipeTime = touchEndTime - touchStartTime;
+    const swipeDistance = Math.abs(deltaX);
+    const swipeVelocity = swipeDistance / swipeTime; // piksele na milisekundę
+    
+    // Jeśli to był szybki swipe, dodaj momentum scrolling
+    if (swipeVelocity > 0.5 && swipeDistance > 30 && swipeTime < 300) {
+      const momentum = Math.min(swipeVelocity * 100, 300); // maksymalnie 300px momentum
+      const direction = deltaX > 0 ? 1 : -1;
+      const targetScroll = featuredContainer.scrollLeft + (momentum * direction);
+      
+      featuredContainer.scrollTo({
+        left: Math.max(0, Math.min(targetScroll, featuredContainer.scrollWidth - featuredContainer.clientWidth)),
+        behavior: 'smooth'
+      });
+    }
+    
     touchStartX = 0;
     touchStartY = 0;
     isHorizontalSwipe = false;
+    touchStartTime = 0;
+    initialScrollLeft = 0;
   }, { passive: true });
 
   // Keyboard navigation
@@ -1835,12 +1898,10 @@ class HeroSlider {
     // Ukryj wszystkie slides
     this.slides.forEach((slide, i) => {
       slide.element.classList.remove('active');
-      console.log(`Slide ${i} ukryty:`, slide.element);
     });
     
     // Pokaż wybrany slide
     this.slides[index].element.classList.add('active');
-    console.log(`Slide ${index} pokazany:`, this.slides[index].element);
     
     // Aktualizuj tekst overlay
     this.updateOverlayContent(index);
