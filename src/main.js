@@ -1146,6 +1146,10 @@ function setupFeaturedScrolling() {
         if (e.cancelable) {
           e.preventDefault();
         }
+      } else {
+        console.log('Wykryto pionowy scroll (touch) - anuluj swipe');
+        isHorizontalSwipe = false;
+        return;
       }
     }
     
@@ -1384,7 +1388,34 @@ function observeFeaturedArtworks() {
   observer.observe(featuredSection);
 }
 
-// Uruchom pobieranie danych po załadowaniu dokumentu
+// Inicjalizacja kontroli animacji Lottie dla ikon social media
+function initLottieControls() {
+  const socialLinks = document.querySelectorAll('.social-icon-link');
+  
+  socialLinks.forEach(link => {
+    const lottiePlayer = link.querySelector('lottie-player');
+    
+    if (lottiePlayer) {
+      // Ustaw animację jako zatrzymaną na początku
+      lottiePlayer.addEventListener('ready', () => {
+        lottiePlayer.stop();
+      });
+      
+      // Uruchom animację przy hover
+      link.addEventListener('mouseenter', () => {
+        lottiePlayer.play();
+      });
+      
+      // Zatrzymaj animację i zresetuj do początku przy opuszczeniu
+      link.addEventListener('mouseleave', () => {
+        lottiePlayer.stop();
+        lottiePlayer.seek(0);
+      });
+    }
+  });
+}
+
+// Dodaj inicjalizację kontroli Lottie do głównej funkcji init
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOMContentLoaded - inicjalizacja rozpoczęta');
   fetchData();
@@ -1409,6 +1440,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // 3D efekt będzie inicjalizowany w renderArtistPage()
+  initLottieControls(); // Dodaj tutaj
 });
 
 // Cleanup przy opuszczeniu strony
@@ -1596,7 +1628,7 @@ class HeroSlider {
       // Pokaż pierwszy slide
       this.showSlide(0);
       
-      console.log('Rozpoczynam autoplay...');
+      console.log('Rozpocznij autoplay...');
       // Rozpocznij autoplay
       this.startAutoPlay();
       
