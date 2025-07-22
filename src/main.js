@@ -1388,6 +1388,25 @@ function observeFeaturedArtworks() {
   observer.observe(featuredSection);
 }
 
+// Function to animate contact section when it comes into view
+function observeContactSection() {
+  const contactSection = document.querySelector('.contact-section');
+  if (!contactSection) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  });
+
+  observer.observe(contactSection);
+}
+
 // Inicjalizacja kontroli animacji Lottie dla ikon social media
 function initLottieControls() {
   const socialLinks = document.querySelectorAll('.social-icon-link');
@@ -1435,6 +1454,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Inicjalizuj obserwator dla sekcji featured artworks
     observeFeaturedArtworks();
+    // Inicjalizuj obserwator dla sekcji kontaktowej
+    observeContactSection();
   } else {
     console.log('Nie jestem na stronie głównej, pomijam slider');
   }
