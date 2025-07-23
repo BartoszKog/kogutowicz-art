@@ -554,6 +554,21 @@ html {
     flex-shrink: 0;
 }
 
+/* Maksymalizowany kontener - obraz zajmuje prawie całą dostępną przestrzeń */
+.focus-mode-container.maximized {
+    max-width: 95vw;
+    max-height: 95vh;
+    padding: 1rem;
+}
+
+.focus-mode-container.maximized .focus-mode-image {
+    max-width: 100%;
+    max-height: calc(95vh - 2rem);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
 /* Informacje o obrazie w trybie skupienia */
 .focus-mode-info {
     background: transparent;
@@ -674,6 +689,32 @@ html {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* Przycisk maksymalizacji - pozycjonowany w lewym górnym rogu */
+.focus-maximize-button {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    z-index: 10001;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.focus-maximize-button:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 /* Ikony SVG dla przycisków */
 .focus-nav-icon {
     width: 24px;
@@ -689,8 +730,16 @@ html {
     transition: fill 0.2s ease-in-out;
 }
 
+.focus-maximize-icon {
+    width: 20px;
+    height: 20px;
+    fill: #374151;
+    transition: fill 0.2s ease-in-out;
+}
+
 .focus-nav-button:hover .focus-nav-icon,
-.focus-close-button:hover .focus-close-icon {
+.focus-close-button:hover .focus-close-icon,
+.focus-maximize-button:hover .focus-maximize-icon {
     fill: #1f2937;
 }
 
@@ -744,6 +793,24 @@ html {
         width: 44px;
         height: 44px;
     }
+    
+    .focus-maximize-button {
+        top: 0.5rem;
+        left: 0.5rem;
+        width: 44px;
+        height: 44px;
+    }
+    
+    /* Responsywne style dla maksymalizowanego stanu na urządzeniach mobilnych */
+    .focus-mode-container.maximized {
+        max-width: 98vw;
+        max-height: 98vh;
+        padding: 0.5rem;
+    }
+    
+    .focus-mode-container.maximized .focus-mode-image {
+        max-height: calc(98vh - 1rem);
+    }
 }
 
 /* Dodatkowe style dla bardzo małych ekranów */
@@ -773,6 +840,17 @@ html {
     .focus-mode-description,
     .focus-mode-availability {
         font-size: clamp(0.7rem, 3.5vw, 0.8rem);
+    }
+    
+    /* Style dla maksymalizowanego stanu na bardzo małych ekranach */
+    .focus-mode-container.maximized {
+        max-width: 99vw;
+        max-height: 99vh;
+        padding: 0.25rem;
+    }
+    
+    .focus-mode-container.maximized .focus-mode-image {
+        max-height: calc(99vh - 0.5rem);
     }
 }
 

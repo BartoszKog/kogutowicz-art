@@ -762,6 +762,12 @@ function createFocusModeOverlay() {
       </svg>
     </button>
     
+    <button class="focus-maximize-button" aria-label="Maksymalizuj obraz">
+      <svg class="focus-maximize-icon" viewBox="0 0 24 24">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
     <button class="focus-nav-button prev" aria-label="Poprzedni obraz">
       <svg class="focus-nav-icon" viewBox="0 0 24 24">
         <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -791,10 +797,12 @@ function createFocusModeOverlay() {
   
   // Dodaj event listenery dla przycisków
   const closeButton = overlay.querySelector('.focus-close-button');
+  const maximizeButton = overlay.querySelector('.focus-maximize-button');
   const prevButton = overlay.querySelector('.focus-nav-button.prev');
   const nextButton = overlay.querySelector('.focus-nav-button.next');
   
   closeButton.addEventListener('click', closeFocusMode);
+  maximizeButton.addEventListener('click', toggleMaximizeImage);
   prevButton.addEventListener('click', () => navigateGallery('prev'));
   nextButton.addEventListener('click', () => navigateGallery('next'));
   
@@ -812,6 +820,23 @@ function displayCurrentArtwork() {
   
   const artwork = focusModeState.artworks[focusModeState.currentIndex];
   if (!artwork) return;
+  
+  // Resetuj stan maksymalizacji przy zmianie obrazu
+  const container = focusModeState.overlay.querySelector('.focus-mode-container');
+  const info = focusModeState.overlay.querySelector('.focus-mode-info');
+  const maximizeButton = focusModeState.overlay.querySelector('.focus-maximize-button');
+  const maximizeIcon = maximizeButton.querySelector('.focus-maximize-icon');
+  
+  if (container.classList.contains('maximized')) {
+    container.classList.remove('maximized');
+    info.style.display = 'block';
+    
+    // Przywróć ikonę maksymalizacji
+    maximizeIcon.innerHTML = `
+      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    `;
+    maximizeButton.setAttribute('aria-label', 'Maksymalizuj obraz');
+  }
   
   const image = focusModeState.overlay.querySelector('.focus-mode-image');
   const title = focusModeState.overlay.querySelector('.focus-mode-info h3');
@@ -889,6 +914,41 @@ function updateNavigationButtons() {
   nextButton.style.display = hasMultipleImages ? 'flex' : 'none';
 }
 
+// Funkcja do przełączania trybu maksymalizacji obrazu
+function toggleMaximizeImage() {
+  if (!focusModeState.overlay) return;
+  
+  const container = focusModeState.overlay.querySelector('.focus-mode-container');
+  const image = focusModeState.overlay.querySelector('.focus-mode-image');
+  const info = focusModeState.overlay.querySelector('.focus-mode-info');
+  const maximizeButton = focusModeState.overlay.querySelector('.focus-maximize-button');
+  const maximizeIcon = maximizeButton.querySelector('.focus-maximize-icon');
+  
+  const isMaximized = container.classList.contains('maximized');
+  
+  if (isMaximized) {
+    // Przywróć normalny widok
+    container.classList.remove('maximized');
+    info.style.display = 'block';
+    
+    // Zmień ikonę na maksymalizację
+    maximizeIcon.innerHTML = `
+      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    `;
+    maximizeButton.setAttribute('aria-label', 'Maksymalizuj obraz');
+  } else {
+    // Maksymalizuj obraz
+    container.classList.add('maximized');
+    info.style.display = 'none';
+    
+    // Zmień ikonę na zmniejszenie
+    maximizeIcon.innerHTML = `
+      <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    `;
+    maximizeButton.setAttribute('aria-label', 'Zmniejsz obraz');
+  }
+}
+
 // Event listenery dla trybu skupienia
 let focusModeKeyHandler;
 let focusModeResizeHandler;
@@ -910,6 +970,11 @@ function setupFocusModeEventListeners() {
       case 'ArrowRight':
         e.preventDefault();
         navigateGallery('next');
+        break;
+      case 'f':
+      case 'F':
+        e.preventDefault();
+        toggleMaximizeImage();
         break;
     }
   };
