@@ -1,0 +1,33 @@
+{
+  "navigation": {
+    "home": "Home",
+    "gallery": "Gallery", 
+    "about": "About Artist",
+    "shop": "Shop"
+  },
+  "topBar": {
+    "contact": "Contact",
+    "languageSelector": "Language"
+  },
+  "sections": {
+    "featuredWorks": "Featured Works",
+    "featuredWorksDescription": "Discover my works - from atmospheric landscapes to portraits full of emotions. Each work tells its unique story.",
+    "galleryTitle": "Art Gallery",
+    "aboutTitle": "About the Artist",
+    "shopTitle": "Works for Sale"
+  },
+  "common": {
+    "viewMore": "View More",
+    "backToGallery": "Back to Gallery",
+    "price": "Price",
+    "available": "Available",
+    "unavailable": "Unavailable",
+    "dimensions": "Dimensions",
+    "year": "Year",
+    "technique": "Technique"
+  },
+  "languages": {
+    "polish": "Polish",
+    "english": "English"
+  }
+}

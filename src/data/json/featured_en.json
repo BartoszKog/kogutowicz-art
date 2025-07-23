@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "title": "Local Landscape",
+    "description": "Picturesque views of surrounding places, captured in different seasons."
+  },
+  {
+    "id": 7,
+    "title": "Human",
+    "description": "Portraits and scenes from life, showing emotions and character of figures."
+  },
+  {
+    "id": 8,
+    "title": "Still Life",
+    "description": "Compositions of everyday objects, reflecting their beauty and harmony."
+  },
+  {
+    "id": 9,
+    "title": "Botanical Stories",
+    "description": "Beautiful representations of plants and flowers"
+  }
+]
