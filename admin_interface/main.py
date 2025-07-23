@@ -71,6 +71,11 @@ class AdminInterface:
                         selected_icon=ft.Icons.LANGUAGE_OUTLINED,
                         label="Interfejs"
                     ),
+                    ft.NavigationRailDestination(
+                        icon=ft.Icons.SETTINGS,
+                        selected_icon=ft.Icons.SETTINGS_OUTLINED,
+                        label="Ustawienia"
+                    ),
                 ],
                 on_change=self.rail_changed
             ),
@@ -127,7 +132,7 @@ class AdminInterface:
 
     def load_section(self, index):
         """Ładuje odpowiednią sekcję"""
-        sections = ["about", "featured", "gallery", "shop", "ui"]
+        sections = ["about", "featured", "gallery", "shop", "ui", "site-config"]
         self.current_file = sections[index]
         self.load_data()
         
@@ -141,6 +146,8 @@ class AdminInterface:
             self.show_shop_form()
         elif index == 4:
             self.show_ui_form()
+        elif index == 5:
+            self.show_site_config_form()
 
     def load_data(self):
         """Ładuje dane z pliku JSON"""
@@ -1894,6 +1901,8 @@ class AdminInterface:
             self.show_shop_form()
         elif self.current_file == "ui":
             self.show_ui_form()
+        elif self.current_file == "site-config":
+            self.show_site_config_form()
             
     def show_ui_form(self):
         """Pokazuje formularz do edycji tekstów interfejsu użytkownika"""
@@ -2028,6 +2037,115 @@ class AdminInterface:
             self.current_data[section] = {}
         
         self.current_data[section][field] = value
+        self.unsaved_changes = True
+        self.update_title()
+        self.update_buttons_state()
+        
+    def show_site_config_form(self):
+        """Pokazuje formularz do edycji ustawień witryny"""
+        if not self.current_data:
+            self.show_message("Brak danych do wyświetlenia", "#f44336")
+            return
+        
+        self.content_area.content = ft.Column([
+            ft.Text("Ustawienia witryny", size=24, weight=ft.FontWeight.BOLD),
+            ft.Divider(height=20),
+            
+            # Sekcja podstawowych danych
+            ft.Text("Podstawowe informacje", size=18, weight=ft.FontWeight.BOLD),
+            ft.Container(
+                content=ft.Column([
+                    ft.TextField(
+                        label="Nazwa witryny",
+                        value=self.current_data.get("siteName", ""),
+                        hint_text="Np. Portfolio Artystyczne",
+                        on_change=lambda e: self.update_site_config_field("siteName", e.control.value)
+                    ),
+                ]),
+                padding=10,
+                bgcolor="#f5f5f5",
+                border_radius=8
+            ),
+            
+            ft.Divider(height=20),
+            
+            # Sekcja kontaktowa
+            ft.Text("Dane kontaktowe", size=18, weight=ft.FontWeight.BOLD),
+            ft.Container(
+                content=ft.Column([
+                    ft.TextField(
+                        label="E-mail",
+                        value=self.current_data.get("contact", {}).get("email", ""),
+                        hint_text="kontakt@example.com",
+                        on_change=lambda e: self.update_nested_field("contact", "email", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Telefon",
+                        value=self.current_data.get("contact", {}).get("phone", ""),
+                        hint_text="+48 123 456 789",
+                        on_change=lambda e: self.update_nested_field("contact", "phone", e.control.value)
+                    ),
+                ]),
+                padding=10,
+                bgcolor="#f5f5f5",
+                border_radius=8
+            ),
+            
+            ft.Divider(height=20),
+            
+            # Sekcja mediów społecznościowych
+            ft.Text("Media społecznościowe", size=18, weight=ft.FontWeight.BOLD),
+            ft.Container(
+                content=ft.Column([
+                    ft.TextField(
+                        label="Facebook",
+                        value=self.current_data.get("socialMedia", {}).get("facebook", ""),
+                        hint_text="https://facebook.com/strona",
+                        on_change=lambda e: self.update_nested_field("socialMedia", "facebook", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Instagram",
+                        value=self.current_data.get("socialMedia", {}).get("instagram", ""),
+                        hint_text="https://instagram.com/profil",
+                        on_change=lambda e: self.update_nested_field("socialMedia", "instagram", e.control.value)
+                    ),
+                ]),
+                padding=10,
+                bgcolor="#f5f5f5",
+                border_radius=8
+            ),
+            
+            ft.Divider(height=20),
+            
+            # Informacja o zastosowaniu
+            ft.Container(
+                content=ft.Column([
+                    ft.Icon(ft.Icons.INFO, color="#1976d2", size=24),
+                    ft.Text(
+                        "Te ustawienia wpływają na całą witrynę niezależnie od wybranego języka. "
+                        "Zmiana nazwy witryny automatycznie zaktualizuje ją w nagłówku i stopce.",
+                        size=12,
+                        color="#1976d2",
+                        text_align=ft.TextAlign.CENTER
+                    ),
+                ]),
+                padding=15,
+                bgcolor="#e3f2fd",
+                border_radius=8,
+                border=ft.border.all(1, "#90caf9")
+            ),
+            
+        ], scroll=ft.ScrollMode.AUTO)
+        
+        self.update_buttons_state()
+        self.page.update()
+        
+    def update_site_config_field(self, field, value):
+        """Aktualizuje pole w konfiguracji witryny"""
+        if hasattr(self, '_loading_data') and self._loading_data:
+            return
+        
+        self.current_data[field] = value
         self.unsaved_changes = True
         self.update_title()
         self.update_buttons_state()

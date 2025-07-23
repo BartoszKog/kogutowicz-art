@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>O Artyście - Portfolio Artystyczne</title>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <link href="../../src/styles.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
@@ -12,10 +13,50 @@
         <div class="container mx-auto px-6">
             <div class="flex justify-between items-center text-sm">
                 <!-- Kontakt po lewej stronie -->
-                <div>
+                <div class="flex items-center space-x-4">
                     <a href="mailto:kontakt@example.com" class="hover:text-purple-200 transition-colors duration-200" id="contact-link">
                         Kontakt
                     </a>
+                    
+                    <!-- Ikony mediów społecznościowych -->
+                    <div class="flex items-center space-x-2">
+                        <a href="https://www.instagram.com/" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="hover:text-purple-200 transition-colors duration-200 top-social-icon relative"
+                           aria-label="Instagram"
+                           data-social="instagram"
+                           id="top-instagram-link">
+                            <img src="../../images/icons/wired-raw-flat-2542-logo-instagram-hover-pinch.svg" 
+                                 alt="Instagram" 
+                                 class="w-5 h-5 social-icon-static">
+                            <lottie-player 
+                                src="../../images/icons/wiredi-raw-flat-2542-logo-instagram-hover-pinch.json" 
+                                class="w-5 h-5 social-icon-animated absolute top-0 left-0 opacity-0"
+                                speed="1"
+                                autoplay="false"
+                                loop="false">
+                            </lottie-player>
+                        </a>
+                        <a href="https://www.facebook.com/" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="hover:text-purple-200 transition-colors duration-200 top-social-icon relative"
+                           aria-label="Facebook"
+                           data-social="facebook"
+                           id="top-facebook-link">
+                            <img src="../../images/icons/wired-raw-2540-logo-facebook-hover-pinch.svg" 
+                                 alt="Facebook" 
+                                 class="w-5 h-5 social-icon-static">
+                            <lottie-player 
+                                src="../../images/icons/wired-raw-flat-2540-logo-facebook-hover-pinch.json" 
+                                class="w-5 h-5 social-icon-animated absolute top-0 left-0 opacity-0"
+                                speed="1"
+                                autoplay="false"
+                                loop="false">
+                            </lottie-player>
+                        </a>
+                    </div>
                 </div>
                 
                 <!-- Selektor języka po prawej stronie -->
@@ -124,7 +165,31 @@
 
     <footer class="bg-gray-800 text-white py-6">
         <div class="container mx-auto px-6">
-            <p>&copy; 2025 Portfolio Artystyczne. Wszelkie prawa zastrzeżone.</p>
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+                <p>&copy; 2025 <span id="footer-site-name">Portfolio Artystyczne</span>. Wszelkie prawa zastrzeżone.</p>
+                <div class="text-sm text-gray-400 flex flex-col space-y-1">
+                    <p>
+                        Ikony: <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200">Lordicon.com</a>
+                    </p>
+                    <p>
+                        Autor strony: <a href="https://github.com/BartoszKog" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200 inline-flex items-center space-x-1 footer-author-link">
+                            <span>Bartosz Kogutowicz</span>
+                            <span class="inline-block relative w-4 h-4 footer-github-icon">
+                                <img src="../../images/icons/wired-flat-2572-logo-github-hover-pinch.svg" 
+                                     alt="GitHub" 
+                                     class="w-4 h-4 social-icon-static">
+                                <lottie-player 
+                                    src="../../images/icons/wired-flat-2572-logo-github-hover-roll.json" 
+                                    class="w-4 h-4 social-icon-animated absolute top-0 left-0 opacity-0"
+                                    speed="1"
+                                    autoplay="false"
+                                    loop="false">
+                                </lottie-player>
+                            </span>
+                        </a>
+                    </p>
+                </div>
+            </div>
         </div>
     </footer>
 

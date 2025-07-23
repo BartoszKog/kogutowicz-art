@@ -13,10 +13,50 @@
         <div class="container mx-auto px-6">
             <div class="flex justify-between items-center text-sm">
                 <!-- Kontakt po lewej stronie -->
-                <div>
+                <div class="flex items-center space-x-4">
                     <a href="mailto:kontakt@example.com" class="hover:text-purple-200 transition-colors duration-200" id="contact-link">
                         Kontakt
                     </a>
+                    
+                    <!-- Ikony mediów społecznościowych -->
+                    <div class="flex items-center space-x-2">
+                        <a href="https://www.instagram.com/" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="hover:text-purple-200 transition-colors duration-200 top-social-icon relative"
+                           aria-label="Instagram"
+                           data-social="instagram"
+                           id="top-instagram-link">
+                            <img src="./images/icons/wired-raw-flat-2542-logo-instagram-hover-pinch.svg" 
+                                 alt="Instagram" 
+                                 class="w-5 h-5 social-icon-static">
+                            <lottie-player 
+                                src="./images/icons/wiredi-raw-flat-2542-logo-instagram-hover-pinch.json" 
+                                class="w-5 h-5 social-icon-animated absolute top-0 left-0 opacity-0"
+                                speed="1"
+                                autoplay="false"
+                                loop="false">
+                            </lottie-player>
+                        </a>
+                        <a href="https://www.facebook.com/" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="hover:text-purple-200 transition-colors duration-200 top-social-icon relative"
+                           aria-label="Facebook"
+                           data-social="facebook"
+                           id="top-facebook-link">
+                            <img src="./images/icons/wired-raw-2540-logo-facebook-hover-pinch.svg" 
+                                 alt="Facebook" 
+                                 class="w-5 h-5 social-icon-static">
+                            <lottie-player 
+                                src="./images/icons/wired-raw-flat-2540-logo-facebook-hover-pinch.json" 
+                                class="w-5 h-5 social-icon-animated absolute top-0 left-0 opacity-0"
+                                speed="1"
+                                autoplay="false"
+                                loop="false">
+                            </lottie-player>
+                        </a>
+                    </div>
                 </div>
                 
                 <!-- Selektor języka po prawej stronie -->
@@ -154,8 +194,8 @@
                                     <span class="text-2xl">📧</span>
                                     <div>
                                         <p class="text-sm text-gray-500">Email</p>
-                                        <a href="mailto:example@example.com" class="text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200">
-                                            example@example.com
+                                        <a href="mailto:example@example.com" class="text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200" data-contact="email" id="contact-email-link">
+                                            <span data-contact="email">example@example.com</span>
                                         </a>
                                     </div>
                                 </div>
@@ -163,8 +203,8 @@
                                     <span class="text-2xl">📱</span>
                                     <div>
                                         <p class="text-sm text-gray-500">Telefon</p>
-                                        <a href="tel:+48123456789" class="text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200">
-                                            +48 123 456 789
+                                        <a href="tel:+48123456789" class="text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200" data-contact="phone" id="contact-phone-link">
+                                            <span data-contact="phone">+48 123 456 789</span>
                                         </a>
                                     </div>
                                 </div>
@@ -181,7 +221,8 @@
                                    target="_blank" 
                                    rel="noopener noreferrer"
                                    class="social-icon-link group"
-                                   aria-label="Instagram">
+                                   aria-label="Instagram"
+                                   data-social="instagram">
                                     <div class="social-icon-container bg-white p-4 sm:p-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 w-24 h-24 sm:w-30 sm:h-30 flex items-center justify-center">
                                         <img src="./images/icons/wired-lineal-2542-logo-instagram-hover-pinch.svg" 
                                              alt="Instagram" 
@@ -200,7 +241,8 @@
                                    target="_blank" 
                                    rel="noopener noreferrer"
                                    class="social-icon-link group"
-                                   aria-label="Facebook">
+                                   aria-label="Facebook"
+                                   data-social="facebook">
                                     <div class="social-icon-container bg-white p-4 sm:p-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-600 w-24 h-24 sm:w-30 sm:h-30 flex items-center justify-center">
                                         <img src="./images/icons/wired-lineal-2624-logo-circle-facebook-hover-pinch.svg" 
                                              alt="Facebook" 
@@ -229,10 +271,29 @@
     <footer class="bg-gray-800 text-white py-6">
         <div class="container mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-                <p>&copy; 2025 Portfolio Artystyczne. Wszelkie prawa zastrzeżone.</p>
-                <p class="text-sm text-gray-400">
-                    Ikony: <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200">Lordicon.com</a>
-                </p>
+                <p>&copy; 2025 <span id="footer-site-name">Portfolio Artystyczne</span>. Wszelkie prawa zastrzeżone.</p>
+                <div class="text-sm text-gray-400 flex flex-col space-y-1">
+                    <p>
+                        Ikony: <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200">Lordicon.com</a>
+                    </p>
+                    <p>
+                        Autor strony: <a href="https://github.com/BartoszKog" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200 inline-flex items-center space-x-1 footer-author-link">
+                            <span>Bartosz Kogutowicz</span>
+                            <span class="inline-block relative w-4 h-4 footer-github-icon">
+                                <img src="./images/icons/wired-flat-2572-logo-github-hover-pinch.svg" 
+                                     alt="GitHub" 
+                                     class="w-4 h-4 social-icon-static">
+                                <lottie-player 
+                                    src="./images/icons/wired-flat-2572-logo-github-hover-roll.json" 
+                                    class="w-4 h-4 social-icon-animated absolute top-0 left-0 opacity-0"
+                                    speed="1"
+                                    autoplay="false"
+                                    loop="false">
+                                </lottie-player>
+                            </span>
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
     </footer>

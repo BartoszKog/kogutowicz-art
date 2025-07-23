@@ -8,6 +8,7 @@ let shopProducts = [];
 let artistData = {}; // Nowa zmienna dla danych o artyście
 let currentLanguage = 'pl'; // Domyślny język
 let uiTexts = {}; // Teksty interfejsu użytkownika
+let siteConfig = {}; // Konfiguracja witryny
 
 // Funkcja pomocnicza do pobierania podstawowej ścieżki
 function getBasePath() {
@@ -125,8 +126,13 @@ async function fetchData() {
     const aboutResponse = await fetch(`${jsonBasePath}/src/data/json/about${aboutSuffix}.json`);
     artistData = await aboutResponse.json();
     
+    // Pobieranie konfiguracji witryny (niezależnej od języka)
+    const siteConfigResponse = await fetch(`${jsonBasePath}/src/data/json/site-config.json`);
+    siteConfig = await siteConfigResponse.json();
+    
     // Po załadowaniu danych, zaktualizuj interfejs
     updateUITexts();
+    updateSiteConfiguration();
     initializeApp();
   } catch (error) {
     console.error('Błąd podczas ładowania danych:', error);
@@ -1555,7 +1561,68 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 3D efekt będzie inicjalizowany w renderArtistPage()
   initLottieControls(); // Dodaj tutaj
+  
+  // Inicjalizuj animacje ikon społecznościowych w górnym pasku
+  initTopBarSocialIcons();
 });
+
+// Funkcja do obsługi animacji Lottie na hover dla ikon społecznościowych w górnym pasku
+function initTopBarSocialIcons() {
+  const socialIcons = document.querySelectorAll('.top-social-icon, .footer-github-icon');
+  
+  socialIcons.forEach(icon => {
+    const staticIcon = icon.querySelector('.social-icon-static');
+    const animatedIcon = icon.querySelector('.social-icon-animated');
+    
+    if (staticIcon && animatedIcon) {
+      // Upewnij się, że Lottie jest zatrzymane na starcie
+      animatedIcon.stop();
+      
+      // Na hover - pokaż animację Lottie i ukryj SVG
+      icon.addEventListener('mouseenter', () => {
+        staticIcon.style.opacity = '0';
+        animatedIcon.style.opacity = '1';
+        animatedIcon.play();
+      });
+      
+      // Po opuszczeniu - wróć do SVG i ukryj Lottie
+      icon.addEventListener('mouseleave', () => {
+        staticIcon.style.opacity = '1';
+        animatedIcon.style.opacity = '0';
+        animatedIcon.stop();
+        animatedIcon.seek(0); // Wróć do pierwszej klatki
+      });
+    }
+  });
+  
+  // Dodaj obsługę hover dla całego linka autora
+  const authorLinks = document.querySelectorAll('.footer-author-link');
+  
+  authorLinks.forEach(authorLink => {
+    const githubIcon = authorLink.querySelector('.footer-github-icon');
+    if (githubIcon) {
+      const staticIcon = githubIcon.querySelector('.social-icon-static');
+      const animatedIcon = githubIcon.querySelector('.social-icon-animated');
+      
+      if (staticIcon && animatedIcon) {
+        // Na hover całego linka - animuj ikonę GitHub
+        authorLink.addEventListener('mouseenter', () => {
+          staticIcon.style.opacity = '0';
+          animatedIcon.style.opacity = '1';
+          animatedIcon.play();
+        });
+        
+        // Po opuszczeniu całego linka - zatrzymaj animację
+        authorLink.addEventListener('mouseleave', () => {
+          staticIcon.style.opacity = '1';
+          animatedIcon.style.opacity = '0';
+          animatedIcon.stop();
+          animatedIcon.seek(0);
+        });
+      }
+    }
+  });
+}
 
 // Cleanup przy opuszczeniu strony
 window.addEventListener('beforeunload', () => {
@@ -2267,6 +2334,119 @@ function updateUITexts() {
   }
 }
 
+// Funkcja do aktualizacji konfiguracji witryny
+function updateSiteConfiguration() {
+  if (!siteConfig.siteName) return;
+  
+  // Aktualizuj nazwę witryny w nagłówku
+  const portfolioTitles = document.querySelectorAll('#portfolio-title');
+  portfolioTitles.forEach(title => {
+    if (title) title.textContent = siteConfig.siteName;
+  });
+  
+  // Aktualizuj nazwę witryny w stopce
+  const footerSiteName = document.getElementById('footer-site-name');
+  if (footerSiteName) footerSiteName.textContent = siteConfig.siteName;
+  
+  // Aktualizuj dane kontaktowe
+  if (siteConfig.contact) {
+    // Aktualizuj linki kontaktowe w górnym pasku - zmiana na dialog
+    const contactLinks = document.querySelectorAll('#contact-link');
+    contactLinks.forEach(link => {
+      if (link) {
+        // Usuń href i dodaj onclick dla dialogu
+        link.removeAttribute('href');
+        link.onclick = (e) => {
+          e.preventDefault();
+          showContactDialog();
+        };
+        link.style.cursor = 'pointer';
+      }
+    });
+    
+    // Aktualizuj email w sekcji kontaktowej
+    const emailElements = document.querySelectorAll('[data-contact="email"]');
+    emailElements.forEach(element => {
+      if (element && siteConfig.contact.email) {
+        if (element.tagName === 'A') {
+          element.href = `mailto:${siteConfig.contact.email}`;
+        }
+        if (element.tagName === 'SPAN') {
+          element.textContent = siteConfig.contact.email;
+        }
+      }
+    });
+    
+    // Aktualizuj link do emaila w sekcji kontaktowej
+    const emailLink = document.getElementById('contact-email-link');
+    if (emailLink && siteConfig.contact.email) {
+      emailLink.href = `mailto:${siteConfig.contact.email}`;
+    }
+    
+    // Aktualizuj telefon w sekcji kontaktowej
+    const phoneElements = document.querySelectorAll('[data-contact="phone"]');
+    phoneElements.forEach(element => {
+      if (element && siteConfig.contact.phone) {
+        if (element.tagName === 'A') {
+          element.href = `tel:${siteConfig.contact.phone.replace(/\s/g, '')}`;
+        }
+        if (element.tagName === 'SPAN') {
+          element.textContent = siteConfig.contact.phone;
+        }
+      }
+    });
+    
+    // Aktualizuj link do telefonu w sekcji kontaktowej
+    const phoneLink = document.getElementById('contact-phone-link');
+    if (phoneLink && siteConfig.contact.phone) {
+      phoneLink.href = `tel:${siteConfig.contact.phone.replace(/\s/g, '')}`;
+    }
+  }
+  
+  // Aktualizuj linki do mediów społecznościowych
+  if (siteConfig.socialMedia) {
+    const facebookLinks = document.querySelectorAll('[data-social="facebook"]');
+    facebookLinks.forEach(link => {
+      if (link && siteConfig.socialMedia.facebook) {
+        link.href = siteConfig.socialMedia.facebook;
+      }
+    });
+    
+    const instagramLinks = document.querySelectorAll('[data-social="instagram"]');
+    instagramLinks.forEach(link => {
+      if (link && siteConfig.socialMedia.instagram) {
+        link.href = siteConfig.socialMedia.instagram;
+      }
+    });
+  }
+  
+  // Dodaj event listenery do kopiowania danych kontaktowych
+  const emailLink = document.getElementById('contact-email-link');
+  const phoneLink = document.getElementById('contact-phone-link');
+  
+  if (emailLink) {
+    emailLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = siteConfig.contact?.email || '';
+      if (email) {
+        copyToClipboard(email, 'email');
+        e.target.blur(); // Usuń focus po kliknięciu
+      }
+    });
+  }
+  
+  if (phoneLink) {
+    phoneLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      const phone = siteConfig.contact?.phone || '';
+      if (phone) {
+        copyToClipboard(phone, 'phone');
+        e.target.blur(); // Usuń focus po kliknięciu
+      }
+    });
+  }
+}
+
 // Funkcja do zmiany języka
 async function changeLanguage(newLanguage) {
   if (newLanguage === currentLanguage) return;
@@ -2355,4 +2535,187 @@ function initializeLanguageSelector() {
       languageArrow.style.transform = 'rotate(0deg)';
     }
   });
+}
+
+// Funkcje dialogu kontaktowego
+function showContactDialog() {
+  // Usuń istniejący dialog jeśli istnieje
+  const existingDialog = document.getElementById('contact-dialog');
+  if (existingDialog) {
+    existingDialog.remove();
+  }
+
+  // Pobierz dane kontaktowe z konfiguracji
+  const email = siteConfig.contact?.email || 'malarzka.krakowska@gmail.com';
+  const phone = siteConfig.contact?.phone || '+48 123 456 789';
+
+  // Utwórz dialog
+  const dialog = document.createElement('div');
+  dialog.id = 'contact-dialog';
+  dialog.className = 'fixed inset-0 bg-transparent flex items-center justify-center z-[9999] opacity-0 transition-opacity duration-300';
+  
+  dialog.innerHTML = `
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 transform scale-90 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+      <!-- Przycisk X do zamknięcia -->
+      <button 
+        id="close-dialog-btn"
+        class="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 transition-colors"
+        title="${currentLanguage === 'pl' ? 'Zamknij' : 'Close'}"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+      
+      <h3 class="text-xl font-bold mb-6 text-gray-800 pr-8">${currentLanguage === 'pl' ? 'Kontakt' : 'Contact'}</h3>
+      
+      <div class="space-y-6">
+        <div class="flex items-center space-x-3">
+          <svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+          </svg>
+          <div class="flex-1 flex flex-col justify-center">
+            <p class="text-sm text-gray-600">${currentLanguage === 'pl' ? 'Email' : 'Email'}</p>
+            <p class="font-medium text-gray-800" id="dialog-email">${email}</p>
+          </div>
+          <button 
+            id="copy-email-btn"
+            class="p-2 text-gray-500 hover:text-blue-600 transition-colors flex-shrink-0"
+            title="${currentLanguage === 'pl' ? 'Skopiuj email' : 'Copy email'}"
+            data-text="${email}"
+            data-type="email"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+          <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+          </svg>
+          <div class="flex-1 flex flex-col justify-center">
+            <p class="text-sm text-gray-600">${currentLanguage === 'pl' ? 'Telefon' : 'Phone'}</p>
+            <p class="font-medium text-gray-800" id="dialog-phone">${phone}</p>
+          </div>
+          <button 
+            id="copy-phone-btn"
+            class="p-2 text-gray-500 hover:text-green-600 transition-colors flex-shrink-0"
+            title="${currentLanguage === 'pl' ? 'Skopiuj telefon' : 'Copy phone'}"
+            data-text="${phone}"
+            data-type="phone"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(dialog);
+
+  // Dodaj event listenery dla przycisków
+  const closeBtn = document.getElementById('close-dialog-btn');
+  const copyEmailBtn = document.getElementById('copy-email-btn');
+  const copyPhoneBtn = document.getElementById('copy-phone-btn');
+  
+  closeBtn.addEventListener('click', closeContactDialog);
+  copyEmailBtn.addEventListener('click', () => {
+    const text = copyEmailBtn.getAttribute('data-text');
+    const type = copyEmailBtn.getAttribute('data-type');
+    copyToClipboard(text, type);
+  });
+  copyPhoneBtn.addEventListener('click', () => {
+    const text = copyPhoneBtn.getAttribute('data-text');
+    const type = copyPhoneBtn.getAttribute('data-type');
+    copyToClipboard(text, type);
+  });
+
+  // Animacja wejścia
+  setTimeout(() => {
+    dialog.classList.remove('opacity-0');
+    const dialogContent = dialog.querySelector('div div');
+    dialogContent.classList.remove('scale-90');
+    dialogContent.classList.add('scale-100');
+  }, 10);
+
+  // Zamknij przy kliknięciu w tło
+  dialog.addEventListener('click', closeContactDialog);
+}
+
+function closeContactDialog() {
+  const dialog = document.getElementById('contact-dialog');
+  if (dialog) {
+    dialog.classList.add('opacity-0');
+    const dialogContent = dialog.querySelector('div div');
+    if (dialogContent) {
+      dialogContent.classList.remove('scale-100');
+      dialogContent.classList.add('scale-90');
+    }
+    setTimeout(() => dialog.remove(), 300);
+  }
+}
+
+function copyToClipboard(text, type) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showCopyNotification(type);
+    }).catch(() => {
+      fallbackCopyTextToClipboard(text, type);
+    });
+  } else {
+    fallbackCopyTextToClipboard(text, type);
+  }
+}
+
+function fallbackCopyTextToClipboard(text, type) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.style.position = 'fixed';
+  textArea.style.left = '-999999px';
+  textArea.style.top = '-999999px';
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  
+  try {
+    document.execCommand('copy');
+    showCopyNotification(type);
+  } catch (err) {
+    console.error('Błąd kopiowania:', err);
+  }
+  
+  document.body.removeChild(textArea);
+}
+
+function showCopyNotification(type) {
+  // Usuń istniejące powiadomienie
+  const existing = document.getElementById('copy-notification');
+  if (existing) existing.remove();
+
+  const notification = document.createElement('div');
+  notification.id = 'copy-notification';
+  notification.className = 'fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-[10000] transform translate-x-full transition-transform duration-300';
+  
+  const message = type === 'email' 
+    ? (currentLanguage === 'pl' ? 'Email skopiowany!' : 'Email copied!') 
+    : (currentLanguage === 'pl' ? 'Telefon skopiowany!' : 'Phone copied!');
+  
+  notification.textContent = message;
+  document.body.appendChild(notification);
+
+  // Animacja wejścia
+  setTimeout(() => {
+    notification.classList.remove('translate-x-full');
+  }, 10);
+
+  // Automatyczne ukrycie
+  setTimeout(() => {
+    notification.classList.add('translate-x-full');
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
 }

@@ -51,6 +51,65 @@ button {
     text-decoration: none;
 }
 
+/* Usuń obramowanie focus z linków kontaktowych */
+#contact-email-link:focus,
+#contact-phone-link:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Usuń obramowanie focus z linków kontaktowych po kliknięciu */
+#contact-email-link:focus-visible,
+#contact-phone-link:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Kursor pointer dla przycisków w dialogu kontaktowym */
+#contact-dialog button {
+    cursor: pointer;
+}
+
+#close-dialog-btn,
+#copy-email-btn,
+#copy-phone-btn {
+    cursor: pointer;
+}
+
+/* Kursor pointer dla selektora języka */
+#language-selector,
+.language-option {
+    cursor: pointer;
+}
+
+/* Ikony społecznościowe w górnym pasku */
+#top-instagram-link,
+#top-facebook-link {
+    cursor: pointer;
+}
+
+/* Ikona GitHub w footerze */
+.footer-github-icon {
+    cursor: pointer;
+}
+
+/* Link autora w footerze */
+.footer-author-link {
+    cursor: pointer;
+}
+
+/* Zapewnij że ikony w górnym pasku nie animują się automatycznie */
+#top-instagram-link lottie-player,
+#top-facebook-link lottie-player {
+    pointer-events: none;
+}
+
+/* Płynne przejścia dla ikon społecznościowych */
+.social-icon-static,
+.social-icon-animated {
+    transition: opacity 0.3s ease-in-out;
+}
+
 /* Footer positioning styles */
 html, body {
     height: 100%;
