@@ -66,6 +66,11 @@ class AdminInterface:
                         selected_icon=ft.Icons.SHOPPING_CART_OUTLINED,
                         label="Sklep"
                     ),
+                    ft.NavigationRailDestination(
+                        icon=ft.Icons.LANGUAGE,
+                        selected_icon=ft.Icons.LANGUAGE_OUTLINED,
+                        label="Interfejs"
+                    ),
                 ],
                 on_change=self.rail_changed
             ),
@@ -86,7 +91,7 @@ class AdminInterface:
         self.action_buttons_container = ft.Container(
             content=ft.Row([]),
             padding=ft.padding.symmetric(horizontal=20, vertical=10),
-            bgcolor=ft.Colors.PRIMARY_CONTAINER,
+            bgcolor=ft.Colors.ON_TERTIARY,
             border=ft.border.only(top=ft.BorderSide(1, ft.Colors.OUTLINE_VARIANT))
         )
         
@@ -122,7 +127,7 @@ class AdminInterface:
 
     def load_section(self, index):
         """Ładuje odpowiednią sekcję"""
-        sections = ["about", "featured", "gallery", "shop"]
+        sections = ["about", "featured", "gallery", "shop", "ui"]
         self.current_file = sections[index]
         self.load_data()
         
@@ -134,6 +139,8 @@ class AdminInterface:
             self.show_gallery_form()
         elif index == 3:
             self.show_shop_form()
+        elif index == 4:
+            self.show_ui_form()
 
     def load_data(self):
         """Ładuje dane z pliku JSON"""
@@ -1885,6 +1892,145 @@ class AdminInterface:
             self.show_gallery_form()
         elif self.current_file == "shop":
             self.show_shop_form()
+        elif self.current_file == "ui":
+            self.show_ui_form()
+            
+    def show_ui_form(self):
+        """Pokazuje formularz do edycji tekstów interfejsu użytkownika"""
+        if not self.current_data:
+            self.show_message("Brak danych do wyświetlenia", "#f44336")
+            return
+        
+        self.content_area.content = ft.Column([
+            ft.Text("Edycja tekstów interfejsu", size=24, weight=ft.FontWeight.BOLD),
+            ft.Divider(height=20),
+            
+            # Sekcja Nawigacji
+            ft.Text("Nawigacja", size=18, weight=ft.FontWeight.BOLD),
+            ft.Container(
+                content=ft.Column([
+                    ft.TextField(
+                        label="Strona Główna",
+                        value=self.current_data.get("navigation", {}).get("home", ""),
+                        on_change=lambda e: self.update_nested_field("navigation", "home", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Galeria",
+                        value=self.current_data.get("navigation", {}).get("gallery", ""),
+                        on_change=lambda e: self.update_nested_field("navigation", "gallery", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="O Artyście",
+                        value=self.current_data.get("navigation", {}).get("about", ""),
+                        on_change=lambda e: self.update_nested_field("navigation", "about", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Sklep",
+                        value=self.current_data.get("navigation", {}).get("shop", ""),
+                        on_change=lambda e: self.update_nested_field("navigation", "shop", e.control.value)
+                    ),
+                ]),
+                padding=10,
+                bgcolor=ft.Colors.ON_TERTIARY,
+                border_radius=8
+            ),
+            
+            ft.Divider(height=20),
+            
+            # Sekcja Górny Pasek
+            ft.Text("Górny pasek", size=18, weight=ft.FontWeight.BOLD),
+            ft.Container(
+                content=ft.Column([
+                    ft.TextField(
+                        label="Kontakt",
+                        value=self.current_data.get("topBar", {}).get("contact", ""),
+                        on_change=lambda e: self.update_nested_field("topBar", "contact", e.control.value)
+                    ),
+                ]),
+                padding=10,
+                bgcolor=ft.Colors.ON_TERTIARY,
+                border_radius=8
+            ),
+            
+            ft.Divider(height=20),
+            
+            # Sekcja Tytuły Stron
+            ft.Text("Tytuły stron", size=18, weight=ft.FontWeight.BOLD),
+            ft.Container(
+                content=ft.Column([
+                    ft.TextField(
+                        label="Wyróżnione Prace - Tytuł",
+                        value=self.current_data.get("sections", {}).get("featuredWorks", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "featuredWorks", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Wyróżnione Prace - Opis",
+                        value=self.current_data.get("sections", {}).get("featuredWorksDescription", ""),
+                        multiline=True,
+                        min_lines=2,
+                        max_lines=4,
+                        on_change=lambda e: self.update_nested_field("sections", "featuredWorksDescription", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Galeria - Tytuł",
+                        value=self.current_data.get("sections", {}).get("galleryTitle", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "galleryTitle", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="O Artyście - Tytuł",
+                        value=self.current_data.get("sections", {}).get("aboutTitle", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "aboutTitle", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Sklep - Tytuł",
+                        value=self.current_data.get("sections", {}).get("shopTitle", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "shopTitle", e.control.value)
+                    ),
+                ]),
+                padding=10,
+                bgcolor=ft.Colors.ON_TERTIARY,
+                border_radius=8
+            ),
+            
+            ft.Divider(height=20),
+            
+            # Sekcja Nazwy Języków
+            ft.Text("Nazwy języków", size=18, weight=ft.FontWeight.BOLD),
+            ft.Container(
+                content=ft.Column([
+                    ft.TextField(
+                        label="Polski",
+                        value=self.current_data.get("languages", {}).get("polish", ""),
+                        on_change=lambda e: self.update_nested_field("languages", "polish", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Angielski",
+                        value=self.current_data.get("languages", {}).get("english", ""),
+                        on_change=lambda e: self.update_nested_field("languages", "english", e.control.value)
+                    ),
+                ]),
+                padding=10,
+                bgcolor=ft.Colors.ON_TERTIARY,
+                border_radius=8
+            ),
+            
+        ], scroll=ft.ScrollMode.AUTO)
+        
+        self.update_buttons_state()
+        self.page.update()
+        
+    def update_nested_field(self, section, field, value):
+        """Aktualizuje zagnieżdżone pole w danych"""
+        if hasattr(self, '_loading_data') and self._loading_data:
+            return
+        
+        if section not in self.current_data:
+            self.current_data[section] = {}
+        
+        self.current_data[section][field] = value
+        self.unsaved_changes = True
+        self.update_title()
+        self.update_buttons_state()
 
 def main(page: ft.Page):
     AdminInterface(page)

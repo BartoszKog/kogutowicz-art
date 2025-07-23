@@ -6,6 +6,8 @@ let galleryArtworks = [];
 let featuredArtworks = [];
 let shopProducts = [];
 let artistData = {}; // Nowa zmienna dla danych o artyście
+let currentLanguage = 'pl'; // Domyślny język
+let uiTexts = {}; // Teksty interfejsu użytkownika
 
 // Funkcja pomocnicza do pobierania podstawowej ścieżki
 function getBasePath() {
@@ -65,22 +67,66 @@ async function fetchData() {
       jsonBasePath = '../..';
     }
     
+    // Pobieranie danych UI w odpowiednim języku
+    const uiSuffix = currentLanguage === 'en' ? '_en' : '';
+    const uiResponse = await fetch(`${jsonBasePath}/src/data/json/ui${uiSuffix}.json`);
+    uiTexts = await uiResponse.json();
+    
     // Pobieranie danych dla galerii
     const galleryResponse = await fetch(`${jsonBasePath}/src/data/json/gallery.json`);
     galleryArtworks = await galleryResponse.json();
+    
+    // Pobieranie tłumaczeń galerii jeśli język angielski
+    if (currentLanguage === 'en') {
+      const galleryTranslationsResponse = await fetch(`${jsonBasePath}/src/data/json/gallery_en.json`);
+      const galleryTranslations = await galleryTranslationsResponse.json();
+      
+      // Połącz dane z tłumaczeniami
+      galleryArtworks = galleryArtworks.map(artwork => {
+        const translation = galleryTranslations.find(t => t.id === artwork.id);
+        return translation ? { ...artwork, ...translation } : artwork;
+      });
+    }
+    
     // Pobieranie danych dla wyróżnionych dzieł
     const featuredResponse = await fetch(`${jsonBasePath}/src/data/json/featured.json`);
     featuredArtworks = await featuredResponse.json();
+    
+    // Pobieranie tłumaczeń wyróżnionych dzieł jeśli język angielski
+    if (currentLanguage === 'en') {
+      const featuredTranslationsResponse = await fetch(`${jsonBasePath}/src/data/json/featured_en.json`);
+      const featuredTranslations = await featuredTranslationsResponse.json();
+      
+      // Połącz dane z tłumaczeniami
+      featuredArtworks = featuredArtworks.map(artwork => {
+        const translation = featuredTranslations.find(t => t.id === artwork.id);
+        return translation ? { ...artwork, ...translation } : artwork;
+      });
+    }
     
     // Pobieranie danych dla sklepu
     const shopResponse = await fetch(`${jsonBasePath}/src/data/json/shop.json`);
     shopProducts = await shopResponse.json();
     
+    // Pobieranie tłumaczeń sklepu jeśli język angielski
+    if (currentLanguage === 'en') {
+      const shopTranslationsResponse = await fetch(`${jsonBasePath}/src/data/json/shop_en.json`);
+      const shopTranslations = await shopTranslationsResponse.json();
+      
+      // Połącz dane z tłumaczeniami
+      shopProducts = shopProducts.map(product => {
+        const translation = shopTranslations.find(t => t.id === product.id);
+        return translation ? { ...product, ...translation } : product;
+      });
+    }
+    
     // Pobieranie danych o artyście
-    const aboutResponse = await fetch(`${jsonBasePath}/src/data/json/about.json`);
+    const aboutSuffix = currentLanguage === 'en' ? '_en' : '';
+    const aboutResponse = await fetch(`${jsonBasePath}/src/data/json/about${aboutSuffix}.json`);
     artistData = await aboutResponse.json();
     
-    // Po załadowaniu danych, inicjalizuj aplikację
+    // Po załadowaniu danych, zaktualizuj interfejs
+    updateUITexts();
     initializeApp();
   } catch (error) {
     console.error('Błąd podczas ładowania danych:', error);
@@ -1407,6 +1453,45 @@ function observeContactSection() {
   observer.observe(contactSection);
 }
 
+// Function to handle top bar visibility on homepage
+function initTopBarScrollBehavior() {
+  const topBar = document.getElementById('top-bar');
+  if (!topBar) return;
+  
+  // Sprawdź czy jesteśmy na stronie głównej
+  const currentPath = window.location.pathname;
+  const isHomePage = currentPath === '/' || currentPath.endsWith('/index.html') || 
+                     currentPath === '' || currentPath.includes('kogutowicz-art') && !currentPath.includes('/pages/');
+  
+  if (!isHomePage) {
+    // Na innych stronach górny pasek pozostaje zawsze widoczny
+    return;
+  }
+  
+  // Na stronie głównej obserwuj scrollowanie
+  const contactSection = document.querySelector('.contact-section');
+  if (!contactSection) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Gdy sekcja kontaktowa jest widoczna, ukryj górny pasek
+        topBar.style.transform = 'translateY(-100%)';
+        topBar.style.opacity = '0';
+      } else {
+        // Gdy sekcja kontaktowa nie jest widoczna, pokaż górny pasek
+        topBar.style.transform = 'translateY(0)';
+        topBar.style.opacity = '1';
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+
+  observer.observe(contactSection);
+}
+
 // Inicjalizacja kontroli animacji Lottie dla ikon social media
 function initLottieControls() {
   const socialLinks = document.querySelectorAll('.social-icon-link');
@@ -1437,6 +1522,10 @@ function initLottieControls() {
 // Dodaj inicjalizację kontroli Lottie do głównej funkcji init
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOMContentLoaded - inicjalizacja rozpoczęta');
+  
+  // Inicjalizuj selektor języka jako pierwszy
+  initializeLanguageSelector();
+  
   fetchData();
   setupMobileMenu();
   
@@ -1456,8 +1545,12 @@ document.addEventListener('DOMContentLoaded', () => {
     observeFeaturedArtworks();
     // Inicjalizuj obserwator dla sekcji kontaktowej
     observeContactSection();
+    // Inicjalizuj obserwator dla górnego paska
+    initTopBarScrollBehavior();
   } else {
     console.log('Nie jestem na stronie głównej, pomijam slider');
+    // Na innych stronach też inicjalizuj obserwację górnego paska (ale z inną logiką)
+    initTopBarScrollBehavior();
   }
   
   // 3D efekt będzie inicjalizowany w renderArtistPage()
@@ -2109,5 +2202,157 @@ function setupFeaturedResizeHandler() {
       const newWidth = featuredContainer.getBoundingClientRect().width;
       // console.log(`Window resized. New container width: ${newWidth}px. New config will be applied on next interaction.`);
     }, 250);
+  });
+}
+
+// Funkcja do aktualizacji tekstów interfejsu
+function updateUITexts() {
+  if (!uiTexts.navigation) return;
+  
+  // Aktualizuj nawigację desktop
+  const navElements = {
+    'nav-home': uiTexts.navigation.home,
+    'nav-gallery': uiTexts.navigation.gallery,
+    'nav-about': uiTexts.navigation.about,
+    'nav-shop': uiTexts.navigation.shop
+  };
+  
+  Object.entries(navElements).forEach(([id, text]) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = text;
+  });
+  
+  // Aktualizuj nawigację mobile
+  const mobileNavElements = {
+    'mobile-nav-home': uiTexts.navigation.home,
+    'mobile-nav-gallery': uiTexts.navigation.gallery,
+    'mobile-nav-about': uiTexts.navigation.about,
+    'mobile-nav-shop': uiTexts.navigation.shop
+  };
+  
+  Object.entries(mobileNavElements).forEach(([id, text]) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = text;
+  });
+  
+  // Aktualizuj górny pasek
+  const contactLink = document.getElementById('contact-link');
+  if (contactLink && uiTexts.topBar) {
+    contactLink.textContent = uiTexts.topBar.contact;
+  }
+  
+  // Aktualizuj sekcje
+  if (uiTexts.sections) {
+    const featuredTitle = document.getElementById('featured-works-title');
+    if (featuredTitle) featuredTitle.textContent = uiTexts.sections.featuredWorks;
+    
+    const featuredDescription = document.getElementById('featured-works-description');
+    if (featuredDescription) featuredDescription.textContent = uiTexts.sections.featuredWorksDescription;
+    
+    // Aktualizuj tytuły stron
+    const galleryTitle = document.getElementById('gallery-main-title');
+    if (galleryTitle) galleryTitle.textContent = uiTexts.sections.galleryTitle;
+    
+    const aboutTitle = document.getElementById('about-main-title');
+    if (aboutTitle) aboutTitle.textContent = uiTexts.sections.aboutTitle;
+    
+    const shopTitle = document.getElementById('shop-main-title');
+    if (shopTitle) shopTitle.textContent = uiTexts.sections.shopTitle;
+  }
+  
+  // Aktualizuj selektor języka
+  const currentLanguageSpan = document.getElementById('current-language');
+  if (currentLanguageSpan && uiTexts.languages) {
+    currentLanguageSpan.textContent = currentLanguage === 'pl' ? uiTexts.languages.polish : uiTexts.languages.english;
+  }
+}
+
+// Funkcja do zmiany języka
+async function changeLanguage(newLanguage) {
+  if (newLanguage === currentLanguage) return;
+  
+  currentLanguage = newLanguage;
+  localStorage.setItem('selectedLanguage', currentLanguage);
+  
+  // Przeładuj dane w nowym języku
+  await fetchData();
+  
+  // Sprawdź na której stronie jesteśmy i odśwież odpowiednią zawartość
+  const currentPath = window.location.pathname;
+  
+  if (currentPath === '/' || currentPath.includes('index.html') || 
+      (!currentPath.includes('/pages/') && !currentPath.includes('gallery.html') && !currentPath.includes('about.html') && !currentPath.includes('shop.html'))) {
+    // Strona główna
+    renderFeaturedArtworks();
+    if (typeof renderHeroSlider === 'function') {
+      renderHeroSlider();
+    }
+  } else if (currentPath.includes('about.html')) {
+    // Strona o artyście
+    if (typeof renderArtistPage === 'function') {
+      renderArtistPage();
+    }
+  } else if (currentPath.includes('gallery.html')) {
+    // Strona galerii - przyszłe rozszerzenie
+    // Tutaj można dodać odświeżanie galerii gdy będzie potrzebne
+    console.log('Galeria - język zmieniony na:', newLanguage);
+  } else if (currentPath.includes('shop.html')) {
+    // Strona sklepu - przyszłe rozszerzenie
+    // Tutaj można dodać odświeżanie sklepu gdy będzie potrzebne
+    console.log('Sklep - język zmieniony na:', newLanguage);
+  }
+}
+
+// Funkcja do inicjalizacji selektora języka
+function initializeLanguageSelector() {
+  const languageSelector = document.getElementById('language-selector');
+  const languageDropdown = document.getElementById('language-dropdown');
+  const languageArrow = document.getElementById('language-arrow');
+  const languageOptions = document.querySelectorAll('.language-option');
+  
+  if (!languageSelector || !languageDropdown) return;
+  
+  // Wczytaj zapisany język z localStorage
+  const savedLanguage = localStorage.getItem('selectedLanguage');
+  if (savedLanguage && (savedLanguage === 'pl' || savedLanguage === 'en')) {
+    currentLanguage = savedLanguage;
+  }
+  
+  // Obsługa kliknięcia na selektor
+  languageSelector.addEventListener('click', (e) => {
+    e.preventDefault();
+    const isHidden = languageDropdown.classList.contains('hidden');
+    
+    if (isHidden) {
+      languageDropdown.classList.remove('hidden');
+      languageArrow.style.transform = 'rotate(180deg)';
+    } else {
+      languageDropdown.classList.add('hidden');
+      languageArrow.style.transform = 'rotate(0deg)';
+    }
+  });
+  
+  // Obsługa wyboru języka
+  languageOptions.forEach(option => {
+    option.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const selectedLang = e.target.getAttribute('data-lang');
+      
+      if (selectedLang && selectedLang !== currentLanguage) {
+        await changeLanguage(selectedLang);
+      }
+      
+      // Zamknij dropdown
+      languageDropdown.classList.add('hidden');
+      languageArrow.style.transform = 'rotate(0deg)';
+    });
+  });
+  
+  // Zamknij dropdown przy kliknięciu poza nim
+  document.addEventListener('click', (e) => {
+    if (!languageSelector.contains(e.target)) {
+      languageDropdown.classList.add('hidden');
+      languageArrow.style.transform = 'rotate(0deg)';
+    }
   });
 }

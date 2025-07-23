@@ -1,0 +1,33 @@
+{
+  "navigation": {
+    "home": "Strona Główna",
+    "gallery": "Galeria",
+    "about": "O Artyście",
+    "shop": "Sklep"
+  },
+  "topBar": {
+    "contact": "Kontakt",
+    "languageSelector": "Język"
+  },
+  "sections": {
+    "featuredWorks": "Wyróżnione Prace",
+    "featuredWorksDescription": "Poznaj moje prace - od nastrojowych pejzaży po portrety pełne emocji. Każda praca opowiada swoją unikalną historię.",
+    "galleryTitle": "Galeria prac",
+    "aboutTitle": "O Artyście",
+    "shopTitle": "Prace na sprzedaż"
+  },
+  "common": {
+    "viewMore": "Zobacz więcej",
+    "backToGallery": "Powrót do galerii",
+    "price": "Cena",
+    "available": "Dostępne",
+    "unavailable": "Niedostępne",
+    "dimensions": "Wymiary",
+    "year": "Rok",
+    "technique": "Technika"
+  },
+  "languages": {
+    "polish": "Polski",
+    "english": "Angielski"
+  }
+}

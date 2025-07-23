@@ -1,5 +1,46 @@
 @import "tailwindcss";
 
+/* Górny pasek informacyjny */
+#top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1001; /* Musi być wyżej niż header (z-index: 1000) */
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* Selektor języka - dropdown */
+#language-dropdown {
+    animation: fadeIn 0.2s ease-out;
+    z-index: 1002; /* Dropdown musi być jeszcze wyżej */
+}
+
+#language-dropdown.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-0.5rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hover efekty dla selektora języka */
+.language-option:hover {
+    background-color: rgb(243 232 255);
+    color: rgb(147 51 234);
+}
+
+#language-selector:hover #language-arrow {
+    color: rgb(196 181 253);
+}
+
 /* Button reset */
 button {
     background: none;
@@ -1057,6 +1098,7 @@ body.focus-mode-open {
 /* CSS Custom Properties */
 :root {
     --header-height: 72px; /* Przybliżona wysokość nagłówka */
+    --top-bar-height: 36px; /* Wysokość górnego paska */
 }
 
 /* Header fixed height for calculations */
@@ -1068,7 +1110,7 @@ header {
 
 /* Hero Slider Styles */
 #hero-slider {
-    height: calc(100vh - var(--header-height));
+    height: calc(100vh - var(--header-height) - var(--top-bar-height));
     min-height: 500px; /* Minimalna wysokość dla małych ekranów */
     position: relative;
 }
@@ -1237,12 +1279,13 @@ header {
 @media (max-width: 768px) {
     :root {
         --header-height: 80px; /* Nieco wyższy na mobile z powodu potencjalnego menu */
+        --top-bar-height: 40px; /* Nieco wyższy górny pasek na mobile */
     }
     
     #hero-slider {
-        height: calc(100vh - var(--header-height) - 60px); /* Dodatkowe 60px dla pasków przeglądarki */
+        height: calc(100vh - var(--header-height) - var(--top-bar-height) - 60px); /* Dodatkowe 60px dla pasków przeglądarki */
         min-height: 350px; /* Mniejsza minimalna wysokość na mobile */
-        max-height: calc(100vh - 120px); /* Maksymalna wysokość żeby kropki były widoczne */
+        max-height: calc(100vh - 160px); /* Maksymalna wysokość żeby kropki były widoczne */
     }
     
     .slider-dots {
@@ -1267,9 +1310,9 @@ header {
 /* Dodatkowe ograniczenia dla bardzo małych ekranów */
 @media (max-width: 480px) {
     #hero-slider {
-        height: calc(100vh - var(--header-height) - 80px); /* Jeszcze więcej miejsca dla bardzo małych ekranów */
+        height: calc(100vh - var(--header-height) - var(--top-bar-height) - 80px); /* Jeszcze więcej miejsca dla bardzo małych ekranów */
         min-height: 300px;
-        max-height: calc(100vh - 140px);
+        max-height: calc(100vh - 180px);
     }
     
     .slider-dots {
