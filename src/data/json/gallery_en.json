@@ -9,11 +9,13 @@
   },
   {
     "id": 34,
-    "title": "Anxiety"
+    "title": "Anxiety",
+    "technique": "Pastels"
   },
   {
     "id": 33,
-    "title": "Meeting of Worlds"
+    "title": "Meeting of Worlds",
+    "technique": "Pastels"
   },
   {
     "id": 5,
@@ -42,11 +44,12 @@
   },
   {
     "id": 11,
-    "title": "Bouquet"
+    "title": "Church in Żegocina Center"
   },
   {
     "id": 12,
-    "title": "Daffodils"
+    "title": "Daffodils",
+    "description": "Złota jesień w Żegocinie"
   },
   {
     "id": 13,
@@ -58,7 +61,8 @@
   },
   {
     "id": 15,
-    "title": "Yellow Roses"
+    "title": "Yellow Roses",
+    "description": "Krakowskie gołębie na tle Kościoła Mariackiego"
   },
   {
     "id": 16,
@@ -90,11 +94,13 @@
   },
   {
     "id": 23,
-    "title": "Church in Laskowa"
+    "title": "Church in Laskowa",
+    "description": "Zamek w Wiśniczu"
   },
   {
     "id": 24,
-    "title": "Leonard"
+    "title": "Leonard",
+    "description": "Rynek w Myślenicach"
   },
   {
     "id": 25,
@@ -102,30 +108,35 @@
   },
   {
     "id": 26,
-    "title": "Castle in Wiśnicz"
+    "title": "Castle in Wiśnicz",
+    "description": "Koniec lata w Łąkcie Górnej"
   },
   {
     "id": 27,
-    "title": "Jew"
+    "title": "Jew",
+    "description": "Kościół św. Leonarda w Lipnicy Murowanej"
   },
   {
     "id": 28,
-    "title": "St. Mary's Basilica"
+    "title": "St. Mary's Basilica",
+    "description": "Kościół w Laskowej jesienią"
   },
   {
     "id": 29,
-    "title": "Market Square in Cracow"
+    "title": "Market Square in Cracow",
+    "description": "Kościół św. Leonarda w Lipnicy Murowanej"
   },
   {
     "id": 30,
-    "title": "Church in Żegocina Center"
+    "title": "Jew"
   },
   {
     "id": 32,
-    "title": "Church in Żegocina"
+    "title": "Church in Żegocina",
+    "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie 9"
   },
   {
-    "id": 35,
+    "id": 9,
     "title": "Church in Chronów"
   }
 ]

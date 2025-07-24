@@ -22,15 +22,33 @@ class AdminInterface:
         self.current_file = None
         self.current_data = None
         self.unsaved_changes = False
+        self.english_mode = False  # Tryb edycji języka angielskiego
         # Komponenty UI
         self.setup_ui()
 
     def setup_ui(self):
         """Konfiguruje interfejs użytkownika"""
+        # Switch dla trybu językowego
+        self.language_switch = ft.Switch(
+            label="Tryb angielski",
+            value=self.english_mode,
+            on_change=self.on_language_mode_changed
+        )
+        
         # AppBar
         self.page.appbar = ft.AppBar(
             title=ft.Text("Panel Administracyjny", weight=ft.FontWeight.BOLD),
             leading=ft.Icon(ft.Icons.ADMIN_PANEL_SETTINGS, size=40),
+            actions=[
+                ft.Container(
+                    content=ft.Row([
+                        ft.Text("🇵🇱", size=16),
+                        self.language_switch,
+                        ft.Text("🇬🇧", size=16)
+                    ], tight=True),
+                    padding=ft.padding.symmetric(horizontal=10)
+                )
+            ],
             bgcolor="#1976d2",
             color="#ffffff"
         )
@@ -70,6 +88,11 @@ class AdminInterface:
                         icon=ft.Icons.LANGUAGE,
                         selected_icon=ft.Icons.LANGUAGE_OUTLINED,
                         label="Interfejs"
+                    ),
+                    ft.NavigationRailDestination(
+                        icon=ft.Icons.CATEGORY,
+                        selected_icon=ft.Icons.CATEGORY_OUTLINED,
+                        label="Kategorie"
                     ),
                     ft.NavigationRailDestination(
                         icon=ft.Icons.SETTINGS,
@@ -132,7 +155,7 @@ class AdminInterface:
 
     def load_section(self, index):
         """Ładuje odpowiednią sekcję"""
-        sections = ["about", "featured", "gallery", "shop", "ui", "site-config"]
+        sections = ["about", "featured", "gallery", "shop", "ui", "categories", "site-config"]
         self.current_file = sections[index]
         self.load_data()
         
@@ -147,13 +170,146 @@ class AdminInterface:
         elif index == 4:
             self.show_ui_form()
         elif index == 5:
+            self.show_categories_form()
+        elif index == 6:
             self.show_site_config_form()
+
+    def on_language_mode_changed(self, e):
+        """Obsługuje zmianę trybu językowego"""
+        self.english_mode = e.control.value
+        
+        # Jeśli są niezapisane zmiany, przeładuj dane
+        if self.current_file:
+            self.load_data()
+            # Odśwież aktualną sekcję
+            current_index = self.rail.content.selected_index
+            if current_index == 0:
+                self.show_about_form()
+            elif current_index == 1:
+                self.show_featured_form()
+            elif current_index == 2:
+                self.show_gallery_form()
+            elif current_index == 3:
+                self.show_shop_form()
+            elif current_index == 4:
+                self.show_ui_form()
+            elif current_index == 5:
+                self.show_categories_form()
+            elif current_index == 6:
+                self.show_site_config_form()
+    
+    def merge_data_for_display(self, english_data, polish_data):
+        """Łączy dane angielskie z polskimi dla wyświetlania w trybie angielskim"""
+        if isinstance(english_data, list) and isinstance(polish_data, list):
+            # Dla list (gallery, shop, featured) - łącz elementy po ID
+            merged_list = []
+            
+            for eng_item in english_data:
+                # Znajdź odpowiadający polski element po ID
+                eng_id = eng_item.get('id')
+                polish_item = None
+                
+                if eng_id is not None:
+                    for pol_item in polish_data:
+                        if pol_item.get('id') == eng_id:
+                            polish_item = pol_item
+                            break
+                
+                # Połącz dane - angielskie nadpisują polskie dla pól z tłumaczeniem
+                if polish_item:
+                    merged_item = polish_item.copy()  # Zacznij od polskich danych
+                    
+                    # Nadpisz tylko pola które mają tłumaczenia
+                    if 'title' in eng_item:
+                        merged_item['title'] = eng_item['title']
+                    if 'description' in eng_item:
+                        merged_item['description'] = eng_item['description']
+                    if 'technique' in eng_item:
+                        merged_item['technique'] = eng_item['technique']
+                    
+                    merged_list.append(merged_item)
+                else:
+                    # Jeśli nie ma polskiego odpowiednika, użyj angielskiego
+                    merged_list.append(eng_item)
+            
+            return merged_list
+            
+        elif isinstance(english_data, dict) and isinstance(polish_data, dict):
+            # Dla słowników (about) - łącz pola
+            merged_dict = polish_data.copy()  # Zacznij od polskich danych
+            
+            # Nadpisz pola które mają tłumaczenia
+            for key, value in english_data.items():
+                merged_dict[key] = value
+            
+            return merged_dict
+        
+        # Jeśli typy się nie zgadzają, zwróć dane angielskie
+        return english_data
 
     def load_data(self):
         """Ładuje dane z pliku JSON"""
         try:
             self._loading_data = True  # Ustaw flagę ładowania
-            json_file = self.json_path / f"{self.current_file}.json"
+            
+            # Specjalna obsługa dla sekcji kategorii
+            if self.current_file == "categories":
+                if self.english_mode:
+                    # W trybie angielskim ładuj ui_en.json
+                    json_file = self.json_path / "ui_en.json"
+                else:
+                    # W trybie polskim nie ładuj niczego - będzie obsłużone w show_categories_form
+                    self.current_data = {}
+                    self.unsaved_changes = False
+                    self.update_title()
+                    self.update_buttons_state()
+                    self._loading_data = False
+                    return
+            elif self.current_file == "site-config":
+                if self.english_mode:
+                    # W trybie angielskim nie ładuj niczego - będzie obsłużone w show_site_config_form
+                    self.current_data = {}
+                    self.unsaved_changes = False
+                    self.update_title()
+                    self.update_buttons_state()
+                    self._loading_data = False
+                    return
+                else:
+                    # W trybie polskim ładuj normalnie
+                    json_file = self.json_path / f"{self.current_file}.json"
+            else:
+                # Dla innych sekcji - logika z łączeniem danych dla trybu angielskiego
+                if self.english_mode:
+                    json_file = self.json_path / f"{self.current_file}_en.json"
+                    polish_file = self.json_path / f"{self.current_file}.json"
+                    
+                    # Załaduj dane angielskie
+                    with open(json_file, 'r', encoding='utf-8') as f:
+                        english_data = json.load(f)
+                    
+                    # Załaduj dane polskie jako backup dla pól disabled
+                    try:
+                        with open(polish_file, 'r', encoding='utf-8') as f:
+                            polish_data = json.load(f)
+                        
+                        # Połącz dane - angielskie jako główne, polskie jako uzupełnienie
+                        self.current_data = self.merge_data_for_display(english_data, polish_data)
+                        self.original_polish_data = polish_data  # Zachowaj oryginalne dane polskie
+                        
+                    except FileNotFoundError:
+                        self.current_data = english_data
+                        self.original_polish_data = None
+                        
+                    # Nie używaj standardowego ładowania pliku - już załadowane
+                    self.unsaved_changes = False
+                    self.update_title()
+                    self.update_buttons_state()
+                    self._loading_data = False
+                    return
+                else:
+                    json_file = self.json_path / f"{self.current_file}.json"
+                    self.original_polish_data = None
+            
             with open(json_file, 'r', encoding='utf-8') as f:
                 self.current_data = json.load(f)
             self.unsaved_changes = False
@@ -162,8 +318,15 @@ class AdminInterface:
             self._loading_data = False  # Wyłącz flagę ładowania
         except FileNotFoundError:
             self._loading_data = False
-            self.show_message("Błąd: Nie znaleziono pliku JSON", "#f44336")
-            self.current_data = None
+            if self.current_file == "categories":
+                # Dla kategorii nie pokazuj błędu - zostanie obsłużone w show_categories_form
+                self.current_data = {}
+            else:
+                if self.english_mode:
+                    self.show_message("Błąd: Nie znaleziono pliku z tłumaczeniem", "#f44336")
+                else:
+                    self.show_message("Błąd: Nie znaleziono pliku JSON", "#f44336")
+                self.current_data = None
         except json.JSONDecodeError:
             self._loading_data = False
             self.show_message("Błąd: Nieprawidłowy format JSON", "#f44336")
@@ -204,6 +367,49 @@ class AdminInterface:
             return cleaned_dict
         else:
             return data
+    
+    def filter_data_for_english_save(self, data):
+        """Filtruje dane przed zapisem w trybie angielskim - zachowuje tylko pola z tłumaczeniami"""
+        if isinstance(data, list):
+            # Dla list (gallery, shop, featured) - filtruj każdy element
+            filtered_list = []
+            
+            for item in data:
+                if isinstance(item, dict):
+                    filtered_item = {}
+                    
+                    # Zawsze zachowaj ID
+                    if 'id' in item:
+                        filtered_item['id'] = item['id']
+                    
+                    # Zachowaj tylko pola które mają tłumaczenia
+                    if 'title' in item:
+                        filtered_item['title'] = item['title']
+                    if 'description' in item:
+                        filtered_item['description'] = item['description']
+                    if 'technique' in item:
+                        filtered_item['technique'] = item['technique']
+                    
+                    # Dodaj element tylko jeśli ma jakieś pola oprócz ID
+                    if len(filtered_item) > 1 or ('id' in filtered_item and len(filtered_item) == 1 and any(key in item for key in ['title', 'description', 'technique'])):
+                        filtered_list.append(filtered_item)
+            
+            return filtered_list
+            
+        elif isinstance(data, dict):
+            # Dla słowników (about) - zachowaj tylko pola z tłumaczeniami
+            filtered_dict = {}
+            
+            # Lista pól które mają tłumaczenia w about
+            translatable_fields = ['artistName', 'biography', 'education', 'achievements', 'exhibitions']
+            
+            for field in translatable_fields:
+                if field in data:
+                    filtered_dict[field] = data[field]
+            
+            return filtered_dict
+        
+        return data
 
     def save_data(self):
         """Zapisuje dane do pliku JSON"""
@@ -211,7 +417,32 @@ class AdminInterface:
             # Wyczyść dane przed zapisem
             cleaned_data = self.clean_data_before_save(self.current_data)
             
-            json_file = self.json_path / f"{self.current_file}.json"
+            # Specjalna obsługa dla sekcji kategorii
+            if self.current_file == "categories":
+                if self.english_mode:
+                    # W trybie angielskim zapisuj do ui_en.json
+                    json_file = self.json_path / "ui_en.json"
+                else:
+                    # W trybie polskim nie zapisuj niczego
+                    self.show_message("Kategorie można edytować tylko w trybie angielskim", "#ff9800")
+                    return
+            elif self.current_file == "site-config":
+                if self.english_mode:
+                    # W trybie angielskim nie zapisuj niczego
+                    self.show_message("Ustawienia można edytować tylko w trybie polskim", "#ff9800")
+                    return
+                else:
+                    # W trybie polskim zapisuj normalnie
+                    json_file = self.json_path / f"{self.current_file}.json"
+            else:
+                # Dla innych sekcji - logika z filtrowaniem dla trybu angielskiego
+                if self.english_mode:
+                    json_file = self.json_path / f"{self.current_file}_en.json"
+                    # Filtruj dane - zapisuj tylko pola z tłumaczeniami
+                    cleaned_data = self.filter_data_for_english_save(cleaned_data)
+                else:
+                    json_file = self.json_path / f"{self.current_file}.json"
+                
             with open(json_file, 'w', encoding='utf-8') as f:
                 json.dump(cleaned_data, f, ensure_ascii=False, indent=2)
             self.unsaved_changes = False
@@ -265,8 +496,8 @@ class AdminInterface:
         """Tworzy przyciski akcji i umieszcza je w stałym kontenerze na dole"""
         buttons = []
         
-        # Przycisk dodawania (jeśli wymagany)
-        if show_add_button and add_button_callback:
+        # Przycisk dodawania (jeśli wymagany i nie w trybie angielskim)
+        if show_add_button and add_button_callback and not self.english_mode:
             add_button = ft.ElevatedButton(
                 add_button_text,
                 icon=ft.Icons.ADD,
@@ -346,7 +577,7 @@ class AdminInterface:
         
         return used_images
 
-    def create_image_picker(self, current_image="", on_change=None):
+    def create_image_picker(self, current_image="", on_change=None, disabled=False):
         """Tworzy komponent wyboru obrazu"""
         
         # Funkcja pomocnicza do obliczania rozmiaru pliku
@@ -526,7 +757,11 @@ class AdminInterface:
         image_container = ft.Column([
             ft.Row([
                 image_field,
-                ft.ElevatedButton("Wybierz obraz", on_click=pick_image)
+                ft.ElevatedButton(
+                    "Wybierz obraz", 
+                    on_click=pick_image,
+                    disabled=disabled
+                )
             ]),
             image_display,
             image_info_text
@@ -572,7 +807,7 @@ class AdminInterface:
         
         return []
 
-    def create_gallery_category_dropdown(self, current_value="", on_change=None):
+    def create_gallery_category_dropdown(self, current_value="", on_change=None, disabled=False):
         """Tworzy dropdown z kategoriami galerii dla sekcji featured"""
         gallery_categories = self.get_gallery_categories()
         
@@ -586,12 +821,13 @@ class AdminInterface:
             label="Kategoria galerii (dla linku)",
             value=current_value,
             options=options,
-            on_change=on_change
+            on_change=on_change,
+            disabled=disabled
         )
         
         return dropdown
 
-    def create_category_selector(self, current_categories=None, on_change=None):
+    def create_category_selector(self, current_categories=None, on_change=None, disabled=False):
         """Tworzy selektor kategorii z Dropdown i prostym interfejsem"""
         if current_categories is None:
             current_categories = []
@@ -604,14 +840,16 @@ class AdminInterface:
             value=", ".join(current_categories),
             multiline=True,
             min_lines=1,
-            max_lines=3
+            max_lines=3,
+            disabled=disabled
         )
         
         # Dropdown z istniejącymi kategoriami
         dropdown = ft.Dropdown(
             label="Wybierz z istniejących kategorii",
             options=[ft.dropdown.Option(cat) for cat in existing_categories],
-            width=300
+            width=300,
+            disabled=disabled
         )
         
         def add_category_from_dropdown(e):
@@ -653,7 +891,8 @@ class AdminInterface:
                 ft.ElevatedButton(
                     "Dodaj",
                     on_click=add_category_from_dropdown,
-                    height=40
+                    height=40,
+                    disabled=disabled
                 )
             ]),
             info_text
@@ -671,11 +910,13 @@ class AdminInterface:
             on_change=lambda e: self.update_field("artistName", e.control.value)
         )
         
-        # Wybór zdjęcia artysty
-        artist_photo = self.create_image_picker(
-            self.current_data.get("artistPhoto", ""),
-            lambda path: self.update_field("artistPhoto", path)
-        )
+        # Wybór zdjęcia artysty (wyłączone w trybie angielskim)
+        artist_photo = None
+        if not self.english_mode:
+            artist_photo = self.create_image_picker(
+                self.current_data.get("artistPhoto", ""),
+                lambda path: self.update_field("artistPhoto", path)
+            )
         
         # Biografia (lista akapitów)
         biography_section = ft.Column([
@@ -793,17 +1034,27 @@ class AdminInterface:
             exhibitions_section.controls.append(row)
         
         # Zawartość formularza
-        form_content = ft.Column([
+        form_controls = [
             ft.Text("Edycja sekcji 'O Artyście'", size=24, weight=ft.FontWeight.BOLD),
             ft.Divider(),
-            artist_name,
-            ft.Text("Zdjęcie artysty:", weight=ft.FontWeight.BOLD),
-            artist_photo,
+            artist_name
+        ]
+        
+        # Dodaj sekcję zdjęcia tylko w trybie polskim
+        if not self.english_mode:
+            form_controls.extend([
+                ft.Text("Zdjęcie artysty:", weight=ft.FontWeight.BOLD),
+                artist_photo
+            ])
+        
+        form_controls.extend([
             biography_section,
             education_section,
             achievements_section,
             exhibitions_section
-        ], scroll=ft.ScrollMode.AUTO)
+        ])
+
+        form_content = ft.Column(form_controls, scroll=ft.ScrollMode.AUTO)
 
         self.content_area.content = form_content
         
@@ -1132,24 +1383,26 @@ class AdminInterface:
                                     height=40,
                                     text_align=ft.TextAlign.CENTER,
                                     input_filter=ft.NumbersOnlyInputFilter(),
+                                    disabled=self.english_mode,
                                     on_submit=lambda e, idx=i: self.move_to_position(idx, e.control.value),
                                     on_blur=lambda e, idx=i: self.move_to_position(idx, e.control.value)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_UP,
                                     tooltip="Przesuń w górę",
-                                    disabled=i == 0,  # Wyłącz dla pierwszego elementu
+                                    disabled=i == 0 or self.english_mode,  # Wyłącz dla pierwszego elementu lub trybu angielskiego
                                     on_click=lambda e, idx=i: self.move_item_up(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_DOWN,
                                     tooltip="Przesuń w dół",
-                                    disabled=i == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                    disabled=i == len(self.current_data) - 1 or self.english_mode,  # Wyłącz dla ostatniego elementu lub trybu angielskiego
                                     on_click=lambda e, idx=i: self.move_item_down(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.DELETE,
                                     tooltip="Usuń element",
+                                    disabled=self.english_mode,
                                     on_click=lambda e, idx=i: self.delete_featured_item_inline(idx, form_container)
                                 )
                             ])
@@ -1167,7 +1420,8 @@ class AdminInterface:
                         ),
                         self.create_gallery_category_dropdown(
                             item.get("galleryCategory", ""),
-                            lambda e, idx=i: self.update_item_field(idx, "galleryCategory", e.control.value)
+                            lambda e, idx=i: self.update_item_field(idx, "galleryCategory", e.control.value),
+                            disabled=self.english_mode
                         ),
                         ft.Text("Pozycjonowanie obrazu w sliderze:", weight=ft.FontWeight.BOLD),
                         ft.Row([
@@ -1177,8 +1431,9 @@ class AdminInterface:
                                     min=0,
                                     max=1,
                                     value=item.get("positionX", 0.5),
-                                    divisions=100,
+                                    divisions=100,  
                                     label="{value}",
+                                    disabled=self.english_mode,
                                     on_change=lambda e, idx=i: self.update_item_field(idx, "positionX", round(e.control.value, 2))
                                 )
                             ], expand=True),
@@ -1190,6 +1445,7 @@ class AdminInterface:
                                     value=item.get("positionY", 0.5),
                                     divisions=100,
                                     label="{value}",
+                                    disabled=self.english_mode,
                                     on_change=lambda e, idx=i: self.update_item_field(idx, "positionY", round(e.control.value, 2))
                                 )
                             ], expand=True)
@@ -1197,7 +1453,8 @@ class AdminInterface:
                         ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(
                             item.get("image", ""),
-                            lambda path, idx=i: self.update_item_field(idx, "image", path)
+                            lambda path, idx=i: self.update_item_field(idx, "image", path),
+                            disabled=self.english_mode
                         )
                     ]),
                     padding=15
@@ -1252,24 +1509,26 @@ class AdminInterface:
                                     height=40,
                                     text_align=ft.TextAlign.CENTER,
                                     input_filter=ft.NumbersOnlyInputFilter(),
+                                    disabled=self.english_mode,
                                     on_submit=lambda e, idx=new_index: self.move_to_position(idx, e.control.value),
                                     on_blur=lambda e, idx=new_index: self.move_to_position(idx, e.control.value)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_UP,
                                     tooltip="Przesuń w górę",
-                                    disabled=new_index == 0,  # Wyłącz dla pierwszego elementu
+                                    disabled=new_index == 0 or self.english_mode,  # Wyłącz dla pierwszego elementu lub trybu angielskiego
                                     on_click=lambda e, idx=new_index: self.move_item_up(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_DOWN,
                                     tooltip="Przesuń w dół",
-                                    disabled=new_index == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                    disabled=new_index == len(self.current_data) - 1 or self.english_mode,  # Wyłącz dla ostatniego elementu lub trybu angielskiego
                                     on_click=lambda e, idx=new_index: self.move_item_down(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.DELETE,
                                     tooltip="Usuń dzieło",
+                                    disabled=self.english_mode,
                                     on_click=lambda e, idx=new_index: delete_artwork_inline(idx)
                                 )
                             ])
@@ -1285,6 +1544,7 @@ class AdminInterface:
                                 label="Rok",
                                 value="2024",
                                 width=100,
+                                disabled=self.english_mode,
                                 on_change=lambda e, idx=new_index: self.update_item_field(idx, "year", int(e.control.value) if e.control.value.isdigit() else 2024)
                             )
                         ]),
@@ -1305,22 +1565,26 @@ class AdminInterface:
                                 label="Wymiary",
                                 value="",
                                 expand=True,
+                                disabled=self.english_mode,
                                 on_change=lambda e, idx=new_index: self.update_item_field(idx, "dimensions", e.control.value)
                             )
                         ]),
                         self.create_category_selector(
                             [],
-                            lambda categories, idx=new_index: self.update_item_field(idx, "categories", categories)
+                            lambda categories, idx=new_index: self.update_item_field(idx, "categories", categories),
+                            disabled=self.english_mode
                         ),
                         ft.Switch(
                             label="Dostępne",
                             value=True,
+                            disabled=self.english_mode,
                             on_change=lambda e, idx=new_index: self.update_item_field(idx, "available", e.control.value)
                         ),
                         ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(
                             "",
-                            lambda path, idx=new_index: self.update_item_field(idx, "image", path)
+                            lambda path, idx=new_index: self.update_item_field(idx, "image", path),
+                            disabled=self.english_mode
                         )
                     ]),
                     padding=15
@@ -1399,24 +1663,26 @@ class AdminInterface:
                                     height=40,
                                     text_align=ft.TextAlign.CENTER,
                                     input_filter=ft.NumbersOnlyInputFilter(),
+                                    disabled=self.english_mode,
                                     on_submit=lambda e, idx=i: self.move_to_position(idx, e.control.value),
                                     on_blur=lambda e, idx=i: self.move_to_position(idx, e.control.value)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_UP,
                                     tooltip="Przesuń w górę",
-                                    disabled=i == 0,  # Wyłącz dla pierwszego elementu
+                                    disabled=i == 0 or self.english_mode,  # Wyłącz dla pierwszego elementu lub trybu angielskiego
                                     on_click=lambda e, idx=i: self.move_item_up(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_DOWN,
                                     tooltip="Przesuń w dół",
-                                    disabled=i == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                    disabled=i == len(self.current_data) - 1 or self.english_mode,  # Wyłącz dla ostatniego elementu lub trybu angielskiego
                                     on_click=lambda e, idx=i: self.move_item_down(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.DELETE,
                                     tooltip="Usuń dzieło",
+                                    disabled=self.english_mode,
                                     on_click=lambda e, idx=i: delete_artwork_inline(idx)
                                 )
                             ])
@@ -1432,6 +1698,7 @@ class AdminInterface:
                                 label="Rok",
                                 value=str(artwork.get("year", "")),
                                 width=100,
+                                disabled=self.english_mode,
                                 on_change=lambda e, idx=i: self.update_item_field(idx, "year", int(e.control.value) if e.control.value.isdigit() else 2024)
                             )
                         ]),
@@ -1452,22 +1719,26 @@ class AdminInterface:
                                 label="Wymiary",
                                 value=artwork.get("dimensions", ""),
                                 expand=True,
+                                disabled=self.english_mode,
                                 on_change=lambda e, idx=i: self.update_item_field(idx, "dimensions", e.control.value)
                             )
                         ]),
                         self.create_category_selector(
                             artwork.get("categories", []),
-                            lambda categories, idx=i: self.update_item_field(idx, "categories", categories)
+                            lambda categories, idx=i: self.update_item_field(idx, "categories", categories),
+                            disabled=self.english_mode
                         ),
                         ft.Switch(
                             label="Dostępne",
                             value=artwork.get("available", True),
+                            disabled=self.english_mode,
                             on_change=lambda e, idx=i: self.update_item_field(idx, "available", e.control.value)
                         ),
                         ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(
                             artwork.get("image", ""),
-                            lambda path, idx=i: self.update_item_field(idx, "image", path)
+                            lambda path, idx=i: self.update_item_field(idx, "image", path),
+                            disabled=self.english_mode
                         )
                     ]),
                     padding=15
@@ -1522,24 +1793,26 @@ class AdminInterface:
                                     height=40,
                                     text_align=ft.TextAlign.CENTER,
                                     input_filter=ft.NumbersOnlyInputFilter(),
+                                    disabled=self.english_mode,
                                     on_submit=lambda e, idx=new_index: self.move_to_position(idx, e.control.value),
                                     on_blur=lambda e, idx=new_index: self.move_to_position(idx, e.control.value)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_UP,
                                     tooltip="Przesuń w górę",
-                                    disabled=new_index == 0,  # Wyłącz dla pierwszego elementu
+                                    disabled=new_index == 0 or self.english_mode,  # Wyłącz dla pierwszego elementu lub trybu angielskiego
                                     on_click=lambda e, idx=new_index: self.move_item_up(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_DOWN,
                                     tooltip="Przesuń w dół",
-                                    disabled=new_index == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                    disabled=new_index == len(self.current_data) - 1 or self.english_mode,  # Wyłącz dla ostatniego elementu lub trybu angielskiego
                                     on_click=lambda e, idx=new_index: self.move_item_down(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.DELETE,
                                     tooltip="Usuń produkt",
+                                    disabled=self.english_mode,
                                     on_click=lambda e, idx=new_index: delete_product_inline(idx)
                                 )
                             ])
@@ -1558,6 +1831,7 @@ class AdminInterface:
                         ft.TextField(
                             label="Wymiary (np. 40 x 30 cm)",
                             value="",
+                            disabled=self.english_mode,
                             on_change=lambda e, idx=new_index: self.update_item_field(idx, "dimensions", e.control.value)
                         ),
                         ft.Row([
@@ -1565,29 +1839,34 @@ class AdminInterface:
                                 label="Cena (PLN)",
                                 value=str(new_product.get("price", 0)),
                                 width=150,
+                                disabled=self.english_mode,
                                 on_change=lambda e, idx=new_index: self.update_item_field(idx, "price", float(e.control.value) if e.control.value.replace(".", "").isdigit() else 0)
                             ),
                             ft.TextField(
                                 label="ID oryginalnego dzieła",
                                 value=str(new_product.get("originalArtworkId", 1)),
                                 width=200,
+                                disabled=self.english_mode,
                                 on_change=lambda e, idx=new_index: self.update_item_field(idx, "originalArtworkId", int(e.control.value) if e.control.value.isdigit() else 1)
                             )
                         ]),
                         ft.TextField(
                             label="URL zakupu",
                             value="",
+                            disabled=self.english_mode,
                             on_change=lambda e, idx=new_index: self.update_item_field(idx, "purchaseUrl", e.control.value)
                         ),
                         ft.Switch(
                             label="Dostępny",
                             value=True,
+                            disabled=self.english_mode,
                             on_change=lambda e, idx=new_index: self.update_item_field(idx, "available", e.control.value)
                         ),
                         ft.Text("Obraz produktu:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(
                             "",
-                            lambda path, idx=new_index: self.update_item_field(idx, "image", path)
+                            lambda path, idx=new_index: self.update_item_field(idx, "image", path),
+                            disabled=self.english_mode
                         )
                     ]),
                     padding=15
@@ -1666,24 +1945,26 @@ class AdminInterface:
                                     height=40,
                                     text_align=ft.TextAlign.CENTER,
                                     input_filter=ft.NumbersOnlyInputFilter(),
+                                    disabled=self.english_mode,
                                     on_submit=lambda e, idx=i: self.move_to_position(idx, e.control.value),
                                     on_blur=lambda e, idx=i: self.move_to_position(idx, e.control.value)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_UP,
                                     tooltip="Przesuń w górę",
-                                    disabled=i == 0,  # Wyłącz dla pierwszego elementu
+                                    disabled=i == 0 or self.english_mode,  # Wyłącz dla pierwszego elementu lub trybu angielskiego
                                     on_click=lambda e, idx=i: self.move_item_up(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_DOWN,
                                     tooltip="Przesuń w dół",
-                                    disabled=i == len(self.current_data) - 1,  # Wyłącz dla ostatniego elementu
+                                    disabled=i == len(self.current_data) - 1 or self.english_mode,  # Wyłącz dla ostatniego elementu lub trybu angielskiego
                                     on_click=lambda e, idx=i: self.move_item_down(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.DELETE,
                                     tooltip="Usuń produkt",
+                                    disabled=self.english_mode,
                                     on_click=lambda e, idx=i: delete_product_inline(idx)
                                 )
                             ])
@@ -1702,6 +1983,7 @@ class AdminInterface:
                         ft.TextField(
                             label="Wymiary (np. 40 x 30 cm)",
                             value=product.get("dimensions", ""),
+                            disabled=self.english_mode,
                             on_change=lambda e, idx=i: self.update_item_field(idx, "dimensions", e.control.value)
                         ),
                         ft.Row([
@@ -1709,29 +1991,34 @@ class AdminInterface:
                                 label="Cena (PLN)",
                                 value=str(product.get("price", 0)),
                                 width=150,
+                                disabled=self.english_mode,
                                 on_change=lambda e, idx=i: self.update_item_field(idx, "price", float(e.control.value) if e.control.value.replace(".", "").isdigit() else 0)
                             ),
                             ft.TextField(
                                 label="ID oryginalnego dzieła",
                                 value=str(product.get("originalArtworkId", 1)),
                                 width=200,
+                                disabled=self.english_mode,
                                 on_change=lambda e, idx=i: self.update_item_field(idx, "originalArtworkId", int(e.control.value) if e.control.value.isdigit() else 1)
                             )
                         ]),
                         ft.TextField(
                             label="URL zakupu",
                             value=product.get("purchaseUrl", ""),
+                            disabled=self.english_mode,
                             on_change=lambda e, idx=i: self.update_item_field(idx, "purchaseUrl", e.control.value)
                         ),
                         ft.Switch(
                             label="Dostępny",
                             value=product.get("available", True),
+                            disabled=self.english_mode,
                             on_change=lambda e, idx=i: self.update_item_field(idx, "available", e.control.value)
                         ),
                         ft.Text("Obraz produktu:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(
                             product.get("image", ""),
-                            lambda path, idx=i: self.update_item_field(idx, "image", path)
+                            lambda path, idx=i: self.update_item_field(idx, "image", path),
+                            disabled=self.english_mode
                         )
                     ]),
                     padding=15
@@ -2198,6 +2485,8 @@ class AdminInterface:
             
         ], scroll=ft.ScrollMode.AUTO)
         
+        # Utwórz przyciski akcji bez przycisku dodawania
+        self.create_action_buttons(self.show_ui_form)
         self.update_buttons_state()
         self.page.update()
         
@@ -2214,8 +2503,117 @@ class AdminInterface:
         self.update_title()
         self.update_buttons_state()
         
+    def show_categories_form(self):
+        """Wyświetla formularz edycji tłumaczeń kategorii"""
+        if not self.english_mode:
+            self.content_area.content = ft.Column([
+                ft.Text("⚠️ Sekcja Kategorie", size=24, weight=ft.FontWeight.BOLD, color="#ff9800"),
+                ft.Text("Ta sekcja jest dostępna tylko w trybie edycji języka angielskiego.", 
+                       size=16, color="#757575"),
+                ft.Text("Użyj przełącznika w prawym górnym rogu, aby przejść do trybu angielskiego.", 
+                       size=14, color="#757575")
+            ], scroll=ft.ScrollMode.AUTO)
+            self.create_action_buttons()
+            self.page.update()
+            return
+            
+        # Pobierz wszystkie kategorie z gallery.json
+        all_categories = self.get_all_categories_from_gallery()
+        
+        if not all_categories:
+            self.content_area.content = ft.Column([
+                ft.Text("⚠️ Brak kategorii", size=24, weight=ft.FontWeight.BOLD, color="#ff9800"),
+                ft.Text("Nie znaleziono żadnych kategorii w gallery.json", 
+                       size=16, color="#757575")
+            ], scroll=ft.ScrollMode.AUTO)
+            self.create_action_buttons()
+            self.page.update()
+            return
+        
+        # Pobierz istniejące tłumaczenia z ui_en.json
+        existing_translations = self.current_data.get("categories", {})
+        
+        # Twórz pola dla każdej kategorii
+        category_fields = []
+        for category in sorted(all_categories):
+            current_translation = existing_translations.get(category, "")
+            
+            field = ft.TextField(
+                label=f"Kategoria: {category}",
+                value=current_translation,
+                hint_text="Pozostaw puste jeśli nie ma być tłumaczone",
+                on_change=lambda e, cat=category: self.update_category_translation(cat, e.control.value)
+            )
+            category_fields.append(field)
+        
+        self.content_area.content = ft.Column([
+            ft.Text("🏷️ Tłumaczenia Kategorii", size=24, weight=ft.FontWeight.BOLD),
+            ft.Text("Edytuj tłumaczenia kategorii na język angielski. Pozostaw puste pola dla kategorii, które nie mają być tłumaczone.", 
+                   size=14, color="#666666"),
+            ft.Divider(height=20),
+            
+            ft.Container(
+                content=ft.Column(category_fields),
+                padding=10,
+                bgcolor=ft.Colors.ON_TERTIARY,
+                border_radius=8
+            ),
+        ], scroll=ft.ScrollMode.AUTO)
+        
+        self.create_action_buttons(self.show_categories_form)
+        self.update_buttons_state()
+        self.page.update()
+        
+    def get_all_categories_from_gallery(self):
+        """Pobiera wszystkie kategorie z gallery.json"""
+        try:
+            gallery_path = self.json_path / "gallery.json"
+            with open(gallery_path, 'r', encoding='utf-8') as f:
+                gallery_data = json.load(f)
+            
+            categories = set()
+            for item in gallery_data:
+                if 'categories' in item:
+                    categories.update(item['categories'])
+            
+            return categories
+        except Exception as e:
+            self.show_message(f"Błąd podczas wczytywania kategorii: {str(e)}", "#f44336")
+            return set()
+    
+    def update_category_translation(self, category, translation):
+        """Aktualizuje tłumaczenie kategorii"""
+        if hasattr(self, '_loading_data') and self._loading_data:
+            return
+            
+        if "categories" not in self.current_data:
+            self.current_data["categories"] = {}
+        
+        if translation.strip():
+            self.current_data["categories"][category] = translation.strip()
+        else:
+            # Usuń tłumaczenie jeśli pole jest puste
+            if category in self.current_data["categories"]:
+                del self.current_data["categories"][category]
+        
+        self.unsaved_changes = True
+        self.update_title()
+        self.update_buttons_state()
+        
     def show_site_config_form(self):
         """Pokazuje formularz do edycji ustawień witryny"""
+        if self.english_mode:
+            self.content_area.content = ft.Column([
+                ft.Text("⚠️ Sekcja Ustawienia", size=24, weight=ft.FontWeight.BOLD, color="#ff9800"),
+                ft.Text("Ta sekcja jest dostępna tylko w trybie edycji języka polskiego.", 
+                       size=16, color="#757575"),
+                ft.Text("Użyj przełącznika w prawym górnym rogu, aby przejść do trybu polskiego.", 
+                       size=14, color="#757575")
+            ], scroll=ft.ScrollMode.AUTO)
+            self.create_action_buttons()
+            self.page.update()
+            return
+            
         if not self.current_data:
             self.show_message("Brak danych do wyświetlenia", "#f44336")
             return
@@ -2310,6 +2708,8 @@ class AdminInterface:
             
         ], scroll=ft.ScrollMode.AUTO)
         
+        # Utwórz przyciski akcji bez przycisku dodawania
+        self.create_action_buttons(self.show_site_config_form)
         self.update_buttons_state()
         self.page.update()
         
