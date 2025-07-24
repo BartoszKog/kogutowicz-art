@@ -126,6 +126,16 @@ async function fetchData() {
     const aboutResponse = await fetch(`${jsonBasePath}/src/data/json/about${aboutSuffix}.json`);
     artistData = await aboutResponse.json();
     
+    // Jeśli język angielski, dodatkowo pobierz zdjęcie z polskiego pliku
+    if (currentLanguage === 'en') {
+      const aboutPlResponse = await fetch(`${jsonBasePath}/src/data/json/about.json`);
+      const aboutPlData = await aboutPlResponse.json();
+      // Dodaj zdjęcie z polskiego pliku do danych angielskich
+      if (aboutPlData.artistPhoto) {
+        artistData.artistPhoto = aboutPlData.artistPhoto;
+      }
+    }
+    
     // Pobieranie konfiguracji witryny (niezależnej od języka)
     const siteConfigResponse = await fetch(`${jsonBasePath}/src/data/json/site-config.json`);
     siteConfig = await siteConfigResponse.json();
@@ -217,7 +227,7 @@ function renderGalleryArtworks(artworks = galleryArtworks) {
           ''}
         ${artwork.description ? `<p class="text-sm mt-2">${artwork.description}</p>` : ''}
         <p class="mt-2 ${artwork.available ? 'text-green-600' : 'text-gray-400'}">
-          ${artwork.available ? 'Dostępny' : 'Niedostępny'}
+          ${artwork.available ? (uiTexts.common?.available || 'Dostępny') : (uiTexts.common?.unavailable || 'Niedostępny')}
         </p>
       </div>
     `;
@@ -238,6 +248,26 @@ function renderShopProducts() {
 
   shopContainer.innerHTML = '';
   
+  // Sprawdź czy są jakieś produkty
+  if (!shopProducts || shopProducts.length === 0) {
+    // Usuń grid layout dla pustego stanu
+    shopContainer.className = 'flex items-center justify-center min-h-64';
+    shopContainer.innerHTML = `
+      <div class="text-center">
+        <div class="text-gray-400 mb-4">
+          <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+          </svg>
+        </div>
+        <p class="text-lg text-gray-600">${uiTexts.sections?.shopEmpty || 'Aktualnie nie ma niczego wystawionego na sprzedaż'}</p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Przywróć grid layout dla produktów
+  shopContainer.className = 'shop-products grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+  
   shopProducts.forEach(product => {
     const productElement = document.createElement('div');
     productElement.className = 'bg-white rounded shadow-md overflow-hidden';
@@ -248,28 +278,42 @@ function renderShopProducts() {
     const buttonClass = isAvailable 
       ? 'shop-purchase-button bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 inline-block font-semibold transition-all duration-300 transform'
       : 'bg-gray-400 text-gray-600 px-4 py-2 rounded cursor-not-allowed inline-block';
-    const buttonText = isAvailable ? 'Przejdź do zakupu' : 'Niedostępne';
+    const buttonText = isAvailable ? (uiTexts.common?.goToPurchase || 'Przejdź do zakupu') : (uiTexts.common?.notAvailable || 'Niedostępne');
     const buttonAttributes = isAvailable 
       ? `href="${product.purchaseUrl}" target="_blank" rel="noopener noreferrer"`
       : 'onclick="return false;"';
     
     productElement.innerHTML = `
-      <div class="h-64 bg-gray-200 flex items-center justify-center overflow-hidden">
+      <div class="h-64 bg-gray-200 flex items-center justify-center overflow-hidden cursor-pointer shop-product-image" data-product-id="${product.id}">
         <img src="${correctedImagePath}" alt="${product.title || 'Produkt'}" class="w-full h-full object-cover">
       </div>
       <div class="p-4">
         <h3 class="text-xl font-semibold mb-2">${product.title || 'Bez tytułu'}</h3>
         ${product.description ? `<p class="text-gray-600">${product.description}</p>` : ''}
+        ${product.dimensions ? `<p class="text-sm text-gray-500 mt-1"><span class="font-medium">${uiTexts.common?.dimensions || 'Wymiary'}:</span> ${product.dimensions}</p>` : ''}
         ${product.price ? `<p class="text-purple-600 font-bold mt-2">${product.price} zł</p>` : ''}        <div class="mt-4 flex items-center justify-between">
           <a ${buttonAttributes} class="${buttonClass}">
             ${buttonText}
           </a>
-          ${!isAvailable ? '<span class="text-gray-400 font-semibold text-sm">Sprzedane</span>' : ''}
+          ${!isAvailable ? `<span class="text-gray-400 font-semibold text-sm">${uiTexts.common?.sold || 'Sprzedane'}</span>` : ''}
         </div>
       </div>
     `;
     
     shopContainer.appendChild(productElement);
+  });
+  
+  // Dodaj event listenery dla kliknięć na obrazy produktów
+  const productImages = document.querySelectorAll('.shop-product-image');
+  productImages.forEach(imageDiv => {
+    imageDiv.addEventListener('click', (e) => {
+      const productId = parseInt(imageDiv.getAttribute('data-product-id'));
+      const productIndex = shopProducts.findIndex(product => product.id === productId);
+      if (productIndex !== -1) {
+        // Otwórz tryb skupienia dla tego produktu (bez nawigacji)
+        openFocusMode(0, [shopProducts[productIndex]], 'shop');
+      }
+    });
   });
 }
 
@@ -340,6 +384,16 @@ function filterArtworksByCategory(category) {
   );
 }
 
+// Funkcja do tłumaczenia kategorii
+function translateCategory(category) {
+  // Sprawdź czy istnieje tłumaczenie dla tej kategorii
+  if (uiTexts.categories && uiTexts.categories[category]) {
+    return uiTexts.categories[category];
+  }
+  // Jeśli nie ma tłumaczenia, zwróć oryginalną kategorię
+  return category;
+}
+
 // Funkcja do obsługi filtrowania kategorii w galerii
 function setupCategoryFilters() {
   const filterContainer = document.querySelector('.category-filters');
@@ -370,7 +424,7 @@ function setupCategoryFilters() {
   // Dodaj przycisk "Wszystkie"
   const allButton = document.createElement('button');
   allButton.className = 'category-chip category-chip-active';
-  allButton.textContent = `Wszystkie (${galleryArtworks.length})`;
+  allButton.textContent = `${translateCategory('wszystkie')} (${galleryArtworks.length})`;
   allButton.setAttribute('data-category', 'wszystkie');
   allButton.addEventListener('click', () => {
     renderGalleryArtworks();
@@ -385,7 +439,7 @@ function setupCategoryFilters() {
     const count = categoryCount.get(category);
     const button = document.createElement('button');
     button.className = 'category-chip category-chip-inactive';
-    button.textContent = `${category} (${count})`;
+    button.textContent = `${translateCategory(category)} (${count})`;
     button.setAttribute('data-category', category);
     button.addEventListener('click', () => {
       const filteredArtworks = filterArtworksByCategory(category);
@@ -787,7 +841,7 @@ function createFocusModeOverlay() {
         <h3 class="text-2xl font-bold mb-2"></h3>
         <div class="focus-mode-details"></div>
         <p class="focus-mode-description mt-3 text-gray-700"></p>
-        <p class="focus-mode-availability mt-2"></p>
+        <div class="focus-mode-availability-or-purchase mt-3"></div>
       </div>
     </div>
   `;
@@ -842,7 +896,7 @@ function displayCurrentArtwork() {
   const title = focusModeState.overlay.querySelector('.focus-mode-info h3');
   const details = focusModeState.overlay.querySelector('.focus-mode-details');
   const description = focusModeState.overlay.querySelector('.focus-mode-description');
-  const availability = focusModeState.overlay.querySelector('.focus-mode-availability');
+  const availabilityOrPurchase = focusModeState.overlay.querySelector('.focus-mode-availability-or-purchase');
   
   // Ustaw obraz
   image.classList.add('loading');
@@ -860,28 +914,60 @@ function displayCurrentArtwork() {
   
   // Szczegóły techniczne
   const detailsArray = [];
-  if (artwork.technique) detailsArray.push(artwork.technique);
-  if (artwork.dimensions) detailsArray.push(artwork.dimensions);
-  if (artwork.year) detailsArray.push(artwork.year);
+  if (focusModeState.source === 'shop') {
+    // Dla produktów ze sklepu - opis i wymiary w jednej linii
+    if (artwork.description) detailsArray.push(artwork.description);
+    if (artwork.dimensions) detailsArray.push(artwork.dimensions);
+  } else {
+    // Dla galerii i featured - standardowe szczegóły techniczne
+    if (artwork.technique) detailsArray.push(artwork.technique);
+    if (artwork.dimensions) detailsArray.push(artwork.dimensions);
+    if (artwork.year) detailsArray.push(artwork.year);
+  }
   
   details.innerHTML = detailsArray.length > 0 
     ? `<p class="text-gray-500">${detailsArray.join(' • ')}</p>`
     : '';
   
-  // Opis
-  description.textContent = artwork.description || '';
-  description.style.display = artwork.description ? 'block' : 'none';
+  // Opis - dla sklepu już jest w details, więc ukryj
+  if (focusModeState.source === 'shop') {
+    description.style.display = 'none';
+  } else {
+    description.textContent = artwork.description || '';
+    description.style.display = artwork.description ? 'block' : 'none';
+  }
   
-  // Dostępność - pokaż tylko dla galerii, ukryj dla featured artworks
-  if (focusModeState.source === 'gallery') {
-    availability.innerHTML = `
+  // Różne informacje w zależności od źródła
+  if (focusModeState.source === 'shop') {
+    // Dla produktów ze sklepu - cena i przycisk zakupu w jednej linii
+    const isAvailable = artwork.available !== false;
+    const price = artwork.price ? `<span class="text-purple-600 font-bold text-lg">${artwork.price} zł</span>` : '';
+    const buttonClass = isAvailable 
+      ? 'bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 font-semibold transition-all duration-300 transform hover:scale-105 inline-block'
+      : 'bg-gray-400 text-gray-600 px-4 py-2 rounded cursor-not-allowed inline-block';
+    const buttonText = isAvailable ? (uiTexts.common?.goToPurchase || 'Przejdź do zakupu') : (uiTexts.common?.notAvailable || 'Niedostępne');
+    const buttonAttributes = isAvailable 
+      ? `href="${artwork.purchaseUrl}" target="_blank" rel="noopener noreferrer"`
+      : 'onclick="return false;"';
+    
+    availabilityOrPurchase.innerHTML = `
+      <div class="flex items-center justify-center gap-4">
+        ${price}
+        <a ${buttonAttributes} class="${buttonClass}">
+          ${buttonText}
+        </a>
+      </div>
+    `;
+  } else if (focusModeState.source === 'gallery') {
+    // Dla galerii - status dostępności
+    availabilityOrPurchase.innerHTML = `
       <span class="${artwork.available ? 'text-green-600' : 'text-gray-400'} font-semibold">
-        ${artwork.available ? 'Dostępny' : 'Niedostępny'}
+        ${artwork.available ? (uiTexts.common?.available || 'Dostępny') : (uiTexts.common?.unavailable || 'Niedostępny')}
       </span>
     `;
   } else {
-    // Dla featured artworks ukryj sekcję dostępności
-    availability.innerHTML = '';
+    // Dla featured artworks - ukryj sekcję
+    availabilityOrPurchase.innerHTML = '';
   }
   
   // Zaktualizuj widoczność przycisków nawigacji
@@ -908,7 +994,14 @@ function updateNavigationButtons() {
   const prevButton = focusModeState.overlay.querySelector('.focus-nav-button.prev');
   const nextButton = focusModeState.overlay.querySelector('.focus-nav-button.next');
   
-  // Pokaż/ukryj przyciski nawigacji w zależności od liczby obrazów
+  // Ukryj strzałki dla produktów ze sklepu (nie ma nawigacji między produktami)
+  if (focusModeState.source === 'shop') {
+    prevButton.style.display = 'none';
+    nextButton.style.display = 'none';
+    return;
+  }
+  
+  // Pokaż/ukryj przyciski nawigacji w zależności od liczby obrazów (dla galerii i featured)
   const hasMultipleImages = focusModeState.artworks.length > 1;
   prevButton.style.display = hasMultipleImages ? 'flex' : 'none';
   nextButton.style.display = hasMultipleImages ? 'flex' : 'none';
@@ -1591,13 +1684,16 @@ function initLottieControls() {
 }
 
 // Dodaj inicjalizację kontroli Lottie do głównej funkcji init
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   console.log('DOMContentLoaded - inicjalizacja rozpoczęta');
   
   // Inicjalizuj selektor języka jako pierwszy
   initializeLanguageSelector();
   
-  fetchData();
+  // Załaduj dane a potem zaktualizuj opcje języków
+  await fetchData();
+  updateUITexts();
+  await updateLanguageOptions();
   setupMobileMenu();
   
   // Inicjalizuj slider tylko na stronie głównej
@@ -2186,6 +2282,9 @@ class HeroSlider {
     const artwork = this.slides[index].artwork;
     const categorySlug = this.getCategorySlug(artwork.title);
     
+    // Pobierz tekst przycisku w odpowiednim języku
+    const buttonText = uiTexts.common?.viewInGallery || "Zobacz w Galerii";
+    
     this.overlayContent.innerHTML = `
       <h1 class="text-5xl md:text-7xl font-bold mb-6 opacity-0 animate-fade-in">${artwork.title}</h1>
       <p class="text-xl md:text-2xl mb-8 opacity-0 animate-fade-in-delay">
@@ -2193,7 +2292,7 @@ class HeroSlider {
       </p>
       <div class="opacity-0 animate-fade-in-delay-2">
         <a href="./src/pages/gallery.html#${categorySlug}" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105">
-          Zobacz w Galerii
+          ${buttonText}
         </a>
       </div>
     `;
@@ -2270,6 +2369,45 @@ class HeroSlider {
   destroy() {
     this.pauseAutoPlay();
     // Usuń event listenery jeśli potrzeba
+  }
+
+  // Metoda do odświeżenia slidera po zmianie języka
+  async refreshSlider() {
+    try {
+      console.log('Rozpoczynam odświeżanie slidera po zmianie języka...');
+      
+      // Zatrzymaj autoplay
+      this.pauseAutoPlay();
+      
+      // Przeładuj dane featured
+      await this.waitForFeaturedData();
+      console.log('Nowe dane featured załadowane:', this.featuredData);
+      
+      // Przeładuj obrazy (mogą być inne opisy)
+      await this.preloadImages();
+      console.log('Obrazy przeładowane');
+      
+      // Wyczyść stare slides
+      this.slides = [];
+      this.container.innerHTML = '';
+      
+      // Utwórz nowe slides
+      this.createSlides();
+      
+      // Utwórz nowe dots
+      this.createDots();
+      
+      // Pokaż pierwszy slide (lub aktualny jeśli możliwe)
+      const slideIndex = this.currentSlide < this.slides.length ? this.currentSlide : 0;
+      this.showSlide(slideIndex);
+      
+      // Wznów autoplay
+      this.startAutoPlay();
+      
+      console.log('Slider został pomyślnie odświeżony po zmianie języka');
+    } catch (error) {
+      console.error('Błąd podczas odświeżania slidera:', error);
+    }
   }
 }
 
@@ -2381,6 +2519,9 @@ function updateUITexts() {
     const featuredDescription = document.getElementById('featured-works-description');
     if (featuredDescription) featuredDescription.textContent = uiTexts.sections.featuredWorksDescription;
     
+    const scrollHint = document.getElementById('scroll-hint');
+    if (scrollHint) scrollHint.textContent = uiTexts.sections.scrollHint;
+    
     // Aktualizuj tytuły stron
     const galleryTitle = document.getElementById('gallery-main-title');
     if (galleryTitle) galleryTitle.textContent = uiTexts.sections.galleryTitle;
@@ -2390,12 +2531,82 @@ function updateUITexts() {
     
     const shopTitle = document.getElementById('shop-main-title');
     if (shopTitle) shopTitle.textContent = uiTexts.sections.shopTitle;
+    
+    const shopDescription = document.getElementById('shop-description');
+    if (shopDescription) shopDescription.innerHTML = uiTexts.sections.shopDescription;
+    
+    // Aktualizuj sekcję kontaktową
+    const contactTitle = document.getElementById('contact-title');
+    if (contactTitle) contactTitle.textContent = uiTexts.sections.contact;
+    
+    const contactSubtitle = document.getElementById('contact-subtitle');
+    if (contactSubtitle) contactSubtitle.textContent = uiTexts.sections.contactSubtitle;
+    
+    const followMeTitle = document.getElementById('follow-me-title');
+    if (followMeTitle) followMeTitle.textContent = uiTexts.sections.followMe;
+    
+    const socialDescription = document.getElementById('social-description');
+    if (socialDescription) socialDescription.textContent = uiTexts.sections.socialDescription;
+    
+    // Aktualizuj etykiety kontaktowe
+    const emailLabel = document.getElementById('email-label');
+    if (emailLabel) emailLabel.textContent = uiTexts.common.email;
+    
+    const phoneLabel = document.getElementById('phone-label');
+    if (phoneLabel) phoneLabel.textContent = uiTexts.common.phone;
   }
   
   // Aktualizuj selektor języka
   const currentLanguageSpan = document.getElementById('current-language');
   if (currentLanguageSpan && uiTexts.languages) {
-    currentLanguageSpan.textContent = currentLanguage === 'pl' ? uiTexts.languages.polish : uiTexts.languages.english;
+    currentLanguageSpan.textContent = currentLanguage === 'pl' ? uiTexts.languages.firstLanguage : uiTexts.languages.secondLanguage;
+  }
+  
+  // Aktualizuj footer
+  if (uiTexts.footer) {
+    const footerRights = document.getElementById('footer-rights');
+    if (footerRights) footerRights.textContent = uiTexts.footer.allRightsReserved;
+    
+    const footerIcons = document.getElementById('footer-icons');
+    if (footerIcons) footerIcons.textContent = uiTexts.footer.icons;
+    
+    const footerAuthor = document.getElementById('footer-author');
+    if (footerAuthor) footerAuthor.textContent = uiTexts.footer.websiteAuthor;
+  }
+}
+
+// Funkcja do aktualizacji opcji języków w dropdown
+async function updateLanguageOptions() {
+  try {
+    const basePath = getBasePath();
+    const currentPath = window.location.pathname;
+    
+    // Ustal prawidłową ścieżkę bazową dla plików JSON w zależności od lokalizacji
+    let jsonBasePath = basePath;
+    if (currentPath.includes('/pages/') && !basePath) {
+      // Jeśli jesteśmy na podstronie lokalnie, dodaj ścieżkę względną
+      jsonBasePath = '../..';
+    }
+    
+    // Pobierz tłumaczenia z obu języków
+    const polishResponse = await fetch(`${jsonBasePath}/src/data/json/ui.json`);
+    const polishTexts = await polishResponse.json();
+    
+    const englishResponse = await fetch(`${jsonBasePath}/src/data/json/ui_en.json`);
+    const englishTexts = await englishResponse.json();
+    
+    // Aktualizuj opcje języków - pierwszy język zawsze z polskiego JSON, drugi z angielskiego
+    const firstLanguageOption = document.getElementById('first-language-option');
+    if (firstLanguageOption && polishTexts.languages) {
+      firstLanguageOption.textContent = polishTexts.languages.firstLanguage;
+    }
+    
+    const secondLanguageOption = document.getElementById('second-language-option');
+    if (secondLanguageOption && englishTexts.languages) {
+      secondLanguageOption.textContent = englishTexts.languages.secondLanguage;
+    }
+  } catch (error) {
+    console.error('Błąd podczas ładowania opcji języków:', error);
   }
 }
 
@@ -2522,6 +2733,10 @@ async function changeLanguage(newLanguage) {
   // Przeładuj dane w nowym języku
   await fetchData();
   
+  // Aktualizuj interfejs użytkownika
+  updateUITexts();
+  updateLanguageOptions();
+  
   // Sprawdź na której stronie jesteśmy i odśwież odpowiednią zawartość
   const currentPath = window.location.pathname;
   
@@ -2529,8 +2744,9 @@ async function changeLanguage(newLanguage) {
       (!currentPath.includes('/pages/') && !currentPath.includes('gallery.html') && !currentPath.includes('about.html') && !currentPath.includes('shop.html'))) {
     // Strona główna
     renderFeaturedArtworks();
-    if (typeof renderHeroSlider === 'function') {
-      renderHeroSlider();
+    // Odśwież slider jeśli istnieje
+    if (heroSlider && typeof heroSlider.refreshSlider === 'function') {
+      heroSlider.refreshSlider();
     }
   } else if (currentPath.includes('about.html')) {
     // Strona o artyście
@@ -2538,14 +2754,23 @@ async function changeLanguage(newLanguage) {
       renderArtistPage();
     }
   } else if (currentPath.includes('gallery.html')) {
-    // Strona galerii - przyszłe rozszerzenie
-    // Tutaj można dodać odświeżanie galerii gdy będzie potrzebne
+    // Strona galerii - odśwież galerię i filtry kategorii
+    renderGalleryArtworks();
+    setupCategoryFilters();
     console.log('Galeria - język zmieniony na:', newLanguage);
   } else if (currentPath.includes('shop.html')) {
-    // Strona sklepu - przyszłe rozszerzenie
-    // Tutaj można dodać odświeżanie sklepu gdy będzie potrzebne
+    // Strona sklepu - odśwież sklep
+    setTimeout(() => renderShopProducts(), 50); // Małe opóźnienie żeby uiTexts były załadowane
     console.log('Sklep - język zmieniony na:', newLanguage);
   }
+  
+  // Jeśli tryb skupienia jest otwarty, odśwież jego zawartość
+  if (focusModeState.isOpen) {
+    updateFocusModeContent();
+  }
+  
+  // Ponownie zaktualizuj opcje języków dla pewności
+  await updateLanguageOptions();
 }
 
 // Funkcja do inicjalizacji selektora języka
@@ -2581,7 +2806,8 @@ function initializeLanguageSelector() {
   languageOptions.forEach(option => {
     option.addEventListener('click', async (e) => {
       e.preventDefault();
-      const selectedLang = e.target.getAttribute('data-lang');
+      // Użyj currentTarget zamiast target, żeby zawsze mieć element <a> z data-lang
+      const selectedLang = e.currentTarget.getAttribute('data-lang');
       
       if (selectedLang && selectedLang !== currentLanguage) {
         await changeLanguage(selectedLang);

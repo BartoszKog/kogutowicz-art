@@ -1392,6 +1392,7 @@ class AdminInterface:
                 "id": max([item.get("id", 0) for item in self.current_data] + [100]) + 1,
                 "title": "",
                 "description": "",
+                "dimensions": "",
                 "price": 0,
                 "image": "",
                 "available": True,
@@ -1450,6 +1451,11 @@ class AdminInterface:
                             value="",
                             multiline=True,
                             on_change=lambda e, idx=new_index: self.update_item_field(idx, "description", e.control.value)
+                        ),
+                        ft.TextField(
+                            label="Wymiary (np. 40 x 30 cm)",
+                            value="",
+                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "dimensions", e.control.value)
                         ),
                         ft.Row([
                             ft.TextField(
@@ -1589,6 +1595,11 @@ class AdminInterface:
                             value=product.get("description", ""),
                             multiline=True,
                             on_change=lambda e, idx=i: self.update_item_field(idx, "description", e.control.value)
+                        ),
+                        ft.TextField(
+                            label="Wymiary (np. 40 x 30 cm)",
+                            value=product.get("dimensions", ""),
+                            on_change=lambda e, idx=i: self.update_item_field(idx, "dimensions", e.control.value)
                         ),
                         ft.Row([
                             ft.TextField(
@@ -2008,14 +2019,14 @@ class AdminInterface:
             ft.Container(
                 content=ft.Column([
                     ft.TextField(
-                        label="Polski",
-                        value=self.current_data.get("languages", {}).get("polish", ""),
-                        on_change=lambda e: self.update_nested_field("languages", "polish", e.control.value)
+                        label="Pierwszy język",
+                        value=self.current_data.get("languages", {}).get("firstLanguage", ""),
+                        on_change=lambda e: self.update_nested_field("languages", "firstLanguage", e.control.value)
                     ),
                     ft.TextField(
-                        label="Angielski",
-                        value=self.current_data.get("languages", {}).get("english", ""),
-                        on_change=lambda e: self.update_nested_field("languages", "english", e.control.value)
+                        label="Drugi język",
+                        value=self.current_data.get("languages", {}).get("secondLanguage", ""),
+                        on_change=lambda e: self.update_nested_field("languages", "secondLanguage", e.control.value)
                     ),
                 ]),
                 padding=10,
