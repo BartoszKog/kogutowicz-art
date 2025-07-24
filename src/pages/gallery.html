@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeria - Portfolio Artystyczne</title>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-  <script type="module" crossorigin src="/kogutowicz-art/assets/main-oKEg-DXj.js"></script>
-  <link rel="stylesheet" crossorigin href="/kogutowicz-art/assets/main-AFoah1Sn.css">
+  <script type="module" crossorigin src="/kogutowicz-art/assets/main-CenejjSa.js"></script>
+  <link rel="stylesheet" crossorigin href="/kogutowicz-art/assets/main-CbkX0shP.css">
 </head>
 <body class="bg-gray-50">
     <!-- Górny pasek informacyjny -->
@@ -72,10 +72,10 @@
                     <!-- Rozwijana lista języków -->
                     <div id="language-dropdown" class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50 hidden">
                         <a href="#" class="language-option block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200" data-lang="pl">
-                            Polski
+                            <span id="first-language-option">Polski</span>
                         </a>
                         <a href="#" class="language-option block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200" data-lang="en">
-                            Angielski
+                            <span id="second-language-option">Angielski</span>
                         </a>
                     </div>
                 </div>
@@ -140,13 +140,13 @@
     <footer class="bg-gray-800 text-white py-6">
         <div class="container mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-                <p>&copy; 2025 <span id="footer-site-name">Portfolio Artystyczne</span>. Wszelkie prawa zastrzeżone.</p>
+                <p>&copy; 2025 <span id="footer-site-name">Portfolio Artystyczne</span>. <span id="footer-rights">Wszelkie prawa zastrzeżone</span>.</p>
                 <div class="text-sm text-gray-400 flex flex-col space-y-1">
                     <p>
-                        Ikony: <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200">Lordicon.com</a>
+                        <span id="footer-icons">Ikony:</span> <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200">Lordicon.com</a>
                     </p>
                     <p>
-                        Autor strony: <a href="https://github.com/BartoszKog" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200 inline-flex items-center space-x-1 footer-author-link">
+                        <span id="footer-author">Autor strony:</span> <a href="https://github.com/BartoszKog" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200 inline-flex items-center space-x-1 footer-author-link">
                             <span>Bartosz Kogutowicz</span>
                             <span class="inline-block relative w-4 h-4 footer-github-icon">
                                 <img src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20width='430'%20height='430'%20fill='none'%20viewBox='0%200%20430%20430'%3e%3cpath%20fill='%233a3347'%20d='M215%2047.5c-92.508%200-167.5%2074.992-167.5%20167.5%200%2080.061%2056.169%20147.002%20131.25%20163.567v-3.081h75.826v2.311C327.984%20360.015%20382.5%20293.874%20382.5%20215c0-92.508-74.992-167.5-167.5-167.5'/%3e%3cpath%20fill='%233a3347'%20d='M298.007%20360.519c-15.208%204.542-31.323%206.981-48.007%206.981-92.508%200-167.5-74.992-167.5-167.5%200-62.305%2034.018-116.664%2084.493-145.519C97.881%2075.121%2047.5%20139.177%2047.5%20215c0%2092.508%2074.992%20167.5%20167.5%20167.5%2030.203%200%2058.538-7.993%2083.007-21.981'%20opacity='.5'%20style='mix-blend-mode:multiply'/%3e%3cpath%20fill='%23fff'%20d='M130.765%20326.308c15.356%2012.285%2035.166%207.666%2046.5%203.5h2.993v-33h-2.993c-13.667%204.5-32.5%2011-45.5-5-4.665-5.741-11.293-16.978-19.5-21.5-13.797-7.602-23%208-15.5%2015.5%209%209%2014.25%2012.5%2019%2022%204.609%209.219%2010%2014.5%2015%2018.5'/%3e%3cmask%20id='2xTS-JciW9a'%20width='336'%20height='336'%20x='47'%20y='47'%20maskUnits='userSpaceOnUse'%20style='mask-type:alpha'%3e%3ccircle%20cx='215'%20cy='215'%20r='167.5'%20fill='%23fff'/%3e%3c/mask%3e%3cg%20fill='%23fff'%20mask='url(%232xTS-JciW9a)'%3e%3cpath%20d='M263.202%20130.986c3.212-4.142%2016.54-19.712%2034.615-18.619a2.72%202.72%200%200%201%202.098%201.212c10.859%2016.431%201.838%2037.854.787%2040.216%208.199%2010.842%2012.678%2025.5%2012.678%2045.021%200%2047.676-20.609%2066.346-66.022%2071.262%205.613%204.584%209.197%2011.56%209.197%2019.373v107.862h-79.29V289.451c0-7.811%203.582-14.786%209.194-19.37C140.923%20265.17%20120%20246.502%20120%20198.816c0-19.681%204.605-34.42%2013.001-45.288-1.463-3.39-9.625-24.017.905-39.949a2.72%202.72%200%200%201%202.097-1.212c18.046-1.091%2031.36%2014.426%2034.6%2018.599%2013.389-3.457%2029.003-4.832%2046.307-4.832%2017.339%200%2032.94%201.381%2046.292%204.852'/%3e%3cpath%20d='M207.265%20397.313V289.451c0-7.811%203.582-14.786%209.194-19.37C170.923%20265.17%20150%20246.502%20150%20198.816c0-19.681%204.605-34.42%2013.001-45.288-1.248-2.893-7.372-18.33-2.605-32.695-6.157-4.737-14.575-9.06-24.395-8.466a2.72%202.72%200%200%200-2.095%201.212c-10.53%2015.932-2.368%2036.559-.905%2039.949C124.605%20164.396%20120%20179.135%20120%20198.816c0%2047.686%2020.923%2066.354%2066.459%2071.265-5.612%204.584-9.194%2011.559-9.194%2019.37v107.862z'%20opacity='.5'%20style='mix-blend-mode:multiply'/%3e%3c/g%3e%3cpath%20fill='%23fff'%20d='M130.765%20326.308c15.356%2012.285%2035.166%207.666%2046.5%203.5v-33c-13.667%204.5-32.5%2011-45.5-5-4.665-5.741-11.293-16.978-19.5-21.5-13.797-7.602-23%208-15.5%2015.5%209%209%2014.25%2012.5%2019%2022%204.609%209.219%2010%2014.5%2015%2018.5'%20opacity='.5'%20style='mix-blend-mode:multiply'/%3e%3cpath%20fill='%23fff'%20d='M177.265%20316.47c-11.58%203.44-28.208%205.47-41.5-5.163-5-4-10.391-9.281-15-18.5-3.657-7.314-7.611-11.072-13.343-16.521-1.714-1.629-3.586-3.408-5.657-5.479a9.2%209.2%200%200%201-1.254-1.556c-6.306%202.897-8.763%2011.539-3.746%2016.556a299%20299%200%200%200%205.657%205.48c5.732%205.449%209.686%209.206%2013.343%2016.52%204.609%209.22%2010%2014.5%2015%2018.5%2015.356%2012.286%2035.166%207.667%2046.5%203.5z'%20opacity='.5'%20style='mix-blend-mode:multiply'/%3e%3c/svg%3e" 

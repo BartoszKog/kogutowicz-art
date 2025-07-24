@@ -12,22 +12,49 @@
   "sections": {
     "featuredWorks": "Featured Works",
     "featuredWorksDescription": "Discover my works - from atmospheric landscapes to portraits full of emotions. Each work tells its unique story.",
+    "scrollHint": "Move cursor to the sides to scroll through the collection",
     "galleryTitle": "Art Gallery",
     "aboutTitle": "About the Artist",
-    "shopTitle": "Works for Sale"
+    "shopTitle": "Works for Sale",
+    "shopDescription": "Below you will find works available for purchase. Prices are given in PLN. To buy the selected work, click the <strong>Go to Purchase</strong> button, which will redirect you to the external sales portal.",
+    "shopEmpty": "Currently there are no works available for sale",
+    "contact": "Contact",
+    "contactSubtitle": "📞 Contact me",
+    "followMe": "🌟 Follow me",
+    "socialDescription": "Follow my latest works and artistic inspirations"
   },
   "common": {
     "viewMore": "View More",
+    "viewInGallery": "View in Gallery",
     "backToGallery": "Back to Gallery",
     "price": "Price",
     "available": "Available",
     "unavailable": "Unavailable",
+    "notAvailable": "Not Available",
+    "sold": "Sold",
+    "goToPurchase": "Go to Purchase",
     "dimensions": "Dimensions",
     "year": "Year",
-    "technique": "Technique"
+    "technique": "Technique",
+    "email": "Email",
+    "phone": "Phone"
   },
   "languages": {
-    "polish": "Polish",
-    "english": "English"
+    "firstLanguage": "Polish",
+    "secondLanguage": "English"
+  },
+  "categories": {
+    "wszystkie": "All",
+    "martwa natura": "Still life",
+    "pejzaż lokalny": "Local landscape",
+    "postacie": "Portraits",
+    "kwiaty": "Flowers", 
+    "pastele": "Pastels",
+    "motywy sakralne": "Sacred motifs"
+  },
+  "footer": {
+    "allRightsReserved": "All rights reserved",
+    "icons": "Icons:",
+    "websiteAuthor": "Website author:"
   }
 }

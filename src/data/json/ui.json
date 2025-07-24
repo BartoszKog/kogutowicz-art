@@ -12,22 +12,40 @@
   "sections": {
     "featuredWorks": "Wyróżnione Prace",
     "featuredWorksDescription": "Poznaj moje prace - od nastrojowych pejzaży po portrety pełne emocji. Każda praca opowiada swoją unikalną historię.",
+    "scrollHint": "Przesuń kursor na boki aby przewijać kolekcję",
     "galleryTitle": "Galeria prac",
     "aboutTitle": "O Artyście",
-    "shopTitle": "Prace na sprzedaż"
+    "shopTitle": "Prace na sprzedaż",
+    "shopDescription": "Poniżej znajdziesz prace dostępne do kupienia. Ceny są podane w PLN. Aby kupić wybraną pracę, kliknij przycisk <strong>Przejdź do zakupu</strong>, który przekieruje Cię do zewnętrznego portalu sprzedażowego.",
+    "shopEmpty": "Aktualnie nie ma niczego wystawionego na sprzedaż",
+    "contact": "Kontakt",
+    "contactSubtitle": "📞 Skontaktuj się ze mną",
+    "followMe": "🌟 Śledź mnie",
+    "socialDescription": "Obserwuj moje najnowsze prace i inspiracje artystyczne"
   },
   "common": {
     "viewMore": "Zobacz więcej",
+    "viewInGallery": "Zobacz w Galerii",
     "backToGallery": "Powrót do galerii",
     "price": "Cena",
-    "available": "Dostępne",
-    "unavailable": "Niedostępne",
+    "available": "Dostępny",
+    "unavailable": "Niedostępny",
+    "notAvailable": "Niedostępne",
+    "sold": "Sprzedane",
+    "goToPurchase": "Przejdź do zakupu",
     "dimensions": "Wymiary",
     "year": "Rok",
-    "technique": "Technika"
+    "technique": "Technika",
+    "email": "Email",
+    "phone": "Telefon"
   },
   "languages": {
-    "polish": "Polski",
-    "english": "Angielski"
+    "firstLanguage": "Polski",
+    "secondLanguage": "Angielski"
+  },
+  "footer": {
+    "allRightsReserved": "Wszelkie prawa zastrzeżone",
+    "icons": "Ikony:",
+    "websiteAuthor": "Autor strony:"
   }
 }
