@@ -1,7 +1,7 @@
 {
   "navigation": {
     "home": "Home",
-    "gallery": "Gallery", 
+    "gallery": "Gallery",
     "about": "About Artist",
     "shop": "Shop"
   },
@@ -51,7 +51,7 @@
     "martwa natura": "Still life",
     "pejzaż lokalny": "Local landscape",
     "postacie": "Portraits",
-    "kwiaty": "Flowers", 
+    "kwiaty": "Flowers",
     "pastele": "Pastels",
     "motywy sakralne": "Sacred motifs"
   },
