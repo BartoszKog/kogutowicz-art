@@ -2077,8 +2077,8 @@ class AdminInterface:
             
             ft.Divider(height=20),
             
-            # Sekcja Tytuły Stron
-            ft.Text("Tytuły stron", size=18, weight=ft.FontWeight.BOLD),
+            # Sekcja Teksty interfejsu
+            ft.Text("Teksty sekcji", size=18, weight=ft.FontWeight.BOLD),
             ft.Container(
                 content=ft.Column([
                     ft.TextField(
@@ -2095,6 +2095,14 @@ class AdminInterface:
                         on_change=lambda e: self.update_nested_field("sections", "featuredWorksDescription", e.control.value)
                     ),
                     ft.TextField(
+                        label="Wskazówka przewijania",
+                        value=self.current_data.get("sections", {}).get("scrollHint", ""),
+                        multiline=True,
+                        min_lines=1,
+                        max_lines=2,
+                        on_change=lambda e: self.update_nested_field("sections", "scrollHint", e.control.value)
+                    ),
+                    ft.TextField(
                         label="Galeria - Tytuł",
                         value=self.current_data.get("sections", {}).get("galleryTitle", ""),
                         on_change=lambda e: self.update_nested_field("sections", "galleryTitle", e.control.value)
@@ -2108,6 +2116,57 @@ class AdminInterface:
                         label="Sklep - Tytuł",
                         value=self.current_data.get("sections", {}).get("shopTitle", ""),
                         on_change=lambda e: self.update_nested_field("sections", "shopTitle", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Sklep - Opis",
+                        value=self.current_data.get("sections", {}).get("shopDescription", ""),
+                        multiline=True,
+                        min_lines=3,
+                        max_lines=6,
+                        on_change=lambda e: self.update_nested_field("sections", "shopDescription", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Sklep - Komunikat o braku produktów",
+                        value=self.current_data.get("sections", {}).get("shopEmpty", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "shopEmpty", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Kontakt - Tytuł",
+                        value=self.current_data.get("sections", {}).get("contact", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "contact", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Kontakt - Podtytuł",
+                        value=self.current_data.get("sections", {}).get("contactSubtitle", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "contactSubtitle", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Śledź mnie - Tytuł",
+                        value=self.current_data.get("sections", {}).get("followMe", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "followMe", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Media społecznościowe - Opis",
+                        value=self.current_data.get("sections", {}).get("socialDescription", ""),
+                        multiline=True,
+                        min_lines=1,
+                        max_lines=3,
+                        on_change=lambda e: self.update_nested_field("sections", "socialDescription", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Wykształcenie - Nagłówek",
+                        value=self.current_data.get("sections", {}).get("education", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "education", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Osiągnięcia - Nagłówek",
+                        value=self.current_data.get("sections", {}).get("achievements", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "achievements", e.control.value)
+                    ),
+                    ft.TextField(
+                        label="Wystawy - Nagłówek",
+                        value=self.current_data.get("sections", {}).get("exhibitions", ""),
+                        on_change=lambda e: self.update_nested_field("sections", "exhibitions", e.control.value)
                     ),
                 ]),
                 padding=10,
