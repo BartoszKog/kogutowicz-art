@@ -548,6 +548,48 @@ class AdminInterface:
                                 categories.add(cat.strip())
         
         return sorted(list(categories))
+    
+    def get_gallery_categories(self):
+        """Zwraca listę wszystkich unikalnych kategorii z pliku gallery.json"""
+        try:
+            gallery_path = self.json_path / "gallery.json"
+            if gallery_path.exists():
+                with open(gallery_path, 'r', encoding='utf-8') as file:
+                    gallery_data = json.load(file)
+                    
+                categories = set()
+                for item in gallery_data:
+                    if isinstance(item, dict) and "categories" in item:
+                        item_categories = item["categories"]
+                        if isinstance(item_categories, list):
+                            for cat in item_categories:
+                                if cat and cat.strip():
+                                    categories.add(cat.strip())
+                
+                return sorted(list(categories))
+        except Exception as e:
+            print(f"Błąd podczas pobierania kategorii galerii: {e}")
+        
+        return []
+
+    def create_gallery_category_dropdown(self, current_value="", on_change=None):
+        """Tworzy dropdown z kategoriami galerii dla sekcji featured"""
+        gallery_categories = self.get_gallery_categories()
+        
+        options = [ft.dropdown.Option("", "-- Nie wybrano --")]
+        for category in gallery_categories:
+            # Użyj pierwszej litery wielkiej dla wyświetlania
+            display_name = category.capitalize()
+            options.append(ft.dropdown.Option(category, display_name))
+        
+        dropdown = ft.Dropdown(
+            label="Kategoria galerii (dla linku)",
+            value=current_value,
+            options=options,
+            on_change=on_change
+        )
+        
+        return dropdown
 
     def create_category_selector(self, current_categories=None, on_change=None):
         """Tworzy selektor kategorii z Dropdown i prostym interfejsem"""
@@ -914,7 +956,8 @@ class AdminInterface:
             "id": max([item.get("id", 0) for item in self.current_data] + [0]) + 1,
             "title": "",
             "description": "",
-            "image": ""
+            "image": "",
+            "galleryCategory": ""
         }
         self.current_data.append(new_item)
         self.unsaved_changes = True
@@ -967,6 +1010,10 @@ class AdminInterface:
                         value="",
                         multiline=True,
                         on_change=lambda e, idx=new_index: self.update_item_field(idx, "description", e.control.value)
+                    ),
+                    self.create_gallery_category_dropdown(
+                        "",
+                        lambda e, idx=new_index: self.update_item_field(idx, "galleryCategory", e.control.value)
                     ),
                     ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
                     self.create_image_picker(
@@ -1090,6 +1137,10 @@ class AdminInterface:
                             value=item.get("description", ""),
                             multiline=True,
                             on_change=lambda e, idx=i: self.update_item_field(idx, "description", e.control.value)
+                        ),
+                        self.create_gallery_category_dropdown(
+                            item.get("galleryCategory", ""),
+                            lambda e, idx=i: self.update_item_field(idx, "galleryCategory", e.control.value)
                         ),
                         ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(

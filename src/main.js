@@ -753,7 +753,8 @@ let focusModeState = {
   currentIndex: 0,
   artworks: [],
   overlay: null,
-  source: 'gallery' // Domyślnie gallery
+  source: 'gallery', // Domyślnie gallery
+  isMaximized: false // Dodajemy flagę dla stanu maksymalizacji
 };
 
 // Funkcja do otwierania trybu skupienia
@@ -786,6 +787,7 @@ function closeFocusMode() {
   if (!focusModeState.isOpen) return;
   
   focusModeState.isOpen = false;
+  focusModeState.isMaximized = false; // Resetuj flagę maksymalizacji
   document.body.classList.remove('focus-mode-open');
   
   if (focusModeState.overlay) {
@@ -842,6 +844,11 @@ function createFocusModeOverlay() {
         <div class="focus-mode-details"></div>
         <p class="focus-mode-description mt-3 text-gray-700"></p>
         <div class="focus-mode-availability-or-purchase mt-3"></div>
+        <div class="focus-mode-gallery-button mt-4" style="display: none;">
+          <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 inline-block">
+            <span class="gallery-button-text">Zobacz w Galerii</span>
+          </a>
+        </div>
       </div>
     </div>
   `;
@@ -868,6 +875,28 @@ function createFocusModeOverlay() {
   });
 }
 
+// Funkcja do tworzenia linku do galerii z kategorią
+function getCategoryLink(artwork) {
+  if (!artwork.galleryCategory) {
+    return './src/pages/gallery.html';
+  }
+  
+  // Zamień polskie znaki na łacińskie i spacje na myślniki dla URL-friendly hash
+  const categorySlug = artwork.galleryCategory
+    .replace(/ą/g, 'a')
+    .replace(/ć/g, 'c')
+    .replace(/ę/g, 'e')
+    .replace(/ł/g, 'l')
+    .replace(/ń/g, 'n')
+    .replace(/ó/g, 'o')
+    .replace(/ś/g, 's')
+    .replace(/ź/g, 'z')
+    .replace(/ż/g, 'z')
+    .replace(/\s+/g, '-');
+    
+  return `./src/pages/gallery.html#${categorySlug}`;
+}
+
 // Funkcja do wyświetlania aktualnego obrazu
 function displayCurrentArtwork() {
   if (!focusModeState.overlay) return;
@@ -875,17 +904,27 @@ function displayCurrentArtwork() {
   const artwork = focusModeState.artworks[focusModeState.currentIndex];
   if (!artwork) return;
   
-  // Resetuj stan maksymalizacji przy zmianie obrazu
+  // Zachowaj stan maksymalizacji przy zmianie obrazu
   const container = focusModeState.overlay.querySelector('.focus-mode-container');
   const info = focusModeState.overlay.querySelector('.focus-mode-info');
   const maximizeButton = focusModeState.overlay.querySelector('.focus-maximize-button');
   const maximizeIcon = maximizeButton.querySelector('.focus-maximize-icon');
   
-  if (container.classList.contains('maximized')) {
+  // Zastosuj stan maksymalizacji na podstawie flagi zamiast resetowania
+  if (focusModeState.isMaximized) {
+    container.classList.add('maximized');
+    info.style.display = 'none';
+    
+    // Ustaw ikonę na zmniejszenie (ta sama co w toggleMaximizeImage)
+    maximizeIcon.innerHTML = `
+      <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    `;
+    maximizeButton.setAttribute('aria-label', 'Zmniejsz obraz');
+  } else {
     container.classList.remove('maximized');
     info.style.display = 'block';
     
-    // Przywróć ikonę maksymalizacji
+    // Ustaw ikonę na maksymalizację
     maximizeIcon.innerHTML = `
       <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     `;
@@ -970,6 +1009,22 @@ function displayCurrentArtwork() {
     availabilityOrPurchase.innerHTML = '';
   }
   
+  // Obsługa przycisku galerii dla featured artworks
+  const galleryButtonContainer = focusModeState.overlay.querySelector('.focus-mode-gallery-button');
+  const galleryButtonLink = galleryButtonContainer?.querySelector('a');
+  const galleryButtonText = galleryButtonContainer?.querySelector('.gallery-button-text');
+  
+  if (focusModeState.source === 'featured' && artwork.galleryCategory) {
+    // Pokaż przycisk dla featured artworks z kategorią galerii
+    galleryButtonContainer.style.display = 'block';
+    const categoryLink = getCategoryLink(artwork);
+    galleryButtonLink.href = categoryLink;
+    galleryButtonText.textContent = uiTexts.common?.viewInGallery || 'Zobacz w Galerii';
+  } else {
+    // Ukryj przycisk dla innych źródeł lub gdy brak kategorii
+    galleryButtonContainer.style.display = 'none';
+  }
+  
   // Zaktualizuj widoczność przycisków nawigacji
   updateNavigationButtons();
 }
@@ -1023,6 +1078,7 @@ function toggleMaximizeImage() {
     // Przywróć normalny widok
     container.classList.remove('maximized');
     info.style.display = 'block';
+    focusModeState.isMaximized = false; // Aktualizuj flagę
     
     // Zmień ikonę na maksymalizację
     maximizeIcon.innerHTML = `
@@ -1033,6 +1089,7 @@ function toggleMaximizeImage() {
     // Maksymalizuj obraz
     container.classList.add('maximized');
     info.style.display = 'none';
+    focusModeState.isMaximized = true; // Aktualizuj flagę
     
     // Zmień ikonę na zmniejszenie
     maximizeIcon.innerHTML = `
@@ -2280,7 +2337,7 @@ class HeroSlider {
     if (!this.overlayContent) return;
     
     const artwork = this.slides[index].artwork;
-    const categorySlug = this.getCategorySlug(artwork.title);
+    const categorySlug = this.getCategorySlug(artwork);
     
     // Pobierz tekst przycisku w odpowiednim języku
     const buttonText = uiTexts.common?.viewInGallery || "Zobacz w Galerii";
@@ -2298,16 +2355,9 @@ class HeroSlider {
     `;
   }
 
-  getCategorySlug(title) {
-    // Mapowanie tytułów featured na kategorie z gallery.json
-    const categoryMap = {
-      'Pejzaż lokalny': 'pejzaż lokalny',
-      'Człowiek': 'postacie', 
-      'Martwa natura': 'martwa natura',
-      'Botaniczne opowieści': 'kwiaty'
-    };
-    
-    const category = categoryMap[title] || 'wszystkie';
+  getCategorySlug(artwork) {
+    // Użyj atrybutu galleryCategory z danych featured, jeśli istnieje
+    const category = artwork.galleryCategory || 'wszystkie';
     
     // Zamień polskie znaki na łacińskie i spacje na myślniki dla URL-friendly hash
     return category

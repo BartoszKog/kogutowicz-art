@@ -536,6 +536,14 @@ html {
     transition: all 0.3s ease-in-out;
     overflow-y: auto;
     overflow-x: hidden;
+    /* Ukryj suwak przewijania */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Ukryj suwak przewijania dla Webkit (Chrome, Safari, Edge) */
+.focus-mode-container::-webkit-scrollbar {
+    display: none;
 }
 
 .focus-mode-overlay.active .focus-mode-container {
