@@ -518,11 +518,6 @@ function renderArtistPage() {
   const achievementsContainer = document.querySelector('.artist-achievements');
   const exhibitionsContainer = document.querySelector('.artist-exhibitions');
 
-  // Aktualizuj tytuł strony
-  const h1Element = document.querySelector('h1');
-  if (h1Element) {
-    h1Element.textContent = artistData.artistName || "O Artyście";
-  }
   // Aktualizuj zdjęcie artysty
   if (artistPhotoContainer && artistData.artistPhoto) {
     artistPhotoContainer.innerHTML = `
@@ -2582,13 +2577,27 @@ function updateUITexts() {
     if (galleryTitle) galleryTitle.textContent = uiTexts.sections.galleryTitle;
     
     const aboutTitle = document.getElementById('about-main-title');
-    if (aboutTitle) aboutTitle.textContent = uiTexts.sections.aboutTitle;
+    if (aboutTitle) {
+      // Użyj imienia artysty z danych JSON, jeśli dostępne, lub standardowego tłumaczenia
+      const artistName = artistData && artistData.artistName;
+      aboutTitle.textContent = artistName || uiTexts.sections.aboutTitle;
+    }
     
     const shopTitle = document.getElementById('shop-main-title');
     if (shopTitle) shopTitle.textContent = uiTexts.sections.shopTitle;
     
     const shopDescription = document.getElementById('shop-description');
     if (shopDescription) shopDescription.innerHTML = uiTexts.sections.shopDescription;
+    
+    // Aktualizuj nagłówki sekcji about
+    const educationTitle = document.getElementById('education-title');
+    if (educationTitle) educationTitle.textContent = uiTexts.sections.education;
+    
+    const achievementsTitle = document.getElementById('achievements-title');
+    if (achievementsTitle) achievementsTitle.textContent = uiTexts.sections.achievements;
+    
+    const exhibitionsTitle = document.getElementById('exhibitions-title');
+    if (exhibitionsTitle) exhibitionsTitle.textContent = uiTexts.sections.exhibitions;
     
     // Aktualizuj sekcję kontaktową
     const contactTitle = document.getElementById('contact-title');
