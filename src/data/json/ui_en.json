@@ -21,7 +21,10 @@
     "contact": "Contact",
     "contactSubtitle": "📞 Contact me",
     "followMe": "🌟 Follow me",
-    "socialDescription": "Follow my latest works and artistic inspirations"
+    "socialDescription": "Follow my latest works and artistic inspirations",
+    "education": "Education",
+    "achievements": "Achievements",
+    "exhibitions": "Selected Exhibitions"
   },
   "common": {
     "viewMore": "View More",
