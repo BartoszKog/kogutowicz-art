@@ -2116,6 +2116,11 @@ class HeroSlider {
       slideElement.style.width = '100%';
       slideElement.style.height = '100%';
       
+      // Ustaw pozycjonowanie obrazu na podstawie wartości z JSON
+      const positionX = artwork.positionX || 0.5; // Domyślnie środek
+      const positionY = artwork.positionY || 0.5; // Domyślnie środek
+      slideElement.style.objectPosition = `${positionX * 100}% ${positionY * 100}%`;
+      
       // Dodaj do kontenera
       this.container.appendChild(slideElement);
       this.slides.push({ element: slideElement, artwork });

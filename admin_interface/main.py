@@ -957,7 +957,9 @@ class AdminInterface:
             "title": "",
             "description": "",
             "image": "",
-            "galleryCategory": ""
+            "galleryCategory": "",
+            "positionX": 0.5,
+            "positionY": 0.5
         }
         self.current_data.append(new_item)
         self.unsaved_changes = True
@@ -1015,6 +1017,31 @@ class AdminInterface:
                         "",
                         lambda e, idx=new_index: self.update_item_field(idx, "galleryCategory", e.control.value)
                     ),
+                    ft.Text("Pozycjonowanie obrazu w sliderze:", weight=ft.FontWeight.BOLD),
+                    ft.Row([
+                        ft.Column([
+                            ft.Text("Pozycja X (0 = lewa, 0.5 = środek, 1 = prawa)", size=12),
+                            ft.Slider(
+                                min=0,
+                                max=1,
+                                value=0.5,
+                                divisions=100,
+                                label="{value}",
+                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "positionX", round(e.control.value, 2))
+                            )
+                        ], expand=True),
+                        ft.Column([
+                            ft.Text("Pozycja Y (0 = góra, 0.5 = środek, 1 = dół)", size=12),
+                            ft.Slider(
+                                min=0,
+                                max=1,
+                                value=0.5,
+                                divisions=100,
+                                label="{value}",
+                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "positionY", round(e.control.value, 2))
+                            )
+                        ], expand=True)
+                    ]),
                     ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
                     self.create_image_picker(
                         "",
@@ -1142,6 +1169,31 @@ class AdminInterface:
                             item.get("galleryCategory", ""),
                             lambda e, idx=i: self.update_item_field(idx, "galleryCategory", e.control.value)
                         ),
+                        ft.Text("Pozycjonowanie obrazu w sliderze:", weight=ft.FontWeight.BOLD),
+                        ft.Row([
+                            ft.Column([
+                                ft.Text("Pozycja X (0 = lewa, 0.5 = środek, 1 = prawa)", size=12),
+                                ft.Slider(
+                                    min=0,
+                                    max=1,
+                                    value=item.get("positionX", 0.5),
+                                    divisions=100,
+                                    label="{value}",
+                                    on_change=lambda e, idx=i: self.update_item_field(idx, "positionX", round(e.control.value, 2))
+                                )
+                            ], expand=True),
+                            ft.Column([
+                                ft.Text("Pozycja Y (0 = góra, 0.5 = środek, 1 = dół)", size=12),
+                                ft.Slider(
+                                    min=0,
+                                    max=1,
+                                    value=item.get("positionY", 0.5),
+                                    divisions=100,
+                                    label="{value}",
+                                    on_change=lambda e, idx=i: self.update_item_field(idx, "positionY", round(e.control.value, 2))
+                                )
+                            ], expand=True)
+                        ]),
                         ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(
                             item.get("image", ""),
