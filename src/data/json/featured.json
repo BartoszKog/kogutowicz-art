@@ -4,27 +4,35 @@
     "title": "Pejzaż lokalny",
     "description": "Malownicze widoki okolicznych miejsc, uchwycone w różnych porach roku.",
     "galleryCategory": "pejzaż lokalny",
-    "image": "images/featured/pejzaż_lokalny.webp"
+    "image": "images/featured/pejzaż_lokalny.webp",
+    "positionX": 0.68,
+    "positionY": 0.67
   },
   {
     "id": 7,
     "title": "Człowiek",
     "description": "Portrety i sceny z życia, ukazujące emocje i charakter postaci.",
     "galleryCategory": "postacie",
-    "image": "images/featured/postacie.webp"
+    "image": "images/featured/postacie.webp",
+    "positionX": 0.5,
+    "positionY": 0.42
   },
   {
     "id": 8,
     "title": "Martwa natura",
     "description": "Kompozycje przedmiotów codziennego użytku, oddające ich piękno i harmonię.",
     "galleryCategory": "martwa natura",
-    "image": "images/featured/martwa_natura.webp"
+    "image": "images/featured/martwa_natura.webp",
+    "positionX": 0.73,
+    "positionY": 0.5
   },
   {
     "id": 9,
     "title": "Botaniczne opowieści",
     "description": "Piękne przedstawienia roślin i kwiatów",
     "galleryCategory": "kwiaty",
-    "image": "images/featured/botanika.webp"
+    "image": "images/featured/botanika.webp",
+    "positionX": 0.91,
+    "positionY": 0.46
   }
 ]
