@@ -44,96 +44,96 @@
   },
   {
     "id": 10,
-    "title": "Geranium"
-  },
-  {
-    "id": 11,
-    "title": "Church in Żegocina Center"
-  },
-  {
-    "id": 12,
-    "title": "Daffodils",
-    "description": "Złota jesień w Żegocinie"
-  },
-  {
-    "id": 32,
-    "title": "Church in Żegocina",
-    "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie 9"
-  },
-  {
-    "id": 13,
-    "title": "Tulips"
-  },
-  {
-    "id": 14,
-    "title": "Pink Hollyhocks"
-  },
-  {
-    "id": 15,
-    "title": "Yellow Roses",
-    "description": "Krakowskie gołębie na tle Kościoła Mariackiego"
-  },
-  {
-    "id": 16,
-    "title": "Rozdziele"
-  },
-  {
-    "id": 17,
     "title": "Still Life with Oranges"
   },
   {
+    "id": 11,
+    "title": "Żegocina Center"
+  },
+  {
+    "id": 12,
+    "title": "Golden Autumn",
+    "description": "Golden autumn in Żegocina"
+  },
+  {
+    "id": 32,
+    "title": "Golden Sheaves in the Shadow of the Church",
+    "description": "Traditional grain sheaves with church in the background in Żegocina"
+  },
+  {
+    "id": 13,
+    "title": "Wawel"
+  },
+  {
+    "id": 14,
+    "title": "Cracow Market Square"
+  },
+  {
+    "id": 15,
+    "title": "Cracow Pigeons",
+    "description": "Cracow pigeons against the backdrop of St. Mary's Church"
+  },
+  {
+    "id": 16,
+    "title": "Geraniums"
+  },
+  {
+    "id": 17,
+    "title": "Yellow Roses"
+  },
+  {
     "id": 18,
-    "title": "Sunflowers End of Summer Łąkta Górna"
+    "title": "Bouquet"
   },
   {
     "id": 19,
-    "title": "Mendle"
+    "title": "Tulips"
   },
   {
     "id": 20,
-    "title": "Pink mallows"
+    "title": "Pink Hollyhocks"
   },
   {
     "id": 21,
-    "title": "Castle in Wiśnicz"
+    "title": "Daffodils"
   },
   {
     "id": 22,
-    "title": "Myślenice"
+    "title": "Rozdziele"
   },
   {
     "id": 23,
-    "title": "Church in Laskowa",
-    "description": "Zamek w Wiśniczu"
+    "title": "Wiśnicz",
+    "description": "Castle in Wiśnicz"
   },
   {
     "id": 24,
-    "title": "Leonard",
-    "description": "Rynek w Myślenicach"
+    "title": "Myślenice",
+    "description": "Market Square in Myślenice"
   },
   {
     "id": 25,
-    "title": "Leonard"
+    "title": "Wiśnicz"
   },
   {
     "id": 26,
-    "title": "Castle in Wiśnicz",
-    "description": "Koniec lata w Łąkcie Górnej"
+    "title": "Sunflowers - End of Summer",
+    "description": "End of summer in Łąkta Górna"
   },
   {
     "id": 27,
-    "title": "Jew",
-    "description": "Kościół św. Leonarda w Lipnicy Murowanej"
+    "title": "Leonard",
+    "description": "St. Leonard's Church in Lipnica Murowana"
   },
   {
     "id": 28,
-    "title": "St. Mary's Basilica",
-    "description": "Kościół w Laskowej jesienią"
+    "title": "Church in Laskowa",
+    "description": "Church in Laskowa in autumn"
   },
   {
     "id": 29,
-    "title": "Market Square in Cracow",
-    "description": "Kościół św. Leonarda w Lipnicy Murowanej"
+    "title": "Leonard",
+    "description": "St. Leonard's Church in Lipnica Murowana"
   },
   {
     "id": 30,
