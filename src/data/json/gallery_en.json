@@ -39,6 +39,10 @@
     "title": "View from the Window"
   },
   {
+    "id": 9,
+    "title": "Church in Chronów"
+  },
+  {
     "id": 10,
     "title": "Geranium"
   },
@@ -50,6 +54,11 @@
     "id": 12,
     "title": "Daffodils",
     "description": "Złota jesień w Żegocinie"
+  },
+  {
+    "id": 32,
+    "title": "Church in Żegocina",
+    "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie 9"
   },
   {
     "id": 13,
@@ -82,7 +91,7 @@
   },
   {
     "id": 20,
-    "title": "Wawel"
+    "title": "Pink mallows"
   },
   {
     "id": 21,
@@ -129,14 +138,5 @@
   {
     "id": 30,
     "title": "Jew"
-  },
-  {
-    "id": 32,
-    "title": "Church in Żegocina",
-    "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie 9"
-  },
-  {
-    "id": 9,
-    "title": "Church in Chronów"
   }
 ]
