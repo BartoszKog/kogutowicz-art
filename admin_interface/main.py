@@ -176,6 +176,13 @@ class AdminInterface:
 
     def on_language_mode_changed(self, e):
         """Obsługuje zmianę trybu językowego"""
+        if self.unsaved_changes:
+            # Przywróć poprzedni stan switcha
+            e.control.value = not e.control.value
+            self.page.update()
+            self.show_unsaved_changes_language_dialog()
+            return
+            
         self.english_mode = e.control.value
         
         # Jeśli są niezapisane zmiany, przeładuj dane
@@ -445,12 +452,88 @@ class AdminInterface:
                 
             with open(json_file, 'w', encoding='utf-8') as f:
                 json.dump(cleaned_data, f, ensure_ascii=False, indent=2)
+            
+            # Synchronizuj dane między wersjami językowymi po zapisie
+            if self.current_file in ["gallery", "featured", "shop"]:
+                self.synchronize_language_versions()
+                
             self.unsaved_changes = False
             self.update_title()
             self.update_buttons_state()
             self.show_message("Zmiany zostały zapisane pomyślnie", "#4caf50")
         except Exception as e:
             self.show_message(f"Błąd podczas zapisywania: {str(e)}", "#f44336")
+
+    def synchronize_language_versions(self):
+        """Synchronizuje strukturę danych między wersjami językowymi"""
+        try:
+            # Wczytaj dane z obu wersji
+            polish_file = self.json_path / f"{self.current_file}.json"
+            english_file = self.json_path / f"{self.current_file}_en.json"
+            
+            with open(polish_file, 'r', encoding='utf-8') as f:
+                polish_data = json.load(f)
+            
+            try:
+                with open(english_file, 'r', encoding='utf-8') as f:
+                    english_data = json.load(f)
+            except FileNotFoundError:
+                english_data = []
+            
+            # Utwórz mapę istniejących elementów angielskich według ID
+            english_map = {}
+            for item in english_data:
+                if isinstance(item, dict) and 'id' in item:
+                    english_map[item['id']] = item
+            
+            # Przygotuj nową listę angielską
+            new_english_data = []
+            
+            for polish_item in polish_data:
+                if isinstance(polish_item, dict) and 'id' in polish_item:
+                    item_id = polish_item['id']
+                    
+                    if item_id in english_map:
+                        # Element istnieje - zachowaj istniejące tłumaczenia
+                        new_english_data.append(english_map[item_id])
+                    else:
+                        # Nowy element - dodaj podstawową strukturę
+                        if self.current_file == "gallery":
+                            new_item = {
+                                "id": item_id,
+                                "title": polish_item.get("title", "")
+                            }
+                            # Dodaj description jeśli istnieje
+                            if "description" in polish_item:
+                                new_item["description"] = polish_item["description"]
+                            # Dodaj technique jeśli istnieje
+                            if "technique" in polish_item:
+                                new_item["technique"] = polish_item["technique"]
+                        elif self.current_file == "featured":
+                            new_item = {
+                                "id": item_id,
+                                "title": polish_item.get("title", "")
+                            }
+                            # Dodaj description jeśli istnieje
+                            if "description" in polish_item:
+                                new_item["description"] = polish_item["description"]
+                        elif self.current_file == "shop":
+                            new_item = {
+                                "id": item_id,
+                                "title": polish_item.get("title", "")
+                            }
+                            # Dodaj description jeśli istnieje
+                            if "description" in polish_item:
+                                new_item["description"] = polish_item["description"]
+                        
+                        new_english_data.append(new_item)
+            
+            # Zapisz zsynchronizowane dane angielskie
+            with open(english_file, 'w', encoding='utf-8') as f:
+                json.dump(new_english_data, f, ensure_ascii=False, indent=2)
+                
+        except Exception as e:
+            print(f"Błąd synchronizacji: {str(e)}")
 
     def show_message(self, message, color):
         """Wyświetla powiadomienie"""
@@ -467,6 +550,23 @@ class AdminInterface:
             modal=True,
             title=ft.Text("Niezapisane zmiany", color="#f57c00"),
             content=ft.Text("Masz niezapisane zmiany. Aby zmienić sekcję, najpierw zapisz zmiany lub anuluj je używając przycisków na dole strony."),
+            actions=[
+                ft.TextButton("OK", on_click=close_dialog),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+        
+        self.page.open(dialog)
+
+    def show_unsaved_changes_language_dialog(self):
+        """Pokazuje dialog o niezapisanych zmianach przy zmianie języka"""
+        def close_dialog(e):
+            self.page.close(dialog)
+
+        dialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Niezapisane zmiany", color="#f57c00"),
+            content=ft.Text("Masz niezapisane zmiany. Aby zmienić język edycji, najpierw zapisz zmiany lub anuluj je używając przycisków na dole strony."),
             actions=[
                 ft.TextButton("OK", on_click=close_dialog),
             ],
