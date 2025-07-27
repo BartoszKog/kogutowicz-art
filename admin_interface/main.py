@@ -23,6 +23,10 @@ class AdminInterface:
         self.current_data = None
         self.unsaved_changes = False
         self.english_mode = False  # Tryb edycji języka angielskiego
+        
+        # Stan filtrowania galerii
+        self.gallery_filter = "All"  # Aktualnie wybrany filtr kategorii
+        self.filtered_gallery_data = []  # Przefiltrowane dane galerii
         # Komponenty UI
         self.setup_ui()
 
@@ -158,6 +162,10 @@ class AdminInterface:
         sections = ["about", "featured", "gallery", "shop", "ui", "categories", "site-config"]
         self.current_file = sections[index]
         self.load_data()
+        
+        # Zresetuj filtr galerii przy przełączaniu sekcji
+        if index == 2:  # Sekcja galerii
+            self.gallery_filter = "All"
         
         if index == 0:
             self.show_about_form()
@@ -328,6 +336,10 @@ class AdminInterface:
             if self.current_file == "categories":
                 # Dla kategorii nie pokazuj błędu - zostanie obsłużone w show_categories_form
                 self.current_data = {}
+            elif self.current_file in ["gallery", "shop", "featured"]:
+                # Dla sekcji kolekcji utwórz pustą listę
+                self.current_data = []
+                self.show_message(f"Utworzono nowy plik dla sekcji {self.current_file}", "#4caf50")
             else:
                 if self.english_mode:
                     self.show_message("Błąd: Nie znaleziono pliku z tłumaczeniem", "#f44336")
@@ -336,8 +348,13 @@ class AdminInterface:
                 self.current_data = None
         except json.JSONDecodeError:
             self._loading_data = False
-            self.show_message("Błąd: Nieprawidłowy format JSON", "#f44336")
-            self.current_data = None
+            if self.current_file in ["gallery", "shop", "featured"]:
+                # Dla sekcji kolekcji utwórz pustą listę jeśli plik jest uszkodzony
+                self.current_data = []
+                self.show_message(f"Plik {self.current_file}.json był uszkodzony - utworzono nowy", "#f57c00")
+            else:
+                self.show_message("Błąd: Nieprawidłowy format JSON", "#f44336")
+                self.current_data = None
 
     def clean_data_before_save(self, data):
         """Usuwa puste wartości z danych przed zapisem"""
@@ -907,6 +924,86 @@ class AdminInterface:
         
         return []
 
+    def filter_gallery_data(self, category_filter="All"):
+        """Filtruje dane galerii według wybranej kategorii"""
+        if not self.current_data or category_filter == "All":
+            return list(self.current_data) if self.current_data else []
+        
+        filtered_data = []
+        for item in self.current_data:
+            if isinstance(item, dict) and "categories" in item:
+                item_categories = item.get("categories", [])
+                if isinstance(item_categories, list) and category_filter in item_categories:
+                    filtered_data.append(item)
+        
+        return filtered_data
+
+    def set_gallery_filter(self, category):
+        """Ustawia filtr kategorii galerii"""
+        self.gallery_filter = category
+        self.filtered_gallery_data = self.filter_gallery_data(category)
+
+    def get_filtered_item_index(self, original_index):
+        """Zwraca indeks elementu w przefiltrowanych danych"""
+        if self.gallery_filter == "All":
+            return original_index
+        
+        original_item = self.current_data[original_index]
+        for i, filtered_item in enumerate(self.filtered_gallery_data):
+            if filtered_item == original_item:
+                return i
+        return -1
+
+    def get_original_item_index(self, filtered_index):
+        """Zwraca oryginalny indeks elementu na podstawie indeksu w przefiltrowanych danych"""
+        if self.gallery_filter == "All":
+            return filtered_index
+        
+        if 0 <= filtered_index < len(self.filtered_gallery_data):
+            filtered_item = self.filtered_gallery_data[filtered_index]
+            for i, original_item in enumerate(self.current_data):
+                if original_item == filtered_item:
+                    return i
+        return -1
+
+    def create_category_filter_chips(self):
+        """Tworzy chipy filtrowania kategorii dla galerii"""
+        categories = self.get_gallery_categories()
+        chips = []
+        
+        # Chip "Wszystkie"
+        all_chip = ft.Chip(
+            label=ft.Text("Wszystkie"),
+            selected=self.gallery_filter == "All",
+            on_select=lambda e: self.on_category_filter_changed("All"),
+            bgcolor=ft.Colors.PRIMARY if self.gallery_filter == "All" else None,
+            selected_color=ft.Colors.WHITE if self.gallery_filter == "All" else None,
+        )
+        chips.append(all_chip)
+        
+        # Chipy dla każdej kategorii
+        for category in categories:
+            chip = ft.Chip(
+                label=ft.Text(category),
+                selected=self.gallery_filter == category,
+                on_select=lambda e, cat=category: self.on_category_filter_changed(cat),
+                bgcolor=ft.Colors.PRIMARY if self.gallery_filter == category else None,
+                selected_color=ft.Colors.WHITE if self.gallery_filter == category else None,
+            )
+            chips.append(chip)
+        
+        return ft.Row(
+            chips,
+            wrap=True,
+            spacing=5,
+            run_spacing=5
+        )
+
+    def on_category_filter_changed(self, category):
+        """Obsługuje zmianę filtra kategorii"""
+        self.set_gallery_filter(category)
+        self.show_gallery_form()  # Odśwież formularz z nowym filtrem
+
     def create_gallery_category_dropdown(self, current_value="", on_change=None, disabled=False):
         """Tworzy dropdown z kategoriami galerii dla sekcji featured"""
         gallery_categories = self.get_gallery_categories()
@@ -1459,8 +1556,9 @@ class AdminInterface:
 
     def show_featured_form(self):
         """Pokazuje formularz edycji sekcji 'Wyróżnione'"""
-        if not self.current_data:
-            return
+        # Inicjalizuj pustą listę jeśli dane nie istnieją
+        if self.current_data is None:
+            self.current_data = []
 
         # Kontener na wszystkie elementy
         form_container = ft.Column([
@@ -1574,8 +1672,16 @@ class AdminInterface:
 
     def show_gallery_form(self):
         """Pokazuje formularz edycji galerii"""
-        if not self.current_data:
-            return
+        # Inicjalizuj pustą listę jeśli dane nie istnieją
+        if self.current_data is None:
+            self.current_data = []
+
+        # Inicjalizuj filtr jeśli nie jest ustawiony
+        if not hasattr(self, 'gallery_filter') or self.gallery_filter is None:
+            self.gallery_filter = "All"
+        
+        # Ustaw przefiltrowane dane
+        self.set_gallery_filter(self.gallery_filter)
 
         def add_new_artwork():
             new_artwork = {
@@ -1586,7 +1692,7 @@ class AdminInterface:
                 "dimensions": "",
                 "year": 2024,
                 "image": "",
-                "categories": [],
+                "categories": [self.gallery_filter] if self.gallery_filter != "All" else [],
                 "available": True
             }
             self.current_data.append(new_artwork)
@@ -1594,138 +1700,22 @@ class AdminInterface:
             self.update_title()
             self.update_buttons_state()
             
-            new_index = len(self.current_data) - 1
-            
-            artwork_card = ft.Card(
-                content=ft.Container(
-                    content=ft.Column([
-                        ft.Row([
-                            ft.Text(f"Dzieło {new_index + 1}", weight=ft.FontWeight.BOLD),
-                            ft.Row([
-                                ft.Text("Pozycja:", size=12),
-                                ft.TextField(
-                                    value=str(new_index + 1),
-                                    width=60,
-                                    height=40,
-                                    text_align=ft.TextAlign.CENTER,
-                                    input_filter=ft.NumbersOnlyInputFilter(),
-                                    disabled=self.english_mode,
-                                    on_submit=lambda e, idx=new_index: self.move_to_position(idx, e.control.value),
-                                    on_blur=lambda e, idx=new_index: self.move_to_position(idx, e.control.value)
-                                ),
-                                ft.IconButton(
-                                    ft.Icons.KEYBOARD_ARROW_UP,
-                                    tooltip="Przesuń w górę",
-                                    disabled=new_index == 0 or self.english_mode,  # Wyłącz dla pierwszego elementu lub trybu angielskiego
-                                    on_click=lambda e, idx=new_index: self.move_item_up(idx)
-                                ),
-                                ft.IconButton(
-                                    ft.Icons.KEYBOARD_ARROW_DOWN,
-                                    tooltip="Przesuń w dół",
-                                    disabled=new_index == len(self.current_data) - 1 or self.english_mode,  # Wyłącz dla ostatniego elementu lub trybu angielskiego
-                                    on_click=lambda e, idx=new_index: self.move_item_down(idx)
-                                ),
-                                ft.IconButton(
-                                    ft.Icons.DELETE,
-                                    tooltip="Usuń dzieło",
-                                    disabled=self.english_mode,
-                                    on_click=lambda e, idx=new_index: delete_artwork_inline(idx)
-                                )
-                            ])
-                        ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-                        ft.Row([
-                            ft.TextField(
-                                label="Tytuł",
-                                value="",
-                                expand=True,
-                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "title", e.control.value)
-                            ),
-                            ft.TextField(
-                                label="Rok",
-                                value="2024",
-                                width=100,
-                                disabled=self.english_mode,
-                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "year", int(e.control.value) if e.control.value.isdigit() else 2024)
-                            )
-                        ]),
-                        ft.TextField(
-                            label="Opis",
-                            value="",
-                            multiline=True,
-                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "description", e.control.value)
-                        ),
-                        ft.Row([
-                            ft.TextField(
-                                label="Technika",
-                                value="",
-                                expand=True,
-                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "technique", e.control.value)
-                            ),
-                            ft.TextField(
-                                label="Wymiary",
-                                value="",
-                                expand=True,
-                                disabled=self.english_mode,
-                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "dimensions", e.control.value)
-                            )
-                        ]),
-                        self.create_category_selector(
-                            [],
-                            lambda categories, idx=new_index: self.update_item_field(idx, "categories", categories),
-                            disabled=self.english_mode
-                        ),
-                        ft.Switch(
-                            label="Dostępne",
-                            value=True,
-                            disabled=self.english_mode,
-                            on_change=lambda e, idx=new_index: self.update_item_field(idx, "available", e.control.value)
-                        ),
-                        ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
-                        self.create_image_picker(
-                            "",
-                            lambda path, idx=new_index: self.update_item_field(idx, "image", path),
-                            disabled=self.english_mode
-                        )
-                    ]),
-                    padding=15
-                )
-            )
-            
-            form_container.controls.append(artwork_card)
-            self.page.update()
-            
-            # Przewiń do nowo dodanego elementu
-            def scroll_to_new_item():
-                if hasattr(self.content_area.content, 'scroll_to'):
-                    self.content_area.content.scroll_to(offset=-1, duration=300)
-                    self.page.update()
-            
-            # Opóźnione przewijanie
-            timer = threading.Timer(0.1, scroll_to_new_item)
-            timer.start()
+            # Odśwież formularz aby pokazać nowy element
+            self.show_gallery_form()
 
-        def delete_artwork_inline(index):
+        def delete_artwork_inline(filtered_index):
+            # Znajdź oryginalny indeks
+            original_index = self.get_original_item_index(filtered_index)
+            if original_index == -1:
+                return
+                
             def confirm_delete(e):
-                self.current_data.pop(index)
+                self.current_data.pop(original_index)
                 self.unsaved_changes = True
                 self.update_title()
                 self.update_buttons_state()
-                
-                if index + 2 < len(form_container.controls):
-                    form_container.controls.pop(index + 2)
-                    
-                    for i, card in enumerate(form_container.controls[2:], 0):
-                        if isinstance(card, ft.Card):
-                            title_row = card.content.content.controls[0]
-                            if isinstance(title_row, ft.Row) and len(title_row.controls) >= 2:
-                                title_text = title_row.controls[0]
-                                delete_button = title_row.controls[1]
-                                
-                                title_text.value = f"Dzieło {i + 1}"
-                                delete_button.on_click = lambda e, idx=i: delete_artwork_inline(idx)
-                
                 self.page.close(dialog)
-                self.page.update()
+                self.show_gallery_form()  # Odśwież formularz
 
             def cancel_delete(e):
                 self.page.close(dialog)
@@ -1746,44 +1736,54 @@ class AdminInterface:
         form_container = ft.Column([
             ft.Text("Edycja galerii", size=24, weight=ft.FontWeight.BOLD),
             ft.Divider(),
+            
+            # Chipy filtrowania kategorii
+            ft.Text("Filtruj według kategorii:", size=16, weight=ft.FontWeight.BOLD),
+            self.create_category_filter_chips(),
+            ft.Divider(),
         ], scroll=ft.ScrollMode.AUTO)
 
-        # Lista dzieł sztuki
-        for i, artwork in enumerate(self.current_data):
+        # Lista dzieł sztuki (przefiltrowana)
+        data_to_display = self.filtered_gallery_data if self.gallery_filter != "All" else self.current_data
+        
+        for filtered_i, artwork in enumerate(data_to_display):
+            # Znajdź oryginalny indeks dla wyświetlania numeracji
+            original_index = self.get_original_item_index(filtered_i) if self.gallery_filter != "All" else filtered_i
+            
             artwork_card = ft.Card(
                 content=ft.Container(
                     content=ft.Column([
                         ft.Row([
-                            ft.Text(f"Dzieło {i+1}", weight=ft.FontWeight.BOLD),
+                            ft.Text(f"Dzieło {original_index + 1}", weight=ft.FontWeight.BOLD),
                             ft.Row([
                                 ft.Text("Pozycja:", size=12),
                                 ft.TextField(
-                                    value=str(i+1),
+                                    value=str(original_index + 1),
                                     width=60,
                                     height=40,
                                     text_align=ft.TextAlign.CENTER,
                                     input_filter=ft.NumbersOnlyInputFilter(),
-                                    disabled=self.english_mode,
-                                    on_submit=lambda e, idx=i: self.move_to_position(idx, e.control.value),
-                                    on_blur=lambda e, idx=i: self.move_to_position(idx, e.control.value)
+                                    disabled=self.english_mode or self.gallery_filter != "All",  # Wyłącz gdy filtr aktywny
+                                    on_submit=lambda e, idx=original_index: self.move_to_position(idx, e.control.value) if self.gallery_filter == "All" else None,
+                                    on_blur=lambda e, idx=original_index: self.move_to_position(idx, e.control.value) if self.gallery_filter == "All" else None
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_UP,
                                     tooltip="Przesuń w górę",
-                                    disabled=i == 0 or self.english_mode,  # Wyłącz dla pierwszego elementu lub trybu angielskiego
-                                    on_click=lambda e, idx=i: self.move_item_up(idx)
+                                    disabled=filtered_i == 0 or self.english_mode,  # Wyłącz dla pierwszego elementu lub trybu angielskiego
+                                    on_click=lambda e, idx=filtered_i: self.move_item_up(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.KEYBOARD_ARROW_DOWN,
                                     tooltip="Przesuń w dół",
-                                    disabled=i == len(self.current_data) - 1 or self.english_mode,  # Wyłącz dla ostatniego elementu lub trybu angielskiego
-                                    on_click=lambda e, idx=i: self.move_item_down(idx)
+                                    disabled=filtered_i == len(data_to_display) - 1 or self.english_mode,  # Wyłącz dla ostatniego elementu lub trybu angielskiego
+                                    on_click=lambda e, idx=filtered_i: self.move_item_down(idx)
                                 ),
                                 ft.IconButton(
                                     ft.Icons.DELETE,
                                     tooltip="Usuń dzieło",
                                     disabled=self.english_mode,
-                                    on_click=lambda e, idx=i: delete_artwork_inline(idx)
+                                    on_click=lambda e, idx=filtered_i: delete_artwork_inline(idx)
                                 )
                             ])
                         ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
@@ -1792,52 +1792,52 @@ class AdminInterface:
                                 label="Tytuł",
                                 value=artwork.get("title", ""),
                                 expand=True,
-                                on_change=lambda e, idx=i: self.update_item_field(idx, "title", e.control.value)
+                                on_change=lambda e, idx=original_index: self.update_item_field(idx, "title", e.control.value)
                             ),
                             ft.TextField(
                                 label="Rok",
                                 value=str(artwork.get("year", "")),
                                 width=100,
                                 disabled=self.english_mode,
-                                on_change=lambda e, idx=i: self.update_item_field(idx, "year", int(e.control.value) if e.control.value.isdigit() else 2024)
+                                on_change=lambda e, idx=original_index: self.update_item_field(idx, "year", int(e.control.value) if e.control.value.isdigit() else 2024)
                             )
                         ]),
                         ft.TextField(
                             label="Opis",
                             value=artwork.get("description", ""),
                             multiline=True,
-                            on_change=lambda e, idx=i: self.update_item_field(idx, "description", e.control.value)
+                            on_change=lambda e, idx=original_index: self.update_item_field(idx, "description", e.control.value)
                         ),
                         ft.Row([
                             ft.TextField(
                                 label="Technika",
                                 value=artwork.get("technique", ""),
                                 expand=True,
-                                on_change=lambda e, idx=i: self.update_item_field(idx, "technique", e.control.value)
+                                on_change=lambda e, idx=original_index: self.update_item_field(idx, "technique", e.control.value)
                             ),
                             ft.TextField(
                                 label="Wymiary",
                                 value=artwork.get("dimensions", ""),
                                 expand=True,
                                 disabled=self.english_mode,
-                                on_change=lambda e, idx=i: self.update_item_field(idx, "dimensions", e.control.value)
+                                on_change=lambda e, idx=original_index: self.update_item_field(idx, "dimensions", e.control.value)
                             )
                         ]),
                         self.create_category_selector(
                             artwork.get("categories", []),
-                            lambda categories, idx=i: self.update_item_field(idx, "categories", categories),
+                            lambda categories, idx=original_index: self.update_item_field(idx, "categories", categories),
                             disabled=self.english_mode
                         ),
                         ft.Switch(
                             label="Dostępne",
                             value=artwork.get("available", True),
                             disabled=self.english_mode,
-                            on_change=lambda e, idx=i: self.update_item_field(idx, "available", e.control.value)
+                            on_change=lambda e, idx=original_index: self.update_item_field(idx, "available", e.control.value)
                         ),
                         ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(
                             artwork.get("image", ""),
-                            lambda path, idx=i: self.update_item_field(idx, "image", path),
+                            lambda path, idx=original_index: self.update_item_field(idx, "image", path),
                             disabled=self.english_mode
                         )
                     ]),
@@ -1858,8 +1858,9 @@ class AdminInterface:
 
     def show_shop_form(self):
         """Pokazuje formularz edycji sklepu"""
-        if not self.current_data:
-            return
+        # Inicjalizuj pustą listę jeśli dane nie istnieją
+        if self.current_data is None:
+            self.current_data = []
 
         def add_new_product():
             new_product = {
@@ -2153,6 +2154,7 @@ class AdminInterface:
                 errors.append("Imię i nazwisko artysty nie może być dłuższe niż 100 znaków")
                 
         elif data_type in ["featured", "gallery", "shop"]:
+            # Puste listy są dozwolone dla sekcji galerii i sklepu
             if not isinstance(data, list):
                 errors.append("Dane muszą być listą")
             else:
@@ -2180,7 +2182,8 @@ class AdminInterface:
 
     def validate_and_save_data(self):
         """Waliduje i zapisuje dane"""
-        if not self.current_data:
+        # Sprawdź czy current_data istnieje (może być pustą listą)
+        if self.current_data is None:
             self.show_message("Brak danych do zapisania", "#f44336")
             return False
             
@@ -2224,6 +2227,11 @@ class AdminInterface:
 
     def move_item_up(self, index):
         """Przesuwa element w górę na liście"""
+        # Dla sekcji galerii z aktywnym filtrem kategorii
+        if self.current_file == "gallery" and self.gallery_filter != "All":
+            self.move_gallery_item_up_filtered(index)
+            return
+            
         if index > 0 and index < len(self.current_data):
             # Zamień miejscami z poprzednim elementem
             self.current_data[index], self.current_data[index - 1] = \
@@ -2238,6 +2246,11 @@ class AdminInterface:
 
     def move_item_down(self, index):
         """Przesuwa element w dół na liście"""
+        # Dla sekcji galerii z aktywnym filtrem kategorii
+        if self.current_file == "gallery" and self.gallery_filter != "All":
+            self.move_gallery_item_down_filtered(index)
+            return
+            
         if index >= 0 and index < len(self.current_data) - 1:
             # Zamień miejscami z następnym elementem
             self.current_data[index], self.current_data[index + 1] = \
@@ -2249,6 +2262,64 @@ class AdminInterface:
             self.refresh_current_form()
             # Przewiń do nowej pozycji elementu
             self.scroll_to_item(index + 1)
+
+    def move_gallery_item_up_filtered(self, filtered_index):
+        """Przesuwa element w górę w widoku filtrowanym galerii"""
+        if filtered_index <= 0 or filtered_index >= len(self.filtered_gallery_data):
+            return
+            
+        # Znajdź oryginalny indeks aktualnego elementu
+        current_original_index = self.get_original_item_index(filtered_index)
+        if current_original_index == -1:
+            return
+            
+        # Znajdź oryginalny indeks poprzedniego elementu w filtrze
+        prev_original_index = self.get_original_item_index(filtered_index - 1)
+        if prev_original_index == -1:
+            return
+        
+        # Znajdź pozycję gdzie wstawić element (tuż przed poprzednim elementem tej kategorii)
+        target_position = prev_original_index
+        
+        # Przenieś element
+        item_to_move = self.current_data.pop(current_original_index)
+        self.current_data.insert(target_position, item_to_move)
+        
+        self.unsaved_changes = True
+        self.update_title()
+        self.update_buttons_state()
+        self.refresh_current_form()
+
+    def move_gallery_item_down_filtered(self, filtered_index):
+        """Przesuwa element w dół w widoku filtrowanym galerii"""
+        if filtered_index < 0 or filtered_index >= len(self.filtered_gallery_data) - 1:
+            return
+            
+        # Znajdź oryginalny indeks aktualnego elementu
+        current_original_index = self.get_original_item_index(filtered_index)
+        if current_original_index == -1:
+            return
+            
+        # Znajdź oryginalny indeks następnego elementu w filtrze
+        next_original_index = self.get_original_item_index(filtered_index + 1)
+        if next_original_index == -1:
+            return
+        
+        # Znajdź pozycję gdzie wstawić element (tuż za następnym elementem tej kategorii)
+        target_position = next_original_index + 1
+        if target_position > len(self.current_data):
+            target_position = len(self.current_data)
+        
+        # Przenieś element
+        item_to_move = self.current_data.pop(current_original_index)
+        if target_position > current_original_index:
+            target_position -= 1  # Skoryguj pozycję po usunięciu elementu
+        self.current_data.insert(target_position, item_to_move)
+        
+        self.unsaved_changes = True
+        self.update_title()
+        self.update_buttons_state()
+        self.refresh_current_form()
 
     def move_to_position(self, current_index, new_position_str):
         """Przenosi element na określoną pozycję"""
