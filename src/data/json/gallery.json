@@ -4,7 +4,7 @@
     "title": "Martwa natura czerwona",
     "dimensions": "30 x 30 cm",
     "year": 2008,
-    "image": "images/gallery/martwa_natura_czerwone.jpg",
+    "image": "images/gallery/martwa_natura_czerwone.webp",
     "categories": [
       "martwa natura"
     ],
@@ -14,7 +14,7 @@
     "id": 31,
     "title": "Zamek w Wiśniczu",
     "year": 2025,
-    "image": "images/gallery/img_20250525_184200805_hdr.jpg",
+    "image": "images/gallery/img_20250525_184200805.webp",
     "categories": [
       "pejzaż lokalny",
       "Wiśnicz"
@@ -36,11 +36,21 @@
     "available": true
   },
   {
+    "id": 35,
+    "title": "Dwór w Łąkcie Górnej",
+    "year": 2011,
+    "image": "images/gallery/dworek_lakta.webp",
+    "categories": [
+      "Łąkta"
+    ],
+    "available": true
+  },
+  {
     "id": 33,
     "title": "Spotkanie Światów",
     "technique": "Pastele",
     "year": 2012,
-    "image": "images/gallery/51368236_2753441664673780_3536544013614055424_n.jpg",
+    "image": "images/gallery/meetingofw.webp",
     "categories": [
       "postacie",
       "pastele"
