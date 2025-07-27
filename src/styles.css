@@ -474,25 +474,25 @@ html {
 
 @media (max-width: 700px) {
     .about-artist-content h1 {
-        font-size: clamp(1.5rem, 5vw, 1.875rem);
+        font-size: 1.5rem; /* Taki sam rozmiar jak nagłówki sekcji (text-2xl) */
     }
 }
 
 @media (max-width: 550px) {
     .about-artist-content h1 {
-        font-size: clamp(1.25rem, 4.5vw, 1.625rem);
+        font-size: 1.5rem; /* Taki sam rozmiar jak nagłówki sekcji (text-2xl) */
     }
 }
 
 @media (max-width: 450px) {
     .about-artist-content h1 {
-        font-size: clamp(1.125rem, 4vw, 1.375rem);
+        font-size: 1.5rem; /* Taki sam rozmiar jak nagłówki sekcji (text-2xl) */
     }
 }
 
 @media (max-width: 350px) {
     .about-artist-content h1 {
-        font-size: clamp(1rem, 3.5vw, 1.25rem);
+        font-size: 1.5rem; /* Taki sam rozmiar jak nagłówki sekcji (text-2xl) */
     }
 }
 
