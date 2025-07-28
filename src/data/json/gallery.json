@@ -1,11 +1,59 @@
 [
   {
+    "id": 40,
+    "title": "Kaplica Matki Bożej Szkaplerznej w Maliniskach",
+    "description": "Niewielki, zabytkowy obiekt sakralny, położony w Kamionce Małej",
+    "year": 2025,
+    "image": "images/gallery/Kamionka mała.webp",
+    "categories": [
+      "Laskowa",
+      "pejzaż lokalny"
+    ],
+    "available": true
+  },
+  {
+    "id": 43,
+    "title": "Jesienna aura przy Kościele w Żegocinie",
+    "dimensions": "24 x 30 cm",
+    "year": 2025,
+    "image": "images/gallery/kościół Żegocina jesień.webp",
+    "categories": [
+      "Żegocina",
+      "pejzaż lokalny"
+    ],
+    "available": true
+  },
+  {
+    "id": 44,
+    "title": "Leonard - Późne Lato",
+    "dimensions": "24 x 30 cm",
+    "year": 2024,
+    "image": "images/gallery/Leonard - późne lato.webp",
+    "categories": [
+      "Lipnica",
+      "pejzaż lokalny"
+    ],
+    "available": true
+  },
+  {
     "id": 38,
     "title": "Nakrycie do Stołu",
     "year": 2020,
     "image": "images/gallery/stół.webp",
     "categories": [
       "martwa natura"
+    ],
+    "available": true
+  },
+  {
+    "id": 41,
+    "title": "Kościół Trzcianie - Zima",
+    "description": "Kościół pw. św. Małgorzaty PM w Trzcianie",
+    "year": 2011,
+    "image": "images/gallery/kościół Trzciana.webp",
+    "categories": [
+      "pejzaż lokalny",
+      "Trzciana"
     ],
     "available": true
   },
@@ -17,6 +65,18 @@
     "image": "images/gallery/martwa_natura_czerwone.webp",
     "categories": [
       "martwa natura"
+    ],
+    "available": true
+  },
+  {
+    "id": 42,
+    "title": "Kościół w Żegocinie pośród jesiennych pól",
+    "dimensions": "18 x 24 cm",
+    "year": 2025,
+    "image": "images/gallery/kościół Żegocina jesień l.webp",
+    "categories": [
+      "Żegocina",
+      "pejzaż lokalny"
     ],
     "available": true
   },
@@ -51,7 +111,8 @@
     "year": 2011,
     "image": "images/gallery/dworek_lakta.webp",
     "categories": [
-      "Łąkta"
+      "Łąkta",
+      "pejzaż lokalny"
     ],
     "available": true
   },
