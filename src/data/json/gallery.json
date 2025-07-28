@@ -1,5 +1,15 @@
 [
   {
+    "id": 38,
+    "title": "Nakrycie do Stołu",
+    "year": 2020,
+    "image": "images/gallery/stół.webp",
+    "categories": [
+      "martwa natura"
+    ],
+    "available": true
+  },
+  {
     "id": 3,
     "title": "Martwa natura czerwona",
     "dimensions": "30 x 30 cm",
@@ -59,10 +69,20 @@
     "dimensions": "50 x 70 cm"
   },
   {
+    "id": 37,
+    "title": "Kwiat Róży",
+    "year": 2025,
+    "image": "images/gallery/kwiat_rozy.webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": true
+  },
+  {
     "id": 5,
     "title": "Róże",
     "year": 2012,
-    "image": "images/gallery/A_pink_still_life_kko29.jpg",
+    "image": "images/gallery/A_pink_still_life_kko29.webp",
     "categories": [
       "kwiaty",
       "martwa natura"
@@ -74,7 +94,7 @@
     "id": 6,
     "title": "Martwa natura karminowa",
     "year": 2008,
-    "image": "images/gallery/Carmine_still_life_kko10.jpg",
+    "image": "images/gallery/Carmine_still_life_kko10.webp",
     "categories": [
       "martwa natura"
     ],
@@ -85,7 +105,7 @@
     "id": 7,
     "title": "Rynek w Bochni",
     "year": 2011,
-    "image": "images/gallery/Bochnia_kko87_88308.jpg",
+    "image": "images/gallery/Bochnia_kko87_88308.webp",
     "categories": [
       "pejzaż lokalny",
       "Bochnia"
@@ -97,7 +117,7 @@
     "id": 8,
     "title": "Jan Paweł II",
     "year": 2012,
-    "image": "images/gallery/Jan_Pawel_II_kko95_88316.jpg",
+    "image": "images/gallery/Jan_Pawel_II_kko95_88316.webp",
     "categories": [
       "motywy sakralne"
     ],
@@ -109,7 +129,7 @@
     "title": "Widok z okna",
     "dimensions": "40 x 60 cm",
     "year": 2011,
-    "image": "images/gallery/Widok_z_okna_kko64.jpg",
+    "image": "images/gallery/widok z okna.webp",
     "categories": [
       "pejzaż lokalny"
     ],
@@ -120,7 +140,7 @@
     "title": "Kościół w Chronowie",
     "dimensions": "18 x 24 cm",
     "year": 2011,
-    "image": "images/gallery/Kosciol_w_Chronowie.jpg",
+    "image": "images/gallery/Kosciol_w_Chronowie.webp",
     "categories": [
       "pejzaż lokalny"
     ],
@@ -131,7 +151,7 @@
     "title": "Martwa natura z pomarańczami",
     "dimensions": "40 x 50 cm",
     "year": 2011,
-    "image": "images/gallery/Still_Life_with_Oranges_kko50.jpg",
+    "image": "images/gallery/Still_Life_with_Oranges_kko50.webp",
     "categories": [
       "martwa natura"
     ],
@@ -142,7 +162,7 @@
     "title": "Żegocina centrum",
     "dimensions": "30 x 40 cm",
     "year": 2011,
-    "image": "images/gallery/zegocina_centrum_kosciol.jpg",
+    "image": "images/gallery/zegocina_centrum_kosciol.webp",
     "categories": [
       "pejzaż lokalny",
       "Żegocina"
@@ -155,7 +175,7 @@
     "description": "Złota jesień w Żegocinie",
     "dimensions": "50 x 50 cm",
     "year": 2011,
-    "image": "images/gallery/zegocina_kosciol.jpg",
+    "image": "images/gallery/zegocina_kosciol.webp",
     "categories": [
       "pejzaż lokalny",
       "Żegocina"
@@ -167,7 +187,7 @@
     "title": "Złote Mendle w Cieniu Kościoła",
     "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie",
     "year": 2011,
-    "image": "images/gallery/Mendle_kko38.jpg",
+    "image": "images/gallery/Mendle_kko38.webp",
     "categories": [
       "pejzaż lokalny",
       "Żegocina"
@@ -179,7 +199,7 @@
     "title": "Wawel",
     "dimensions": "30 x 30 cm",
     "year": 2011,
-    "image": "images/gallery/Wawel_kko35.jpg",
+    "image": "images/gallery/Wawel_kko35.webp",
     "categories": [
       "pejzaż lokalny",
       "Kraków"
@@ -191,7 +211,7 @@
     "title": "Krakowski rynek",
     "dimensions": "18  x 24 cm",
     "year": 2011,
-    "image": "images/gallery/rynek_krk.jpg",
+    "image": "images/gallery/rynek_krk.webp",
     "categories": [
       "pejzaż lokalny",
       "Kraków"
@@ -204,7 +224,7 @@
     "description": "Krakowskie gołębie na tle Kościoła Mariackiego",
     "dimensions": "30 x 40 cm",
     "year": 2011,
-    "image": "images/gallery/Mariacki.jpg",
+    "image": "images/gallery/Mariacki.webp",
     "categories": [
       "pejzaż lokalny",
       "Kraków"
@@ -216,7 +236,7 @@
     "title": "Pelargonie",
     "dimensions": "30 x 20 cm",
     "year": 2011,
-    "image": "images/gallery/Geranium_kko54.jpg",
+    "image": "images/gallery/Geranium_kko54.webp",
     "categories": [
       "kwiaty"
     ],
@@ -224,10 +244,10 @@
   },
   {
     "id": 17,
-    "title": "Żółte róże",
+    "title": "Żółte Róże",
     "dimensions": "30 x 30 cm",
     "year": 2011,
-    "image": "images/gallery/Zolte_roze_kko63.jpg",
+    "image": "images/gallery/Zolte_roze_kko63.webp",
     "categories": [
       "kwiaty"
     ],
@@ -238,7 +258,7 @@
     "title": "Bukiet",
     "dimensions": "40 x 40 cm",
     "year": 2011,
-    "image": "images/gallery/Bukiet_kko71.jpg",
+    "image": "images/gallery/Bukiet_kko71.webp",
     "categories": [
       "kwiaty"
     ],
@@ -249,7 +269,7 @@
     "title": "Tulipany",
     "dimensions": "30 x 20 cm",
     "year": 2011,
-    "image": "images/gallery/Tulipany_kko72.jpg",
+    "image": "images/gallery/Tulipany_kko72.webp",
     "categories": [
       "kwiaty"
     ],
@@ -260,7 +280,7 @@
     "title": "Różowe malwy",
     "dimensions": "30 x 20 cm",
     "year": 2011,
-    "image": "images/gallery/Rozowe_malwy_kko88_88309.jpg",
+    "image": "images/gallery/Rozowe_malwy_kko88_88309.webp",
     "categories": [
       "kwiaty"
     ],
@@ -271,7 +291,7 @@
     "title": "Narcyzy",
     "dimensions": "50 x 50 cm",
     "year": 2011,
-    "image": "images/gallery/Narcyzy_kko75.jpg",
+    "image": "images/gallery/Narcyzy_kko75.webp",
     "categories": [
       "kwiaty"
     ],
@@ -282,7 +302,7 @@
     "title": "Rozdziele",
     "dimensions": "30 x 40 cm",
     "year": 2011,
-    "image": "images/gallery/Rozdziele_kko65.jpg",
+    "image": "images/gallery/Rozdziele_kko65.webp",
     "categories": [
       "pejzaż lokalny",
       "Rozdziele"
@@ -295,7 +315,7 @@
     "description": "Zamek w Wiśniczu",
     "dimensions": "30 x 50 cm",
     "year": 2011,
-    "image": "images/gallery/Wisnicz_kko78.jpg",
+    "image": "images/gallery/Wisnicz_kko78.webp",
     "categories": [
       "pejzaż lokalny",
       "Wiśnicz"
@@ -308,7 +328,7 @@
     "description": "Rynek w Myślenicach",
     "dimensions": "20 x 40 cm",
     "year": 2011,
-    "image": "images/gallery/Myslenice_kko79.jpg",
+    "image": "images/gallery/Myslenice_kko79.webp",
     "categories": [
       "pejzaż lokalny",
       "Myślenice"
@@ -320,7 +340,7 @@
     "title": "Wiśnicz",
     "dimensions": "20 x 40 cm",
     "year": 2011,
-    "image": "images/gallery/Wisnicz_kko37.jpg",
+    "image": "images/gallery/Wisnicz_kko37.webp",
     "categories": [
       "pejzaż lokalny",
       "Wiśnicz"
@@ -333,7 +353,7 @@
     "description": "Koniec lata w Łąkcie Górnej",
     "dimensions": "30 x 40 cm",
     "year": 2011,
-    "image": "images/gallery/Sloneczniki_koniec_lata_lakta_gorna.jpg",
+    "image": "images/gallery/Sloneczniki_koniec_lata_lakta_gorna.webp",
     "categories": [
       "pejzaż lokalny",
       "Łąkta"
@@ -346,7 +366,7 @@
     "description": "Kościół św. Leonarda w Lipnicy Murowanej",
     "dimensions": "24 x 30 cm",
     "year": 2011,
-    "image": "images/gallery/Leonard_kko82.jpg",
+    "image": "images/gallery/Leonard_kko82.webp",
     "categories": [
       "pejzaż lokalny",
       "Lipnica"
@@ -358,7 +378,7 @@
     "title": "Kościół w Laskowej",
     "dimensions": "30 x 40 cm",
     "year": 2011,
-    "image": "images/gallery/Kosciol_w_Laskowej_kko83.jpg",
+    "image": "images/gallery/Kosciol_w_Laskowej_kko83.webp",
     "categories": [
       "pejzaż lokalny",
       "Laskowa"
@@ -372,7 +392,7 @@
     "description": "Kościół św. Leonarda w Lipnicy Murowanej",
     "dimensions": "35 x 40 cm",
     "year": 2012,
-    "image": "images/gallery/Leonard_kko91.jpg",
+    "image": "images/gallery/Leonard_kko91.webp",
     "categories": [
       "pejzaż lokalny",
       "Lipnica"
@@ -384,10 +404,31 @@
     "title": "Żyd",
     "dimensions": "30 x 24 cm",
     "year": 2011,
-    "image": "images/gallery/Zyd_kko93.jpg",
+    "image": "images/gallery/Zyd_kko93.webp",
     "categories": [
       "postacie"
     ],
     "available": false
+  },
+  {
+    "id": 36,
+    "title": "Róże",
+    "year": 2020,
+    "image": "images/gallery/118222145_4581588251859103_4506555735424932541_n.webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false
+  },
+  {
+    "id": 39,
+    "title": "Kościół w Żegocinie i Widok z Okna",
+    "year": 2010,
+    "image": "images/gallery/Żegocina i widok z okna.webp",
+    "categories": [
+      "pejzaż lokalny",
+      "Żegocina"
+    ],
+    "available": true
   }
 ]
