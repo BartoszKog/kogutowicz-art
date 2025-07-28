@@ -1,5 +1,9 @@
 [
   {
+    "id": 38,
+    "title": "Nakrycie do Stołu"
+  },
+  {
     "id": 3,
     "title": "Red Still Life"
   },
@@ -20,6 +24,10 @@
     "id": 33,
     "title": "Meeting of Worlds",
     "technique": "Pastels"
+  },
+  {
+    "id": 37,
+    "title": "Kwiat Róży"
   },
   {
     "id": 5,
@@ -141,5 +149,13 @@
   {
     "id": 30,
     "title": "Jew"
+  },
+  {
+    "id": 36,
+    "title": "Róże"
+  },
+  {
+    "id": 39,
+    "title": "Kościół w Żegocinie i Widok z Okna"
   }
 ]
