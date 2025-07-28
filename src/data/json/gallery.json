@@ -133,7 +133,7 @@
     "categories": [
       "pejzaż lokalny"
     ],
-    "available": false
+    "available": true
   },
   {
     "id": 9,
@@ -429,6 +429,6 @@
       "pejzaż lokalny",
       "Żegocina"
     ],
-    "available": true
+    "available": false
   }
 ]
