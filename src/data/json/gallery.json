@@ -4,19 +4,11 @@
     "title": "Kaplica Matki Bożej Szkaplerznej w Maliniskach",
     "description": "Niewielki, zabytkowy obiekt sakralny, położony w Kamionce Małej",
     "year": 2025,
-    "image": "images/gallery/Kamionka mała.webp",
+    "image": "images/gallery/Kamionka mała_.webp",
     "categories": [
       "Laskowa",
       "pejzaż lokalny"
     ],
-    "available": true
-  },
-  {
-    "id": 45,
-    "title": "test",
-    "year": 2024,
-    "image": "images/gallery/Kamionka mała_.webp",
-    "categories": [],
     "available": true
   },
   {
