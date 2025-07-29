@@ -9,22 +9,26 @@
       "Laskowa",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "40 x 30 cm"
   },
   {
     "id": 46,
-    "title": "Laskowa Jesienią",
+    "title": "Laskowa - przedwiośnie",
     "year": 2011,
     "image": "images/gallery/laskowa_jes.webp",
     "categories": [
       "Laskowa",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "30 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 43,
-    "title": "Kościół w Żegocinie w Jesiennej aurze",
+    "title": "Kościół w Żegocinie w jesiennej aurze",
     "dimensions": "24 x 30 cm",
     "year": 2025,
     "image": "images/gallery/zeg_jesienna_aura.webp",
@@ -32,21 +36,24 @@
       "Żegocina",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 38,
-    "title": "Nakrycie do Stołu",
+    "title": "Nakrycie do stołu",
     "year": 2020,
     "image": "images/gallery/stół.webp",
     "categories": [
       "martwa natura"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "60 x 40 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 41,
-    "title": "Kościół Trzcianie - Zima",
+    "title": "Kościół Trzcianie - zima",
     "description": "Kościół pw. św. Małgorzaty PM w Trzcianie",
     "year": 2011,
     "image": "images/gallery/kościół Trzciana.webp",
@@ -54,7 +61,9 @@
       "pejzaż lokalny",
       "Trzciana"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "30 x 20 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 58,
@@ -64,7 +73,9 @@
     "categories": [
       "martwa natura"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "40 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 60,
@@ -74,7 +85,9 @@
     "categories": [
       "martwa natura"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "20 x 20 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 63,
@@ -84,7 +97,9 @@
     "categories": [
       "martwa natura"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "40 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 3,
@@ -95,7 +110,8 @@
     "categories": [
       "martwa natura"
     ],
-    "available": true
+    "available": true,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 42,
@@ -107,7 +123,8 @@
       "Żegocina",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 48,
@@ -118,7 +135,9 @@
       "Wiśnicz",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "40 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 31,
@@ -130,7 +149,8 @@
       "Wiśnicz"
     ],
     "available": true,
-    "dimensions": "30 x 40 cm"
+    "dimensions": "30 x 40 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 34,
@@ -154,7 +174,9 @@
       "Łąkta",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "40 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 35,
@@ -165,7 +187,9 @@
       "Łąkta",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "24 x 18 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 33,
@@ -182,13 +206,15 @@
   },
   {
     "id": 37,
-    "title": "Kwiat Róży",
+    "title": "Kwiat róży",
     "year": 2025,
     "image": "images/gallery/kwiat_rozy.webp",
     "categories": [
       "kwiaty"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "15 x 15 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 5,
@@ -200,7 +226,8 @@
       "martwa natura"
     ],
     "available": false,
-    "dimensions": "30 x 24 cm"
+    "dimensions": "30 x 24 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 6,
@@ -211,7 +238,8 @@
       "martwa natura"
     ],
     "available": false,
-    "dimensions": "30 x 24 cm"
+    "dimensions": "30 x 40 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 50,
@@ -223,7 +251,9 @@
       "Bochnia",
       "pejzaż lokalny"
     ],
-    "available": false
+    "available": true,
+    "dimensions": "30 x 40 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 52,
@@ -234,7 +264,9 @@
       "Bochnia",
       "pejzaż lokalny"
     ],
-    "available": false
+    "available": true,
+    "dimensions": "24 x 18 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 53,
@@ -245,7 +277,9 @@
       "Bochnia",
       "pejzaż lokalny"
     ],
-    "available": false
+    "available": false,
+    "dimensions": "24 x 18 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 7,
@@ -257,7 +291,8 @@
       "Bochnia"
     ],
     "available": false,
-    "dimensions": "30 x 40 cm"
+    "dimensions": "40 x 50 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 8,
@@ -265,21 +300,24 @@
     "year": 2012,
     "image": "images/gallery/Jan_Pawel_II_kko95_88316.webp",
     "categories": [
-      "motywy sakralne"
+      "motywy sakralne",
+      "postacie"
     ],
     "available": false,
-    "dimensions": "40 x 50 cm"
+    "dimensions": "30 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 4,
     "title": "Widok z okna",
-    "dimensions": "40 x 60 cm",
+    "dimensions": "50 x 60 cm",
     "year": 2011,
     "image": "images/gallery/widok z okna.webp",
     "categories": [
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 9,
@@ -290,7 +328,8 @@
     "categories": [
       "pejzaż lokalny"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 10,
@@ -301,7 +340,8 @@
     "categories": [
       "martwa natura"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 11,
@@ -313,7 +353,8 @@
       "pejzaż lokalny",
       "Żegocina"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 12,
@@ -326,11 +367,12 @@
       "pejzaż lokalny",
       "Żegocina"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 32,
-    "title": "Złote Mendle w Cieniu Kościoła",
+    "title": "Złote mendle w cieniu kościoła",
     "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie",
     "year": 2011,
     "image": "images/gallery/Mendle_kko38.webp",
@@ -338,7 +380,9 @@
       "pejzaż lokalny",
       "Żegocina"
     ],
-    "available": false
+    "available": false,
+    "dimensions": "30 x 40 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 62,
@@ -349,18 +393,22 @@
       "Żegocina",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "30 x 20 cm",
+    "technique": "Obraz olejny na panelu malarskim"
   },
   {
     "id": 54,
-    "title": "Kościół w Żegocinie w Zimowej aurze",
+    "title": "Kościół w Żegocinie w zimowej aurze",
     "year": 2025,
     "image": "images/gallery/zeg_zima.webp",
     "categories": [
       "Żegocina",
       "pejzaż lokalny"
     ],
-    "available": false
+    "available": false,
+    "dimensions": "18 x 24 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 13,
@@ -372,19 +420,21 @@
       "pejzaż lokalny",
       "Kraków"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 14,
     "title": "Krakowski rynek",
-    "dimensions": "18  x 24 cm",
+    "dimensions": "18 x 24 cm",
     "year": 2011,
     "image": "images/gallery/rynek_krk.webp",
     "categories": [
       "pejzaż lokalny",
       "Kraków"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 15,
@@ -397,7 +447,8 @@
       "pejzaż lokalny",
       "Kraków"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 16,
@@ -408,7 +459,8 @@
     "categories": [
       "kwiaty"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 17,
@@ -419,7 +471,8 @@
     "categories": [
       "kwiaty"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 18,
@@ -430,7 +483,8 @@
     "categories": [
       "kwiaty"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 19,
@@ -441,7 +495,8 @@
     "categories": [
       "kwiaty"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 20,
@@ -452,7 +507,8 @@
     "categories": [
       "kwiaty"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 21,
@@ -463,7 +519,8 @@
     "categories": [
       "kwiaty"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 51,
@@ -475,7 +532,9 @@
       "Rozdziele",
       "pejzaż lokalny"
     ],
-    "available": false
+    "available": false,
+    "dimensions": "18 x 24 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 22,
@@ -488,7 +547,8 @@
       "Rozdziele"
     ],
     "available": false,
-    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku"
+    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 61,
@@ -499,7 +559,9 @@
       "Wiśnicz",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "30 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 23,
@@ -512,7 +574,8 @@
       "pejzaż lokalny",
       "Wiśnicz"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 47,
@@ -523,7 +586,9 @@
       "Myślenice",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "20 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 24,
@@ -536,7 +601,8 @@
       "pejzaż lokalny",
       "Myślenice"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 26,
@@ -549,11 +615,12 @@
       "pejzaż lokalny",
       "Łąkta"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 44,
-    "title": "Leonard - Późne Lato",
+    "title": "Leonard - późne lato",
     "dimensions": "24 x 30 cm",
     "year": 2024,
     "image": "images/gallery/Leonard późne lato.webp",
@@ -561,7 +628,8 @@
       "Lipnica",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 45,
@@ -573,7 +641,9 @@
       "Lipnica",
       "pejzaż lokalny"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "24 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 27,
@@ -586,7 +656,8 @@
       "pejzaż lokalny",
       "Lipnica"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 57,
@@ -599,7 +670,9 @@
       "pejzaż lokalny",
       "motywy sakralne"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "30 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 56,
@@ -611,7 +684,9 @@
       "pejzaż lokalny",
       "motywy sakralne"
     ],
-    "available": false
+    "available": false,
+    "dimensions": "30 x 24 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 28,
@@ -624,7 +699,8 @@
       "Laskowa"
     ],
     "available": false,
-    "description": "Kościół w Laskowej jesienią"
+    "description": "Kościół w Laskowej jesienią",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 29,
@@ -637,7 +713,8 @@
       "pejzaż lokalny",
       "Lipnica"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 30,
@@ -648,7 +725,8 @@
     "categories": [
       "postacie"
     ],
-    "available": false
+    "available": false,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 36,
@@ -658,7 +736,9 @@
     "categories": [
       "kwiaty"
     ],
-    "available": false
+    "available": false,
+    "technique": "obraz olejny na panelu malarskim",
+    "dimensions": "40 x 60 cm"
   },
   {
     "id": 55,
@@ -669,18 +749,22 @@
       "pejzaż lokalny",
       "Rajbrot"
     ],
-    "available": false
+    "available": false,
+    "dimensions": "24 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 39,
-    "title": "Kościół w Żegocinie i Widok z Okna",
-    "year": 2010,
+    "title": "Kościół w Żegocinie",
+    "year": 2008,
     "image": "images/gallery/Żegocina i widok z okna.webp",
     "categories": [
       "pejzaż lokalny",
       "Żegocina"
     ],
-    "available": false
+    "available": false,
+    "dimensions": "50 x 100 cm",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 59,
@@ -690,6 +774,8 @@
     "categories": [
       "motywy sakralne"
     ],
-    "available": true
+    "available": true,
+    "dimensions": "15 x 7 cm",
+    "technique": "obraz olejny na płycie pilśniowej"
   }
 ]
