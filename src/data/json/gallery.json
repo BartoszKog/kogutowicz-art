@@ -12,6 +12,14 @@
     "available": true
   },
   {
+    "id": 45,
+    "title": "test",
+    "year": 2024,
+    "image": "images/gallery/Kamionka mała_.webp",
+    "categories": [],
+    "available": true
+  },
+  {
     "id": 43,
     "title": "Jesienna aura przy Kościele w Żegocinie",
     "dimensions": "24 x 30 cm",
