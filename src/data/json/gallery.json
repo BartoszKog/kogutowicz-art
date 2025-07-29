@@ -12,25 +12,24 @@
     "available": true
   },
   {
-    "id": 43,
-    "title": "Jesienna aura przy Kościele w Żegocinie",
-    "dimensions": "24 x 30 cm",
-    "year": 2025,
-    "image": "images/gallery/kościół Żegocina jesień.webp",
+    "id": 46,
+    "title": "Laskowa Jesienią",
+    "year": 2011,
+    "image": "images/gallery/laskowa_jes.webp",
     "categories": [
-      "Żegocina",
+      "Laskowa",
       "pejzaż lokalny"
     ],
     "available": true
   },
   {
-    "id": 44,
-    "title": "Leonard - Późne Lato",
+    "id": 43,
+    "title": "Kościół w Żegocinie w Jesiennej aurze",
     "dimensions": "24 x 30 cm",
-    "year": 2024,
-    "image": "images/gallery/Leonard - późne lato.webp",
+    "year": 2025,
+    "image": "images/gallery/zeg_jesienna_aura.webp",
     "categories": [
-      "Lipnica",
+      "Żegocina",
       "pejzaż lokalny"
     ],
     "available": true
@@ -58,10 +57,40 @@
     "available": true
   },
   {
+    "id": 58,
+    "title": "Kompozycja z dynią i arbuzem",
+    "year": 2011,
+    "image": "images/gallery/martwa_natura_arb.webp",
+    "categories": [
+      "martwa natura"
+    ],
+    "available": true
+  },
+  {
+    "id": 60,
+    "title": "Kubek z owocami",
+    "year": 2011,
+    "image": "images/gallery/Wiśnicz z mgłą  (8).webp",
+    "categories": [
+      "martwa natura"
+    ],
+    "available": true
+  },
+  {
+    "id": 63,
+    "title": "Martwa natura z tkaninami",
+    "year": 2011,
+    "image": "images/gallery/martwaN.webp",
+    "categories": [
+      "martwa natura"
+    ],
+    "available": true
+  },
+  {
     "id": 3,
     "title": "Martwa natura czerwona",
     "dimensions": "30 x 30 cm",
-    "year": 2008,
+    "year": 2009,
     "image": "images/gallery/martwa_natura_czerwone.webp",
     "categories": [
       "martwa natura"
@@ -73,9 +102,20 @@
     "title": "Kościół w Żegocinie pośród jesiennych pól",
     "dimensions": "18 x 24 cm",
     "year": 2025,
-    "image": "images/gallery/kościół Żegocina jesień l.webp",
+    "image": "images/gallery/wieza_kosc_zeg.webp",
     "categories": [
       "Żegocina",
+      "pejzaż lokalny"
+    ],
+    "available": true
+  },
+  {
+    "id": 48,
+    "title": "Poranek w Wiśniczu",
+    "year": 2025,
+    "image": "images/gallery/Wiśnicz z mgłą.webp",
+    "categories": [
+      "Wiśnicz",
       "pejzaż lokalny"
     ],
     "available": true
@@ -106,9 +146,20 @@
     "available": true
   },
   {
+    "id": 49,
+    "title": "Pejzaż - Łąkta Górna",
+    "year": 2019,
+    "image": "images/gallery/lakta.webp",
+    "categories": [
+      "Łąkta",
+      "pejzaż lokalny"
+    ],
+    "available": true
+  },
+  {
     "id": 35,
     "title": "Dwór w Łąkcie Górnej",
-    "year": 2011,
+    "year": 2018,
     "image": "images/gallery/dworek_lakta.webp",
     "categories": [
       "Łąkta",
@@ -161,6 +212,40 @@
     ],
     "available": false,
     "dimensions": "30 x 24 cm"
+  },
+  {
+    "id": 50,
+    "title": "Bazylika św. Mikołaja w Bochni",
+    "description": "Najstarszy i największy kościół w Bochni",
+    "year": 2025,
+    "image": "images/gallery/bochnia_kosc.webp",
+    "categories": [
+      "Bochnia",
+      "pejzaż lokalny"
+    ],
+    "available": false
+  },
+  {
+    "id": 52,
+    "title": "Dzwonnica w Bochni",
+    "year": 2025,
+    "image": "images/gallery/bochnia_wieza_dzw.webp",
+    "categories": [
+      "Bochnia",
+      "pejzaż lokalny"
+    ],
+    "available": false
+  },
+  {
+    "id": 53,
+    "title": "Pomnik Króla Kazimierza III Wielkiego, Rynek, Bochnia",
+    "year": 2025,
+    "image": "images/gallery/Pomnik Króla Kazimierza III Wielkiego.webp",
+    "categories": [
+      "Bochnia",
+      "pejzaż lokalny"
+    ],
+    "available": false
   },
   {
     "id": 7,
@@ -252,6 +337,28 @@
     "categories": [
       "pejzaż lokalny",
       "Żegocina"
+    ],
+    "available": false
+  },
+  {
+    "id": 62,
+    "title": "Listopadowa aura w Żegocinie",
+    "year": 2020,
+    "image": "images/gallery/listopadowa_zeg.webp",
+    "categories": [
+      "Żegocina",
+      "pejzaż lokalny"
+    ],
+    "available": true
+  },
+  {
+    "id": 54,
+    "title": "Kościół w Żegocinie w Zimowej aurze",
+    "year": 2025,
+    "image": "images/gallery/zeg_zima.webp",
+    "categories": [
+      "Żegocina",
+      "pejzaż lokalny"
     ],
     "available": false
   },
@@ -359,8 +466,20 @@
     "available": false
   },
   {
+    "id": 51,
+    "title": "Kościół św. Jakuba Apostoła w Rozdzielu",
+    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku",
+    "year": 2025,
+    "image": "images/gallery/rozdziele_kosc.webp",
+    "categories": [
+      "Rozdziele",
+      "pejzaż lokalny"
+    ],
+    "available": false
+  },
+  {
     "id": 22,
-    "title": "Rozdziele",
+    "title": "Kościół św. Jakuba Apostoła w Rozdzielu",
     "dimensions": "30 x 40 cm",
     "year": 2011,
     "image": "images/gallery/Rozdziele_kko65.webp",
@@ -368,7 +487,19 @@
       "pejzaż lokalny",
       "Rozdziele"
     ],
-    "available": false
+    "available": false,
+    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku"
+  },
+  {
+    "id": 61,
+    "title": "Zamek w Wiśniczu",
+    "year": 2011,
+    "image": "images/gallery/zamek_wisnic_ciemne.webp",
+    "categories": [
+      "Wiśnicz",
+      "pejzaż lokalny"
+    ],
+    "available": true
   },
   {
     "id": 23,
@@ -384,6 +515,17 @@
     "available": false
   },
   {
+    "id": 47,
+    "title": "Myślenice",
+    "year": 2013,
+    "image": "images/gallery/myslenice.webp",
+    "categories": [
+      "Myślenice",
+      "pejzaż lokalny"
+    ],
+    "available": true
+  },
+  {
     "id": 24,
     "title": "Myślenice",
     "description": "Rynek w Myślenicach",
@@ -393,18 +535,6 @@
     "categories": [
       "pejzaż lokalny",
       "Myślenice"
-    ],
-    "available": false
-  },
-  {
-    "id": 25,
-    "title": "Wiśnicz",
-    "dimensions": "20 x 40 cm",
-    "year": 2011,
-    "image": "images/gallery/Wisnicz_kko37.webp",
-    "categories": [
-      "pejzaż lokalny",
-      "Wiśnicz"
     ],
     "available": false
   },
@@ -422,6 +552,30 @@
     "available": false
   },
   {
+    "id": 44,
+    "title": "Leonard - Późne Lato",
+    "dimensions": "24 x 30 cm",
+    "year": 2024,
+    "image": "images/gallery/Leonard późne lato.webp",
+    "categories": [
+      "Lipnica",
+      "pejzaż lokalny"
+    ],
+    "available": true
+  },
+  {
+    "id": 45,
+    "title": "Leonard",
+    "description": "Kościół św. Leonarda w Lipnicy Murowanej",
+    "year": 2025,
+    "image": "images/gallery/leonard_ciemny.webp",
+    "categories": [
+      "Lipnica",
+      "pejzaż lokalny"
+    ],
+    "available": true
+  },
+  {
     "id": 27,
     "title": "Leonard",
     "description": "Kościół św. Leonarda w Lipnicy Murowanej",
@@ -431,6 +585,31 @@
     "categories": [
       "pejzaż lokalny",
       "Lipnica"
+    ],
+    "available": false
+  },
+  {
+    "id": 57,
+    "title": "Kapliczka św. Jana Nepomucena, Laskowa",
+    "description": "Została wzniesiona, by chronić przed powodziami i suszami",
+    "year": 2025,
+    "image": "images/gallery/Kapliczka św. Jana Nepomucena.webp",
+    "categories": [
+      "Laskowa",
+      "pejzaż lokalny",
+      "motywy sakralne"
+    ],
+    "available": true
+  },
+  {
+    "id": 56,
+    "title": "Figurka na Zbójce, Laskowa",
+    "year": 2025,
+    "image": "images/gallery/laskowa_kap.webp",
+    "categories": [
+      "Laskowa",
+      "pejzaż lokalny",
+      "motywy sakralne"
     ],
     "available": false
   },
@@ -482,6 +661,17 @@
     "available": false
   },
   {
+    "id": 55,
+    "title": "Kościół Narodzenia Najświętszej Maryi Panny w Rajbrocie",
+    "year": 2024,
+    "image": "images/gallery/rajbrot.webp",
+    "categories": [
+      "pejzaż lokalny",
+      "Rajbrot"
+    ],
+    "available": false
+  },
+  {
     "id": 39,
     "title": "Kościół w Żegocinie i Widok z Okna",
     "year": 2010,
@@ -491,5 +681,15 @@
       "Żegocina"
     ],
     "available": false
+  },
+  {
+    "id": 59,
+    "title": "Matka Boża",
+    "year": 2025,
+    "image": "images/gallery/Wiśnicz z mgłą  (13).webp",
+    "categories": [
+      "motywy sakralne"
+    ],
+    "available": true
   }
 ]
