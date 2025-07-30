@@ -232,6 +232,21 @@
     "available": true
   },
   {
+    "id": 67,
+    "title": "Elbląg",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "30 x 40 cm",
+    "year": 2012,
+    "image": "images/gallery/Elblag_kko99_269712.webp",
+    "categories": [
+      "Pejzaż z podróży",
+      "Elbląg"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
     "id": 37,
     "title": "Kwiat róży",
     "year": 2025,
@@ -772,7 +787,8 @@
     ],
     "available": true,
     "positionX": 0.5,
-    "positionY": 0.24
+    "positionY": 0.24,
+    "dimensions": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 36,
@@ -825,5 +841,262 @@
     "dimensions": "15 x 7 cm",
     "technique": "obraz olejny na płycie pilśniowej",
     "positionY": 0.28
+  },
+  {
+    "id": 68,
+    "title": "Kobieta w Ornamentach",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "40 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Waiting_I_kko1.webp",
+    "categories": [
+      "postacie"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.19
+  },
+  {
+    "id": 69,
+    "title": "Martwa natura zielona",
+    "dimensions": "50 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Green_still_life_kko8.webp",
+    "categories": [
+      "martwa natura"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 70,
+    "title": "Trzy Gracje",
+    "dimensions": "90 x 80 cm",
+    "year": 2012,
+    "image": "images/gallery/Trzy_Gracje_kko94.webp",
+    "categories": [
+      "postacie"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 71,
+    "title": "Matrioszki",
+    "dimensions": "50 x 50 cm",
+    "year": 2024,
+    "image": "images/gallery/Matrioszki_kko69.webp",
+    "categories": [
+      "postacie"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 72,
+    "title": "Błękitna Zasłona",
+    "year": 2024,
+    "image": "images/gallery/Noc_kko70.webp",
+    "categories": [
+      "postacie"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.22,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 73,
+    "title": "Kobieta w Bieli i Błękicie",
+    "dimensions": "60 x 40 cm",
+    "year": 2011,
+    "image": "images/gallery/Niebieska_kko89.webp",
+    "categories": [
+      "postacie"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.0,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 74,
+    "title": "Słoneczniki",
+    "dimensions": "40 x 35 cm",
+    "year": 2024,
+    "image": "images/gallery/Sunflowers_11_kko11.webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.22,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 75,
+    "title": "Żółte cynie",
+    "dimensions": "30 x 20 cm",
+    "year": 2024,
+    "image": "images/gallery/Yellow_Zinnias_kko53.webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.69,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 76,
+    "title": "Dom Ziemowita",
+    "dimensions": "20 x 20 cm",
+    "year": 2010,
+    "image": "images/gallery/Dom_Ziemowita_kko74.webp",
+    "categories": [
+      "Łąkta",
+      "pejzaż lokalny"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.74,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 77,
+    "title": "Szuwary",
+    "dimensions": "30 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Rushes_kko51.webp",
+    "categories": [
+      "Pejzaż z podróży"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 78,
+    "title": "Zamek w Książu",
+    "dimensions": "30 x 20 cm",
+    "year": 2024,
+    "image": "images/gallery/The_Ksiaz_Castle_kko56.webp",
+    "categories": [
+      "Pejzaż z podróży",
+      "Książ"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.18,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 79,
+    "title": "Czchów",
+    "dimensions": "40 x 60 cm",
+    "year": 2010,
+    "image": "images/gallery/Czchow_kko59.webp",
+    "categories": [
+      "pejzaż lokalny",
+      "Czchów"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 80,
+    "title": "Wiśnicz - złote lato",
+    "dimensions": "30 x 40 cm",
+    "year": 2024,
+    "image": "images/gallery/Wisnicz_kko66.webp",
+    "categories": [
+      "pejzaż lokalny",
+      "Wiśnicz"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.39,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 81,
+    "title": "Żegocina",
+    "dimensions": "24 x 30 cm",
+    "year": 2011,
+    "image": "images/gallery/zegocina_kko81.webp",
+    "categories": [
+      "pejzaż lokalny",
+      "Żegocina"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 82,
+    "title": "Ujanowice",
+    "dimensions": "24 x 30 cm",
+    "year": 2024,
+    "image": "images/gallery/Ujanowice_kko85.webp",
+    "categories": [
+      "pejzaż lokalny",
+      "Ujanowice"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 83,
+    "title": "Łączka",
+    "dimensions": "50 x 30 cm",
+    "year": 2024,
+    "image": "images/gallery/Meadow_I_kko60.webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 84,
+    "title": "Irysy",
+    "dimensions": "50 x 40 cm",
+    "year": 2011,
+    "image": "images/gallery/Irysy_kko62.webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.06,
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 85,
+    "title": "Maki",
+    "dimensions": "30 x 30 cm",
+    "year": 2011,
+    "image": "images/gallery/Maki_kko76.webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "technique": "Obraz olejny malowany na płótnie"
   }
 ]
