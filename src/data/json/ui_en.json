@@ -50,10 +50,11 @@
     "wszystkie": "All",
     "martwa natura": "Still life",
     "pejzaż lokalny": "Local landscape",
-    "postacie": "Portraits",
     "kwiaty": "Flowers",
     "pastele": "Pastels",
-    "motywy sakralne": "Sacred motifs"
+    "motywy sakralne": "Sacred motifs",
+    "Pejzaż z podróży": "Travel landscape",
+    "postacie": "People"
   },
   "footer": {
     "allRightsReserved": "All rights reserved",

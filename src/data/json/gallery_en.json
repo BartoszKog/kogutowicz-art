@@ -92,6 +92,11 @@
     "technique": "Pastels"
   },
   {
+    "id": 67,
+    "title": "Elbląg",
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
     "id": 37,
     "title": "Kwiat Róży",
     "technique": "Obraz olejny malowany na płótnie"
@@ -329,5 +334,78 @@
     "id": 59,
     "title": "Matka Boża",
     "technique": "obraz olejny na płycie pilśniowej"
+  },
+  {
+    "id": 68,
+    "title": "Kobieta w Ornamentach",
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 69,
+    "title": "Martwa natura zielona"
+  },
+  {
+    "id": 70,
+    "title": "Trzy Gracje"
+  },
+  {
+    "id": 71,
+    "title": "Matrioszki"
+  },
+  {
+    "id": 72,
+    "title": "Błękitna Zasłona"
+  },
+  {
+    "id": 73,
+    "title": "Kobieta w Bieli i Błękicie"
+  },
+  {
+    "id": 74,
+    "title": "Słoneczniki"
+  },
+  {
+    "id": 75,
+    "title": "Żółte cynie"
+  },
+  {
+    "id": 76,
+    "title": "Dom Ziemowita"
+  },
+  {
+    "id": 77,
+    "title": "Szuwary"
+  },
+  {
+    "id": 78,
+    "title": "Zamek w Książu"
+  },
+  {
+    "id": 79,
+    "title": "Czchów"
+  },
+  {
+    "id": 80,
+    "title": "Wiśnicz - złote lato"
+  },
+  {
+    "id": 81,
+    "title": "Żegocina"
+  },
+  {
+    "id": 82,
+    "title": "Ujanowice"
+  },
+  {
+    "id": 83,
+    "title": "Łączka"
+  },
+  {
+    "id": 84,
+    "title": "Irysy"
+  },
+  {
+    "id": 85,
+    "title": "Maki"
   }
 ]
