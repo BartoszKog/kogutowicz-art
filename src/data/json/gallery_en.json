@@ -2,52 +2,64 @@
   {
     "id": 40,
     "title": "Kaplica Matki Bożej Szkaplerznej w Maliniskach",
-    "description": "Niewielki, zabytkowy obiekt sakralny, położony w Kamionce Małej"
+    "description": "Niewielki, zabytkowy obiekt sakralny, położony w Kamionce Małej",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 46,
-    "title": "Laskowa Jesienią"
+    "title": "Laskowa Jesienią",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 43,
-    "title": "Jesienna aura przy Kościele w Żegocinie"
+    "title": "Jesienna aura przy Kościele w Żegocinie",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 38,
-    "title": "Nakrycie do Stołu"
+    "title": "Nakrycie do Stołu",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 41,
     "title": "Kościół Trzcianie - Zima",
-    "description": "Kościół pw. św. Małgorzaty PM w Trzcianie"
+    "description": "Kościół pw. św. Małgorzaty PM w Trzcianie",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 58,
-    "title": "Kompozycja z dynią i arbuzem"
+    "title": "Kompozycja z dynią i arbuzem",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 60,
-    "title": "Kubek z owocami"
+    "title": "Kubek z owocami",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 63,
-    "title": "Martwa natura z tkaninami"
+    "title": "Martwa natura z tkaninami",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 3,
-    "title": "Red Still Life"
+    "title": "Red Still Life",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 42,
-    "title": "Kościół w Żegocinie pośród jesiennych pól"
+    "title": "Kościół w Żegocinie pośród jesiennych pól",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 48,
-    "title": "Poranek w Wiśniczu"
+    "title": "Poranek w Wiśniczu",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 31,
-    "title": "Castle in Wiśnicz"
+    "title": "Castle in Wiśnicz",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 34,
@@ -56,11 +68,13 @@
   },
   {
     "id": 49,
-    "title": "Pejzaż - Łąkta Górna"
+    "title": "Pejzaż - Łąkta Górna",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 35,
-    "title": "Manor in Łąkta Górna"
+    "title": "Manor in Łąkta Górna",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 33,
@@ -68,193 +82,247 @@
     "technique": "Pastels"
   },
   {
+    "id": 64,
+    "title": "Teatr Snu",
+    "technique": "Pastels"
+  },
+  {
+    "id": 65,
+    "title": "Tkane Sny",
+    "technique": "Pastels"
+  },
+  {
     "id": 37,
-    "title": "Kwiat Róży"
+    "title": "Kwiat Róży",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 5,
-    "title": "Roses"
+    "title": "Roses",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 6,
-    "title": "Carmine Still Life"
+    "title": "Carmine Still Life",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 50,
     "title": "Bazylika św. Mikołaja w Bochni",
-    "description": "Najstarszy i największy kościół w Bochni"
+    "description": "Najstarszy i największy kościół w Bochni",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 52,
-    "title": "Dzwonnica w Bochni"
+    "title": "Dzwonnica w Bochni",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 53,
-    "title": "Pomnik Króla Kazimierza III Wielkiego, Rynek, Bochnia"
+    "title": "Pomnik Króla Kazimierza III Wielkiego, Rynek, Bochnia",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 7,
-    "title": "Market Square in Bochnia"
+    "title": "Market Square in Bochnia",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 8,
-    "title": "John Paul II"
+    "title": "John Paul II",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 4,
-    "title": "View from the Window"
+    "title": "View from the Window",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 9,
-    "title": "Church in Chronów"
+    "title": "Church in Chronów",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 10,
-    "title": "Still Life with Oranges"
+    "title": "Still Life with Oranges",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 11,
-    "title": "Żegocina Center"
+    "title": "Żegocina Center",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 12,
     "title": "Golden Autumn",
-    "description": "Golden autumn in Żegocina"
+    "description": "Golden autumn in Żegocina",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 32,
     "title": "Golden Sheaves in the Shadow of the Church",
-    "description": "Traditional grain sheaves with church in the background in Żegocina"
+    "description": "Traditional grain sheaves with church in the background in Żegocina",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 62,
-    "title": "Listopadowa aura w Żegocinie"
+    "title": "Listopadowa aura w Żegocinie",
+    "technique": "Obraz olejny na panelu malarskim"
   },
   {
     "id": 54,
-    "title": "Kościół w Żegocinie w Zimowej aurze"
+    "title": "Kościół w Żegocinie w Zimowej aurze",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 13,
-    "title": "Wawel"
+    "title": "Wawel",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 14,
-    "title": "Cracow Market Square"
+    "title": "Cracow Market Square",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 15,
     "title": "Cracow Pigeons",
-    "description": "Cracow pigeons against the backdrop of St. Mary's Church"
+    "description": "Cracow pigeons against the backdrop of St. Mary's Church",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 16,
-    "title": "Geraniums"
+    "title": "Geraniums",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 17,
-    "title": "Yellow Roses"
+    "title": "Yellow Roses",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 18,
-    "title": "Bouquet"
+    "title": "Bouquet",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 19,
-    "title": "Tulips"
+    "title": "Tulips",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 20,
-    "title": "Pink Hollyhocks"
+    "title": "Pink Hollyhocks",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 21,
-    "title": "Daffodils"
+    "title": "Daffodils",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 51,
     "title": "Kościół św. Jakuba Apostoła w Rozdzielu",
-    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku"
+    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 22,
     "title": "Rozdziele",
-    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku"
+    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 61,
-    "title": "Zamek w Wiśniczu"
+    "title": "Zamek w Wiśniczu",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 23,
     "title": "Wiśnicz",
-    "description": "Castle in Wiśnicz"
+    "description": "Castle in Wiśnicz",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 47,
-    "title": "Myślenice"
+    "title": "Myślenice",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 24,
     "title": "Myślenice",
-    "description": "Market Square in Myślenice"
+    "description": "Market Square in Myślenice",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 26,
     "title": "Sunflowers - End of Summer",
-    "description": "End of summer in Łąkta Górna"
+    "description": "End of summer in Łąkta Górna",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 44,
-    "title": "Leonard - Późne Lato"
+    "title": "Leonard - Późne Lato",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 45,
     "title": "Leonard",
-    "description": "Kościół św. Leonarda w Lipnicy Murowanej"
+    "description": "Kościół św. Leonarda w Lipnicy Murowanej",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 27,
     "title": "Leonard",
-    "description": "St. Leonard's Church in Lipnica Murowana"
+    "description": "St. Leonard's Church in Lipnica Murowana",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 57,
     "title": "Kapliczka św. Jana Nepomucena, Laskowa",
-    "description": "Została wzniesiona, by chronić przed powodziami i suszami"
+    "description": "Została wzniesiona, by chronić przed powodziami i suszami",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 56,
-    "title": "Figurka na Zbójce, Laskowa"
+    "title": "Figurka na Zbójce, Laskowa",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 28,
     "title": "Church in Laskowa",
-    "description": "Church in Laskowa in autumn"
+    "description": "Church in Laskowa in autumn",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 29,
     "title": "Leonard",
-    "description": "St. Leonard's Church in Lipnica Murowana"
+    "description": "St. Leonard's Church in Lipnica Murowana",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 30,
-    "title": "Jew"
+    "title": "Jew",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 36,
-    "title": "Róże"
+    "title": "Róże",
+    "technique": "obraz olejny na panelu malarskim"
   },
   {
     "id": 55,
-    "title": "Kościół Narodzenia Najświętszej Maryi Panny w Rajbrocie"
+    "title": "Kościół Narodzenia Najświętszej Maryi Panny w Rajbrocie",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 39,
-    "title": "Kościół w Żegocinie i Widok z Okna"
+    "title": "Kościół w Żegocinie i Widok z Okna",
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 59,
-    "title": "Matka Boża"
+    "title": "Matka Boża",
+    "technique": "obraz olejny na płycie pilśniowej"
   }
 ]

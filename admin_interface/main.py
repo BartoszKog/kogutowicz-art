@@ -1702,6 +1702,16 @@ class AdminInterface:
             
             # Odśwież formularz aby pokazać nowy element
             self.show_gallery_form()
+            
+            # Przewiń do nowo dodanego elementu
+            def scroll_to_new_item():
+                if hasattr(self.content_area.content, 'scroll_to'):
+                    self.content_area.content.scroll_to(offset=-1, duration=300)
+                    self.page.update()
+            
+            # Opóźnione przewijanie
+            timer = threading.Timer(0.1, scroll_to_new_item)
+            timer.start()
 
         def delete_artwork_inline(filtered_index):
             # Znajdź oryginalny indeks
@@ -2289,6 +2299,25 @@ class AdminInterface:
         self.update_title()
         self.update_buttons_state()
         self.refresh_current_form()
+        
+        # Przewiń do nowej pozycji elementu (użyj indeksu w filtrowanym widoku)
+        def scroll_to_new_item():
+            if hasattr(self.content_area.content, 'scroll_to'):
+                # Oblicz pozycję dla filtrowanego widoku
+                # Uwzględnij nagłówek z chipami i inne elementy przed listą
+                item_height = 750  # Wysokość karty galerii
+                header_height = 160  # Nagłówek + chipy filtrowania
+                target_filtered_index = filtered_index - 1  # Nowa pozycja po przesunięciu w górę
+                viewport_height = self.page.window.height - 200
+                viewport_offset_ratio = 0.15
+                
+                target_offset = max(0, header_height + (target_filtered_index * item_height) - (viewport_height * viewport_offset_ratio))
+                self.content_area.content.scroll_to(offset=target_offset, duration=300)
+                self.page.update()
+        
+        # Opóźnione przewijanie
+        timer = threading.Timer(0.2, scroll_to_new_item)
+        timer.start()
 
     def move_gallery_item_down_filtered(self, filtered_index):
         """Przesuwa element w dół w widoku filtrowanym galerii"""
@@ -2320,6 +2349,25 @@ class AdminInterface:
         self.update_title()
         self.update_buttons_state()
         self.refresh_current_form()
+        
+        # Przewiń do nowej pozycji elementu (użyj indeksu w filtrowanym widoku)
+        def scroll_to_new_item():
+            if hasattr(self.content_area.content, 'scroll_to'):
+                # Oblicz pozycję dla filtrowanego widoku
+                # Uwzględnij nagłówek z chipami i inne elementy przed listą
+                item_height = 750  # Wysokość karty galerii
+                header_height = 160  # Nagłówek + chipy filtrowania
+                target_filtered_index = filtered_index + 1  # Nowa pozycja po przesunięciu w dół
+                viewport_height = self.page.window.height - 200
+                viewport_offset_ratio = 0.15
+                
+                target_offset = max(0, header_height + (target_filtered_index * item_height) - (viewport_height * viewport_offset_ratio))
+                self.content_area.content.scroll_to(offset=target_offset, duration=300)
+                self.page.update()
+        
+        # Opóźnione przewijanie
+        timer = threading.Timer(0.2, scroll_to_new_item)
+        timer.start()
 
     def move_to_position(self, current_index, new_position_str):
         """Przenosi element na określoną pozycję"""
@@ -2390,9 +2438,10 @@ class AdminInterface:
                 if hasattr(self.content_area, 'content'):
                     # Różne wysokości dla różnych sekcji
                     if self.current_file == "gallery":
-                        # Galeria ma większe karty z wieloma polami
+                        # Galeria ma większe karty z wieloma polami i chipy filtrowania
                         item_height = 750  # Zwiększona wysokość dla galerii
-                        header_height = 80
+                        # Uwzględnij chipy filtrowania w wysokości nagłówka
+                        header_height = 160 if hasattr(self, 'gallery_filter') and self.gallery_filter else 80
                         # Przewiń więcej w górę, aby pokazać więcej kontekstu
                         viewport_offset_ratio = 0.15  # Pokazuj element bliżej góry (mniej w dół)
                     elif self.current_file == "shop":
