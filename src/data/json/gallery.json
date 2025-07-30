@@ -761,6 +761,19 @@
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
+    "id": 66,
+    "title": "Spotkanie",
+    "technique": "Obraz olejny malowany na płótnie",
+    "year": 2024,
+    "image": "images/gallery/zyd2.webp",
+    "categories": [
+      "postacie"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.24
+  },
+  {
     "id": 36,
     "title": "Róże",
     "year": 2020,

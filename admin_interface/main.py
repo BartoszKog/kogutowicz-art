@@ -2390,7 +2390,7 @@ class AdminInterface:
             if hasattr(self.content_area.content, 'scroll_to'):
                 # Oblicz pozycję dla filtrowanego widoku
                 # Uwzględnij nagłówek z chipami i inne elementy przed listą
-                item_height = 750  # Wysokość karty galerii
+                item_height = 900  # Zaktualizowana wysokość karty galerii z suwakami pozycjonowania
                 header_height = 160  # Nagłówek + chipy filtrowania
                 target_filtered_index = filtered_index - 1  # Nowa pozycja po przesunięciu w górę
                 viewport_height = self.page.window.height - 200
@@ -2440,7 +2440,7 @@ class AdminInterface:
             if hasattr(self.content_area.content, 'scroll_to'):
                 # Oblicz pozycję dla filtrowanego widoku
                 # Uwzględnij nagłówek z chipami i inne elementy przed listą
-                item_height = 750  # Wysokość karty galerii
+                item_height = 900  # Zaktualizowana wysokość karty galerii z suwakami pozycjonowania
                 header_height = 160  # Nagłówek + chipy filtrowania
                 target_filtered_index = filtered_index + 1  # Nowa pozycja po przesunięciu w dół
                 viewport_height = self.page.window.height - 200
@@ -2523,20 +2523,23 @@ class AdminInterface:
                 if hasattr(self.content_area, 'content'):
                     # Różne wysokości dla różnych sekcji
                     if self.current_file == "gallery":
-                        # Galeria ma większe karty z wieloma polami i chipy filtrowania
-                        item_height = 750  # Zwiększona wysokość dla galerii
+                        # Galeria ma większe karty z wieloma polami, chipami filtrowania i suwakami pozycjonowania
+                        item_height = 860  # Zwiększona wysokość dla galerii (było 750, dodano 110 dla suwaków)
                         # Uwzględnij chipy filtrowania w wysokości nagłówka
                         header_height = 160 if hasattr(self, 'gallery_filter') and self.gallery_filter else 80
                         # Przewiń więcej w górę, aby pokazać więcej kontekstu
                         viewport_offset_ratio = 0.15  # Pokazuj element bliżej góry (mniej w dół)
                     elif self.current_file == "shop":
-                        # Sklep ma średnie karty
-                        item_height = 650
+                        # Sklep ma średnie karty z suwakami pozycjonowania
+                        item_height = 800  # Zwiększona wysokość dla sklepu (było 650, dodano 150 dla suwaków)
                         header_height = 80
                         viewport_offset_ratio = 0.2
                     else:
-                        # Featured i about mają mniejsze karty
-                        item_height = 550
+                        # Featured ma suwaki pozycjonowania, ale about nie
+                        if self.current_file == "featured":
+                            item_height = 700  # Zwiększona wysokość dla featured (było 550, dodano 150 dla suwaków)
+                        else:
+                            item_height = 550  # About bez suwaków pozycjonowania
                         header_height = 80
                         viewport_offset_ratio = 0.25
                     
