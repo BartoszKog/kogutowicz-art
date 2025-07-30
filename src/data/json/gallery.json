@@ -205,6 +205,30 @@
     "dimensions": "50 x 70 cm"
   },
   {
+    "id": 64,
+    "title": "Teatr Snu",
+    "technique": "Pastele",
+    "year": 2024,
+    "image": "images/gallery/pastele2.webp",
+    "categories": [
+      "postacie",
+      "pastele"
+    ],
+    "available": true
+  },
+  {
+    "id": 65,
+    "title": "Tkane Sny",
+    "technique": "Pastele",
+    "year": 2024,
+    "image": "images/gallery/pastele_1.webp",
+    "categories": [
+      "postacie",
+      "pastele"
+    ],
+    "available": true
+  },
+  {
     "id": 37,
     "title": "Kwiat róży",
     "year": 2025,
