@@ -605,7 +605,8 @@
       "Wiśnicz"
     ],
     "available": false,
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "positionX": 0.84
   },
   {
     "id": 47,
