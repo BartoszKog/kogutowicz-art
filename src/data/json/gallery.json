@@ -49,7 +49,8 @@
     ],
     "available": true,
     "dimensions": "60 x 40 cm",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "positionY": 0.32
   },
   {
     "id": 41,
@@ -99,7 +100,8 @@
     ],
     "available": true,
     "dimensions": "40 x 30 cm",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "positionY": 0.0
   },
   {
     "id": 3,
@@ -214,7 +216,8 @@
       "postacie",
       "pastele"
     ],
-    "available": true
+    "available": true,
+    "positionY": 0.23
   },
   {
     "id": 65,
@@ -251,7 +254,8 @@
     ],
     "available": false,
     "dimensions": "30 x 24 cm",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "positionY": 0.26
   },
   {
     "id": 6,
@@ -303,7 +307,8 @@
     ],
     "available": false,
     "dimensions": "24 x 18 cm",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "positionY": 0.36
   },
   {
     "id": 7,
@@ -329,7 +334,8 @@
     ],
     "available": false,
     "dimensions": "30 x 30 cm",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "positionY": 0.0
   },
   {
     "id": 4,
@@ -681,7 +687,8 @@
       "Lipnica"
     ],
     "available": false,
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "positionY": 0.27
   },
   {
     "id": 57,
@@ -738,7 +745,8 @@
       "Lipnica"
     ],
     "available": false,
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "positionY": 0.72
   },
   {
     "id": 30,
@@ -788,7 +796,8 @@
     ],
     "available": false,
     "dimensions": "50 x 100 cm",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "positionX": 1.0
   },
   {
     "id": 59,
@@ -800,6 +809,7 @@
     ],
     "available": true,
     "dimensions": "15 x 7 cm",
-    "technique": "obraz olejny na płycie pilśniowej"
+    "technique": "obraz olejny na płycie pilśniowej",
+    "positionY": 0.28
   }
 ]

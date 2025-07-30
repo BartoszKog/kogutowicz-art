@@ -1693,7 +1693,9 @@ class AdminInterface:
                 "year": 2024,
                 "image": "",
                 "categories": [self.gallery_filter] if self.gallery_filter != "All" else [],
-                "available": True
+                "available": True,
+                "positionX": 0.5,
+                "positionY": 0.5
             }
             self.current_data.append(new_artwork)
             self.unsaved_changes = True
@@ -1844,6 +1846,33 @@ class AdminInterface:
                             disabled=self.english_mode,
                             on_change=lambda e, idx=original_index: self.update_item_field(idx, "available", e.control.value)
                         ),
+                        ft.Text("Pozycjonowanie obrazu w kafelku:", weight=ft.FontWeight.BOLD),
+                        ft.Row([
+                            ft.Column([
+                                ft.Text("Pozycja X (0 = lewa, 0.5 = środek, 1 = prawa)", size=12),
+                                ft.Slider(
+                                    min=0,
+                                    max=1,
+                                    value=artwork.get("positionX", 0.5),
+                                    divisions=100,  
+                                    label="{value}",
+                                    disabled=self.english_mode,
+                                    on_change=lambda e, idx=original_index: self.update_item_field(idx, "positionX", round(e.control.value, 2))
+                                )
+                            ], expand=True),
+                            ft.Column([
+                                ft.Text("Pozycja Y (0 = góra, 0.5 = środek, 1 = dół)", size=12),
+                                ft.Slider(
+                                    min=0,
+                                    max=1,
+                                    value=artwork.get("positionY", 0.5),
+                                    divisions=100,
+                                    label="{value}",
+                                    disabled=self.english_mode,
+                                    on_change=lambda e, idx=original_index: self.update_item_field(idx, "positionY", round(e.control.value, 2))
+                                )
+                            ], expand=True)
+                        ]),
                         ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(
                             artwork.get("image", ""),
@@ -1882,7 +1911,9 @@ class AdminInterface:
                 "image": "",
                 "available": True,
                 "originalArtworkId": 1,
-                "purchaseUrl": ""
+                "purchaseUrl": "",
+                "positionX": 0.5,
+                "positionY": 0.5
             }
             self.current_data.append(new_product)
             self.unsaved_changes = True
@@ -1973,6 +2004,33 @@ class AdminInterface:
                             disabled=self.english_mode,
                             on_change=lambda e, idx=new_index: self.update_item_field(idx, "available", e.control.value)
                         ),
+                        ft.Text("Pozycjonowanie obrazu w kafelku:", weight=ft.FontWeight.BOLD),
+                        ft.Row([
+                            ft.Column([
+                                ft.Text("Pozycja X (0 = lewa, 0.5 = środek, 1 = prawa)", size=12),
+                                ft.Slider(
+                                    min=0,
+                                    max=1,
+                                    value=0.5,
+                                    divisions=100,  
+                                    label="{value}",
+                                    disabled=self.english_mode,
+                                    on_change=lambda e, idx=new_index: self.update_item_field(idx, "positionX", round(e.control.value, 2))
+                                )
+                            ], expand=True),
+                            ft.Column([
+                                ft.Text("Pozycja Y (0 = góra, 0.5 = środek, 1 = dół)", size=12),
+                                ft.Slider(
+                                    min=0,
+                                    max=1,
+                                    value=0.5,
+                                    divisions=100,
+                                    label="{value}",
+                                    disabled=self.english_mode,
+                                    on_change=lambda e, idx=new_index: self.update_item_field(idx, "positionY", round(e.control.value, 2))
+                                )
+                            ], expand=True)
+                        ]),
                         ft.Text("Obraz produktu:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(
                             "",
@@ -2125,6 +2183,33 @@ class AdminInterface:
                             disabled=self.english_mode,
                             on_change=lambda e, idx=i: self.update_item_field(idx, "available", e.control.value)
                         ),
+                        ft.Text("Pozycjonowanie obrazu w kafelku:", weight=ft.FontWeight.BOLD),
+                        ft.Row([
+                            ft.Column([
+                                ft.Text("Pozycja X (0 = lewa, 0.5 = środek, 1 = prawa)", size=12),
+                                ft.Slider(
+                                    min=0,
+                                    max=1,
+                                    value=product.get("positionX", 0.5),
+                                    divisions=100,  
+                                    label="{value}",
+                                    disabled=self.english_mode,
+                                    on_change=lambda e, idx=i: self.update_item_field(idx, "positionX", round(e.control.value, 2))
+                                )
+                            ], expand=True),
+                            ft.Column([
+                                ft.Text("Pozycja Y (0 = góra, 0.5 = środek, 1 = dół)", size=12),
+                                ft.Slider(
+                                    min=0,
+                                    max=1,
+                                    value=product.get("positionY", 0.5),
+                                    divisions=100,
+                                    label="{value}",
+                                    disabled=self.english_mode,
+                                    on_change=lambda e, idx=i: self.update_item_field(idx, "positionY", round(e.control.value, 2))
+                                )
+                            ], expand=True)
+                        ]),
                         ft.Text("Obraz produktu:", weight=ft.FontWeight.BOLD),
                         self.create_image_picker(
                             product.get("image", ""),

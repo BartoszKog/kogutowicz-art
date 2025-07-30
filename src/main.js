@@ -166,9 +166,14 @@ function renderFeaturedArtworks() {
     // Użyj funkcji correctImagePath do skorygowania ścieżki obrazu
     const correctedImagePath = correctImagePath(artwork.image);
     
+    // Oblicz pozycjonowanie obrazu na podstawie wartości positionX i positionY
+    const positionX = artwork.positionX !== undefined ? artwork.positionX : 0.5; // domyślnie środek
+    const positionY = artwork.positionY !== undefined ? artwork.positionY : 0.5; // domyślnie środek
+    const objectPosition = `${positionX * 100}% ${positionY * 100}%`;
+    
     artworkElement.innerHTML = `
       <div class="featured-artwork-image">
-        <img src="${correctedImagePath}" alt="${artwork.title || 'Obraz'}" loading="lazy">
+        <img src="${correctedImagePath}" alt="${artwork.title || 'Obraz'}" loading="lazy" style="object-position: ${objectPosition};">
       </div>
       <div class="featured-artwork-info">
         <h3>${artwork.title || 'Bez tytułu'}</h3>
@@ -216,9 +221,15 @@ function renderGalleryArtworks(artworks = galleryArtworks) {
     
     // Użyj funkcji correctImagePath do skorygowania ścieżki obrazu
     const correctedImagePath = correctImagePath(artwork.image);
-      artworkElement.innerHTML = `
+    
+    // Oblicz pozycjonowanie obrazu na podstawie wartości positionX i positionY
+    const positionX = artwork.positionX !== undefined ? artwork.positionX : 0.5; // domyślnie środek
+    const positionY = artwork.positionY !== undefined ? artwork.positionY : 0.5; // domyślnie środek
+    const objectPosition = `${positionX * 100}% ${positionY * 100}%`;
+    
+    artworkElement.innerHTML = `
       <div class="h-64 bg-gray-200 flex items-center justify-center overflow-hidden">
-        <img src="${correctedImagePath}" alt="${artwork.title || 'Obraz'}" class="w-full h-full object-cover">
+        <img src="${correctedImagePath}" alt="${artwork.title || 'Obraz'}" class="w-full h-full object-cover" style="object-position: ${objectPosition};">
       </div>
       <div class="p-4">
         <h3 class="text-xl font-semibold mb-2">${artwork.title || 'Bez tytułu'}</h3>
@@ -273,7 +284,14 @@ function renderShopProducts() {
     productElement.className = 'bg-white rounded shadow-md overflow-hidden';
     
     // Użyj funkcji correctImagePath do skorygowania ścieżki obrazu
-    const correctedImagePath = correctImagePath(product.image);    // Sprawdź czy produkt jest dostępny
+    const correctedImagePath = correctImagePath(product.image);
+    
+    // Oblicz pozycjonowanie obrazu na podstawie wartości positionX i positionY
+    const positionX = product.positionX !== undefined ? product.positionX : 0.5; // domyślnie środek
+    const positionY = product.positionY !== undefined ? product.positionY : 0.5; // domyślnie środek
+    const objectPosition = `${positionX * 100}% ${positionY * 100}%`;
+    
+    // Sprawdź czy produkt jest dostępny
     const isAvailable = product.available !== false;
     const buttonClass = isAvailable 
       ? 'shop-purchase-button bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 inline-block font-semibold transition-all duration-300 transform'
@@ -285,7 +303,7 @@ function renderShopProducts() {
     
     productElement.innerHTML = `
       <div class="h-64 bg-gray-200 flex items-center justify-center overflow-hidden cursor-pointer shop-product-image" data-product-id="${product.id}">
-        <img src="${correctedImagePath}" alt="${product.title || 'Produkt'}" class="w-full h-full object-cover">
+        <img src="${correctedImagePath}" alt="${product.title || 'Produkt'}" class="w-full h-full object-cover" style="object-position: ${objectPosition};">
       </div>
       <div class="p-4">
         <h3 class="text-xl font-semibold mb-2">${product.title || 'Bez tytułu'}</h3>
@@ -935,8 +953,15 @@ function displayCurrentArtwork() {
   // Ustaw obraz
   image.classList.add('loading');
   const correctedImagePath = correctImagePath(artwork.image);
+  
+  // Oblicz pozycjonowanie obrazu na podstawie wartości positionX i positionY
+  const positionX = artwork.positionX !== undefined ? artwork.positionX : 0.5; // domyślnie środek
+  const positionY = artwork.positionY !== undefined ? artwork.positionY : 0.5; // domyślnie środek
+  const objectPosition = `${positionX * 100}% ${positionY * 100}%`;
+  
   image.src = correctedImagePath;
   image.alt = artwork.title || 'Obraz';
+  image.style.objectPosition = objectPosition;
   
   // Usuń efekt ładowania po załadowaniu obrazu
   image.onload = () => {
