@@ -28,7 +28,7 @@
   },
   {
     "id": 43,
-    "title": "Kościół w Żegocinie w jesiennej aurze",
+    "title": "Kościół w Żegocinie - jesień",
     "dimensions": "24 x 30 cm",
     "year": 2025,
     "image": "images/gallery/zeg_jesienna_aura.webp",
@@ -54,7 +54,7 @@
   },
   {
     "id": 41,
-    "title": "Kościół Trzcianie - zima",
+    "title": "Kościół w Trzcianie - zima",
     "description": "Kościół pw. św. Małgorzaty PM w Trzcianie",
     "year": 2011,
     "image": "images/gallery/kościół Trzciana.webp",
@@ -208,9 +208,9 @@
   },
   {
     "id": 64,
-    "title": "Teatr Snu",
+    "title": "Zielony karnawał",
     "technique": "Pastele",
-    "year": 2024,
+    "year": 2020,
     "image": "images/gallery/pastele2.webp",
     "categories": [
       "postacie",
@@ -223,7 +223,7 @@
     "id": 65,
     "title": "Tkane Sny",
     "technique": "Pastele",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/pastele_1.webp",
     "categories": [
       "postacie",
@@ -313,7 +313,7 @@
   },
   {
     "id": 53,
-    "title": "Pomnik Króla Kazimierza III Wielkiego, Rynek, Bochnia",
+    "title": "Pomnik Króla Kazimierza, Rynek w Bochni",
     "year": 2025,
     "image": "images/gallery/Pomnik Króla Kazimierza III Wielkiego.webp",
     "categories": [
@@ -344,8 +344,7 @@
     "year": 2012,
     "image": "images/gallery/Jan_Pawel_II_kko95_88316.webp",
     "categories": [
-      "motywy sakralne",
-      "postacie"
+      "motywy sakralne"
     ],
     "available": false,
     "dimensions": "30 x 30 cm",
@@ -390,7 +389,7 @@
   },
   {
     "id": 11,
-    "title": "Żegocina centrum",
+    "title": "Pejzaż z listonoszem",
     "dimensions": "30 x 40 cm",
     "year": 2011,
     "image": "images/gallery/zegocina_centrum_kosciol.webp",
@@ -399,7 +398,8 @@
       "Żegocina"
     ],
     "available": false,
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "description": "Żegocina centrum"
   },
   {
     "id": 12,
@@ -444,7 +444,7 @@
   },
   {
     "id": 54,
-    "title": "Kościół w Żegocinie w zimowej aurze",
+    "title": "Kościół w Żegocinie - zima",
     "year": 2025,
     "image": "images/gallery/zeg_zima.webp",
     "categories": [
@@ -610,8 +610,8 @@
   },
   {
     "id": 23,
-    "title": "Wiśnicz",
-    "description": "Zamek w Wiśniczu",
+    "title": "Zamek w Wiśniczu",
+    "description": "Wiśnicz",
     "dimensions": "30 x 50 cm",
     "year": 2011,
     "image": "images/gallery/Wisnicz_kko78.webp",
@@ -780,7 +780,7 @@
     "id": 66,
     "title": "Spotkanie",
     "technique": "Obraz olejny malowany na płótnie",
-    "year": 2024,
+    "year": 2010,
     "image": "images/gallery/zyd2.webp",
     "categories": [
       "postacie"
@@ -788,7 +788,7 @@
     "available": true,
     "positionX": 0.5,
     "positionY": 0.24,
-    "dimensions": "Obraz olejny malowany na płótnie"
+    "dimensions": "24 x 18 cm"
   },
   {
     "id": 36,
@@ -847,7 +847,7 @@
     "title": "Kobieta w Ornamentach",
     "technique": "Obraz olejny malowany na płótnie",
     "dimensions": "40 x 40 cm",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/Waiting_I_kko1.webp",
     "categories": [
       "postacie"
@@ -860,7 +860,7 @@
     "id": 69,
     "title": "Martwa natura zielona",
     "dimensions": "50 x 40 cm",
-    "year": 2024,
+    "year": 2008,
     "image": "images/gallery/Green_still_life_kko8.webp",
     "categories": [
       "martwa natura"
@@ -888,7 +888,7 @@
     "id": 71,
     "title": "Matrioszki",
     "dimensions": "50 x 50 cm",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/Matrioszki_kko69.webp",
     "categories": [
       "postacie"
@@ -901,7 +901,7 @@
   {
     "id": 72,
     "title": "Błękitna Zasłona",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/Noc_kko70.webp",
     "categories": [
       "postacie"
@@ -929,7 +929,7 @@
     "id": 74,
     "title": "Słoneczniki",
     "dimensions": "40 x 35 cm",
-    "year": 2024,
+    "year": 2008,
     "image": "images/gallery/Sunflowers_11_kko11.webp",
     "categories": [
       "kwiaty"
@@ -943,7 +943,7 @@
     "id": 75,
     "title": "Żółte cynie",
     "dimensions": "30 x 20 cm",
-    "year": 2024,
+    "year": 2010,
     "image": "images/gallery/Yellow_Zinnias_kko53.webp",
     "categories": [
       "kwiaty"
@@ -972,7 +972,7 @@
     "id": 77,
     "title": "Szuwary",
     "dimensions": "30 x 40 cm",
-    "year": 2024,
+    "year": 2010,
     "image": "images/gallery/Rushes_kko51.webp",
     "categories": [
       "Pejzaż z podróży"
@@ -986,7 +986,7 @@
     "id": 78,
     "title": "Zamek w Książu",
     "dimensions": "30 x 20 cm",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/The_Ksiaz_Castle_kko56.webp",
     "categories": [
       "Pejzaż z podróży",
@@ -1016,7 +1016,7 @@
     "id": 80,
     "title": "Wiśnicz - złote lato",
     "dimensions": "30 x 40 cm",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/Wisnicz_kko66.webp",
     "categories": [
       "pejzaż lokalny",
@@ -1046,7 +1046,7 @@
     "id": 82,
     "title": "Ujanowice",
     "dimensions": "24 x 30 cm",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/Ujanowice_kko85.webp",
     "categories": [
       "pejzaż lokalny",
@@ -1061,7 +1061,7 @@
     "id": 83,
     "title": "Łączka",
     "dimensions": "50 x 30 cm",
-    "year": 2024,
+    "year": 2012,
     "image": "images/gallery/Meadow_I_kko60.webp",
     "categories": [
       "kwiaty"
@@ -1087,7 +1087,7 @@
   },
   {
     "id": 85,
-    "title": "Maki",
+    "title": "Maki i rumianki",
     "dimensions": "30 x 30 cm",
     "year": 2011,
     "image": "images/gallery/Maki_kko76.webp",
