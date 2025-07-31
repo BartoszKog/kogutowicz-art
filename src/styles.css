@@ -1428,9 +1428,9 @@ header {
     }
     
     #hero-slider {
-        height: calc(100vh - var(--header-height) - var(--top-bar-height) - 60px); /* Dodatkowe 60px dla pasków przeglądarki */
+        height: calc(100vh - var(--header-height) - var(--top-bar-height) - 10px); /* Zmniejszone odejmowanie dla większej wysokości (+5%) */
         min-height: 350px; /* Mniejsza minimalna wysokość na mobile */
-        max-height: calc(100vh - 160px); /* Maksymalna wysokość żeby kropki były widoczne */
+        max-height: calc(100vh - 150px); /* Dostosowana maksymalna wysokość */
     }
     
     .slider-dots {
@@ -1455,9 +1455,9 @@ header {
 /* Dodatkowe ograniczenia dla bardzo małych ekranów */
 @media (max-width: 480px) {
     #hero-slider {
-        height: calc(100vh - var(--header-height) - var(--top-bar-height) - 80px); /* Jeszcze więcej miejsca dla bardzo małych ekranów */
+        height: calc(100vh - var(--header-height) - var(--top-bar-height) - 10px); /* Jeszcze więcej miejsca dla bardzo małych ekranów */
         min-height: 300px;
-        max-height: calc(100vh - 180px);
+        max-height: calc(100vh - 150px);
     }
     
     .slider-dots {
