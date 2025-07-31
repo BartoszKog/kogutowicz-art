@@ -2948,6 +2948,32 @@ class AdminInterface:
             
             ft.Divider(height=20),
             
+            # Sekcja ustawień nawigacji
+            ft.Text("Ustawienia nawigacji", size=18, weight=ft.FontWeight.BOLD),
+            ft.Container(
+                content=ft.Column([
+                    ft.Row([
+                        ft.Switch(
+                            label="Pokaż link do sklepu w nawigacji",
+                            value=self.current_data.get("showShopInNav", True),
+                            on_change=lambda e: self.update_site_config_field("showShopInNav", e.control.value)
+                        ),
+                    ]),
+                    ft.Text(
+                        "Gdy wyłączone, link 'Sklep' nie będzie widoczny w menu nawigacyjnym, "
+                        "ale strona sklepu pozostanie dostępna pod bezpośrednim adresem.",
+                        size=12,
+                        color="#666666",
+                        italic=True
+                    ),
+                ]),
+                padding=10,
+                bgcolor="#f5f5f5",
+                border_radius=8
+            ),
+            
+            ft.Divider(height=20),
+            
             # Sekcja kontaktowa
             ft.Text("Dane kontaktowe", size=18, weight=ft.FontWeight.BOLD),
             ft.Container(

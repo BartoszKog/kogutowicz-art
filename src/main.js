@@ -3004,6 +3004,30 @@ function updateSiteConfiguration() {
       }
     });
   }
+  
+  // Kontroluj widoczność linków do sklepu w nawigacji
+  updateShopNavigationVisibility();
+}
+
+// Funkcja do kontrolowania widoczności linków do sklepu w nawigacji
+function updateShopNavigationVisibility() {
+  const showShopInNav = siteConfig.showShopInNav !== false; // Domyślnie true
+  
+  // Znajdź wszystkie linki do sklepu w nawigacji (desktop i mobile)
+  const shopNavLinks = document.querySelectorAll('#nav-shop, #mobile-nav-shop');
+  
+  shopNavLinks.forEach(link => {
+    if (link) {
+      const listItem = link.closest('li');
+      if (listItem) {
+        if (showShopInNav) {
+          listItem.style.display = '';
+        } else {
+          listItem.style.display = 'none';
+        }
+      }
+    }
+  });
 }
 
 // Funkcja do zmiany języka
