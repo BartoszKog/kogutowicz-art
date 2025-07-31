@@ -1,65 +1,65 @@
 [
   {
     "id": 40,
-    "title": "Kaplica Matki Bożej Szkaplerznej w Maliniskach",
-    "description": "Niewielki, zabytkowy obiekt sakralny, położony w Kamionce Małej",
-    "technique": "Obraz olejny malowany na płótnie"
-  },
+    "title": "Chapel of Our Lady of the Scapular in Maliniska",
+    "description": "A small, historic sacred object, located in Kamionka Mała",
+    "technique": "Oil painting on canvas"
+    },
   {
     "id": 46,
-    "title": "Laskowa Jesienią",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Laskowa - Early Spring",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 43,
-    "title": "Jesienna aura przy Kościele w Żegocinie",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Church in Żegocina - Autumn",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 38,
-    "title": "Nakrycie do Stołu",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Table Setting",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 41,
-    "title": "Kościół Trzcianie - Zima",
-    "description": "Kościół pw. św. Małgorzaty PM w Trzcianie",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Church in Trzciana - Winter",
+    "description": "St. Margaret's Church in Trzciana",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 58,
-    "title": "Kompozycja z dynią i arbuzem",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Composition with Pumpkin and Watermelon",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 60,
-    "title": "Kubek z owocami",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Cup with Fruit",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 63,
-    "title": "Martwa natura z tkaninami",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Still Life with Fabrics",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 3,
     "title": "Red Still Life",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 42,
-    "title": "Kościół w Żegocinie pośród jesiennych pól",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Church in Żegocina among Autumn Fields",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 48,
-    "title": "Poranek w Wiśniczu",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Morning in Wiśnicz",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 31,
     "title": "Castle in Wiśnicz",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 34,
@@ -68,13 +68,13 @@
   },
   {
     "id": 49,
-    "title": "Pejzaż - Łąkta Górna",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Landscape - Łąkta Górna",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 35,
     "title": "Manor in Łąkta Górna",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 33,
@@ -83,329 +83,347 @@
   },
   {
     "id": 64,
-    "title": "Teatr Snu",
+    "title": "Green Carnival",
     "technique": "Pastels"
   },
   {
     "id": 65,
-    "title": "Tkane Sny",
+    "title": "Woven Dreams",
     "technique": "Pastels"
   },
   {
     "id": 67,
     "title": "Elbląg",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 37,
-    "title": "Kwiat Róży",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Rose Flower",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 5,
     "title": "Roses",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 6,
     "title": "Carmine Still Life",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 50,
-    "title": "Bazylika św. Mikołaja w Bochni",
-    "description": "Najstarszy i największy kościół w Bochni",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "St. Nicholas Basilica in Bochnia",
+    "description": "The oldest and largest church in Bochnia",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 52,
-    "title": "Dzwonnica w Bochni",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Belfry in Bochnia",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 53,
-    "title": "Pomnik Króla Kazimierza III Wielkiego, Rynek, Bochnia",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Monument of King Casimir, Market Square in Bochnia",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 7,
     "title": "Market Square in Bochnia",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 8,
     "title": "John Paul II",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 4,
     "title": "View from the Window",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 9,
     "title": "Church in Chronów",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 10,
     "title": "Still Life with Oranges",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 11,
-    "title": "Żegocina Center",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Landscape with Postman",
+    "description": "Żegocina center",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 12,
     "title": "Golden Autumn",
     "description": "Golden autumn in Żegocina",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 32,
     "title": "Golden Sheaves in the Shadow of the Church",
     "description": "Traditional grain sheaves with church in the background in Żegocina",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 62,
-    "title": "Listopadowa aura w Żegocinie",
-    "technique": "Obraz olejny na panelu malarskim"
+    "title": "November Aura in Żegocina",
+    "technique": "Oil painting on painting panel"
   },
   {
     "id": 54,
-    "title": "Kościół w Żegocinie w Zimowej aurze",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Church in Żegocina - Winter",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 13,
     "title": "Wawel",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 14,
     "title": "Cracow Market Square",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 15,
     "title": "Cracow Pigeons",
     "description": "Cracow pigeons against the backdrop of St. Mary's Church",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 16,
     "title": "Geraniums",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 17,
     "title": "Yellow Roses",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 18,
     "title": "Bouquet",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 19,
     "title": "Tulips",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 20,
     "title": "Pink Hollyhocks",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 21,
     "title": "Daffodils",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 51,
-    "title": "Kościół św. Jakuba Apostoła w Rozdzielu",
-    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "St. James the Apostle Church in Rozdziele",
+    "description": "A historic, Gothic, wooden Roman Catholic church from the 15th century",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 22,
     "title": "Rozdziele",
-    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku",
-    "technique": "Obraz olejny malowany na płótnie"
+    "description": "A historic, Gothic, wooden Roman Catholic church from the 15th century",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 61,
-    "title": "Zamek w Wiśniczu",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Castle in Wiśnicz",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 23,
-    "title": "Wiśnicz",
-    "description": "Castle in Wiśnicz",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Castle in Wiśnicz",
+    "description": "Wiśnicz",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 47,
     "title": "Myślenice",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 24,
     "title": "Myślenice",
     "description": "Market Square in Myślenice",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 26,
     "title": "Sunflowers - End of Summer",
     "description": "End of summer in Łąkta Górna",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 44,
-    "title": "Leonard - Późne Lato",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Leonard - Late Summer",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 45,
     "title": "Leonard",
-    "description": "Kościół św. Leonarda w Lipnicy Murowanej",
-    "technique": "Obraz olejny malowany na płótnie"
+    "description": "St. Leonard's Church in Lipnica Murowana",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 27,
     "title": "Leonard",
     "description": "St. Leonard's Church in Lipnica Murowana",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 57,
-    "title": "Kapliczka św. Jana Nepomucena, Laskowa",
-    "description": "Została wzniesiona, by chronić przed powodziami i suszami",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "St. John of Nepomuk Chapel, Laskowa",
+    "description": "It was built to protect against floods and droughts",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 56,
-    "title": "Figurka na Zbójce, Laskowa",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Figurine on Zbójka, Laskowa",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 28,
     "title": "Church in Laskowa",
     "description": "Church in Laskowa in autumn",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 29,
     "title": "Leonard",
     "description": "St. Leonard's Church in Lipnica Murowana",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 30,
     "title": "Jew",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 66,
-    "title": "Spotkanie",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Meeting",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 36,
-    "title": "Róże",
-    "technique": "obraz olejny na panelu malarskim"
+    "title": "Roses",
+    "technique": "Oil painting on painting panel"
   },
   {
     "id": 55,
-    "title": "Kościół Narodzenia Najświętszej Maryi Panny w Rajbrocie",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Church of the Nativity of the Blessed Virgin Mary in Rajbrot",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 39,
-    "title": "Kościół w Żegocinie i Widok z Okna",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Church in Żegocina",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 59,
-    "title": "Matka Boża",
-    "technique": "obraz olejny na płycie pilśniowej"
+    "title": "Mother of God",
+    "technique": "Oil painting on fiberboard"
   },
   {
     "id": 68,
-    "title": "Kobieta w Ornamentach",
-    "technique": "Obraz olejny malowany na płótnie"
+    "title": "Woman in Ornaments",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 69,
-    "title": "Martwa natura zielona"
+    "title": "Green Still Life",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 70,
-    "title": "Trzy Gracje"
+    "title": "The Three Graces",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 71,
-    "title": "Matrioszki"
+    "title": "Matryoshka Dolls",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 72,
-    "title": "Błękitna Zasłona"
+    "title": "The Blue Curtain",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 73,
-    "title": "Kobieta w Bieli i Błękicie"
+    "title": "Woman in White and Blue",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 74,
-    "title": "Słoneczniki"
+    "title": "Sunflowers",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 75,
-    "title": "Żółte cynie"
+    "title": "Yellow Zinnias",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 76,
-    "title": "Dom Ziemowita"
+    "title": "Ziemowit's House",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 77,
-    "title": "Szuwary"
+    "title": "Rushes",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 78,
-    "title": "Zamek w Książu"
+    "title": "Książ Castle",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 79,
-    "title": "Czchów"
+    "title": "Czchów",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 80,
-    "title": "Wiśnicz - złote lato"
+    "title": "Wiśnicz - Golden Summer",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 81,
-    "title": "Żegocina"
+    "title": "Żegocina",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 82,
-    "title": "Ujanowice"
+    "title": "Ujanowice",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 83,
-    "title": "Łączka"
+    "title": "Meadow",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 84,
-    "title": "Irysy"
+    "title": "Irises",
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 85,
-    "title": "Maki"
+    "title": "Poppies and Chamomiles",
+    "technique": "Oil painting on canvas"
   }
 ]
