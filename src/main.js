@@ -1076,10 +1076,20 @@ function updateNavigationButtons() {
     return;
   }
   
+  // Sprawdź czy to urządzenie mobilne/dotykowe
+  const isTouchDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           ('ontouchstart' in window) || 
+           (navigator.maxTouchPoints > 0) ||
+           window.innerWidth < 768; // Ukryj także na małych ekranach
+  };
+  
   // Pokaż/ukryj przyciski nawigacji w zależności od liczby obrazów (dla galerii i featured)
   const hasMultipleImages = focusModeState.artworks.length > 1;
-  prevButton.style.display = hasMultipleImages ? 'flex' : 'none';
-  nextButton.style.display = hasMultipleImages ? 'flex' : 'none';
+  const shouldShowButtons = hasMultipleImages && !isTouchDevice();
+  
+  prevButton.style.display = shouldShowButtons ? 'flex' : 'none';
+  nextButton.style.display = shouldShowButtons ? 'flex' : 'none';
 }
 
 // Funkcja do przełączania trybu maksymalizacji obrazu
@@ -1122,6 +1132,19 @@ function toggleMaximizeImage() {
 // Event listenery dla trybu skupienia
 let focusModeKeyHandler;
 let focusModeResizeHandler;
+let focusModeTouchStartHandler;
+let focusModeTouchMoveHandler;
+let focusModeTouchEndHandler;
+
+// Zmienne do śledzenia gestów dotykowych w focus mode
+let focusModeTouchState = {
+  startX: 0,
+  startY: 0,
+  startTime: 0,
+  isHorizontalSwipe: false,
+  minSwipeDistance: 50, // Minimalna odległość dla uznania za swipe
+  maxSwipeTime: 1000    // Maksymalny czas dla uznania za swipe (ms)
+};
 
 function setupFocusModeEventListeners() {
   // Obsługa klawiszy
@@ -1153,11 +1176,96 @@ function setupFocusModeEventListeners() {
   focusModeResizeHandler = () => {
     if (focusModeState.isOpen) {
       displayCurrentArtwork();
+      // Aktualizuj przyciski nawigacji po zmianie rozmiaru (może się zmienić wykrywanie urządzenia mobilnego)
+      updateNavigationButtons();
     }
+  };
+  
+  // Obsługa zdarzeń dotykowych w focus mode
+  focusModeTouchStartHandler = (e) => {
+    if (!focusModeState.isOpen) return;
+    
+    // Sprawdź czy powinniśmy obsługiwać swipe (tylko gdy są widoczne strzałki nawigacyjne)
+    if (focusModeState.source === 'shop') {
+      return;
+    }
+    
+    if (focusModeState.artworks.length <= 1) {
+      return;
+    }
+    
+    focusModeTouchState.startX = e.touches[0].clientX;
+    focusModeTouchState.startY = e.touches[0].clientY;
+    focusModeTouchState.startTime = Date.now();
+    focusModeTouchState.isHorizontalSwipe = false;
+  };
+  
+  focusModeTouchMoveHandler = (e) => {
+    if (!focusModeState.isOpen || focusModeTouchState.startX === 0) return;
+    
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    
+    const deltaX = currentX - focusModeTouchState.startX;
+    const deltaY = currentY - focusModeTouchState.startY;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
+    
+    // Określ kierunek swipe tylko raz
+    if (!focusModeTouchState.isHorizontalSwipe && (absDeltaX > 15 || absDeltaY > 15)) {
+      if (absDeltaX > absDeltaY && absDeltaX > 15) {
+        focusModeTouchState.isHorizontalSwipe = true;
+        e.preventDefault();
+      } else {
+        // Resetuj stan dotyku
+        focusModeTouchState.startX = 0;
+        focusModeTouchState.startY = 0;
+        return;
+      }
+    }
+    
+    if (focusModeTouchState.isHorizontalSwipe) {
+      e.preventDefault();
+    }
+  };
+  
+  focusModeTouchEndHandler = (e) => {
+    if (!focusModeState.isOpen || focusModeTouchState.startX === 0) return;
+    
+    const endTime = Date.now();
+    const touchDuration = endTime - focusModeTouchState.startTime;
+    
+    if (focusModeTouchState.isHorizontalSwipe && touchDuration <= focusModeTouchState.maxSwipeTime) {
+      const lastTouch = e.changedTouches[0];
+      const deltaX = lastTouch.clientX - focusModeTouchState.startX;
+      const absDeltaX = Math.abs(deltaX);
+      
+      // Sprawdź czy to wystarczająco długi swipe
+      if (absDeltaX >= focusModeTouchState.minSwipeDistance) {
+        if (deltaX > 0) {
+          navigateGallery('prev');
+        } else {
+          navigateGallery('next');
+        }
+      }
+    }
+    
+    // Resetuj stan dotyku
+    focusModeTouchState.startX = 0;
+    focusModeTouchState.startY = 0;
+    focusModeTouchState.startTime = 0;
+    focusModeTouchState.isHorizontalSwipe = false;
   };
   
   document.addEventListener('keydown', focusModeKeyHandler);
   window.addEventListener('resize', focusModeResizeHandler);
+  
+  // Dodaj obsługę zdarzeń dotykowych do overlay
+  if (focusModeState.overlay) {
+    focusModeState.overlay.addEventListener('touchstart', focusModeTouchStartHandler, { passive: false });
+    focusModeState.overlay.addEventListener('touchmove', focusModeTouchMoveHandler, { passive: false });
+    focusModeState.overlay.addEventListener('touchend', focusModeTouchEndHandler, { passive: false });
+  }
 }
 
 function removeFocusModeEventListeners() {
@@ -1166,6 +1274,19 @@ function removeFocusModeEventListeners() {
   }
   if (focusModeResizeHandler) {
     window.removeEventListener('resize', focusModeResizeHandler);
+  }
+  
+  // Usuń obsługę zdarzeń dotykowych z overlay
+  if (focusModeState.overlay) {
+    if (focusModeTouchStartHandler) {
+      focusModeState.overlay.removeEventListener('touchstart', focusModeTouchStartHandler);
+    }
+    if (focusModeTouchMoveHandler) {
+      focusModeState.overlay.removeEventListener('touchmove', focusModeTouchMoveHandler);
+    }
+    if (focusModeTouchEndHandler) {
+      focusModeState.overlay.removeEventListener('touchend', focusModeTouchEndHandler);
+    }
   }
 }
 
@@ -1434,7 +1555,6 @@ function setupFeaturedScrolling() {
           e.preventDefault();
         }
       } else {
-        console.log('Wykryto pionowy scroll (touch) - anuluj swipe');
         isHorizontalSwipe = false;
         return;
       }
@@ -2205,16 +2325,18 @@ class HeroSlider {
     // Pointer events support for modern touch devices
     this.addPointerSupport();
     
+    // Traditional touch events as backup
+    this.addTouchEventsBackup();
+    
     console.log('Event listenery zostały dodane');
   }
 
   addPointerSupport() {
-    if (!this.container || !('PointerEvent' in window)) {
-      console.log('Pointer events nie są dostępne lub brak kontenera');
+    // Używamy głównego hero-slider kontenera zamiast slider-container
+    const heroSlider = document.getElementById('hero-slider');
+    if (!heroSlider || !('PointerEvent' in window)) {
       return;
     }
-    
-    console.log('Dodaję pointer events jako dodatkowe wsparcie dla gestów');
     
     let startX = 0;
     let startY = 0;
@@ -2227,27 +2349,23 @@ class HeroSlider {
     const maxVerticalMovement = 150;
     const minHorizontalMovement = 30;
     
-    this.container.addEventListener('pointerdown', (e) => {
+    heroSlider.addEventListener('pointerdown', (e) => {
       // Tylko dla touch pointers
-      if (e.pointerType !== 'touch') return;
-      
-      console.log('🎯 PointerDown (touch) event otrzymany!', e);
-      
-      startX = e.clientX;
-      startY = e.clientY;
-      startTime = Date.now();
-      isDragging = true;
-      isHorizontalSwipe = false;
-      
-      this.pauseAutoPlay();
-      
-      // Przechwytuj pointer dla lepszej kontroli
-      this.container.setPointerCapture(e.pointerId);
-      
-      console.log('Pointer start:', { startX, startY, timestamp: startTime });
+      if (e.pointerType === 'touch') {
+        startX = e.clientX;
+        startY = e.clientY;
+        startTime = Date.now();
+        isDragging = true;
+        isHorizontalSwipe = false;
+        
+        this.pauseAutoPlay();
+        
+        // Przechwytuj pointer dla lepszej kontroli
+        heroSlider.setPointerCapture(e.pointerId);
+      }
     }, { passive: true });
     
-    this.container.addEventListener('pointermove', (e) => {
+    heroSlider.addEventListener('pointermove', (e) => {
       if (!isDragging || e.pointerType !== 'touch') return;
       
       const currentX = e.clientX;
@@ -2256,17 +2374,13 @@ class HeroSlider {
       const deltaX = Math.abs(currentX - startX);
       const deltaY = Math.abs(currentY - startY);
       
-      console.log('Pointer move:', { currentX, currentY, deltaX, deltaY });
-      
       if (deltaX > minHorizontalMovement || deltaY > minHorizontalMovement) {
         if (deltaX > deltaY) {
           if (!isHorizontalSwipe) {
             isHorizontalSwipe = true;
-            console.log('Wykryto poziomy swipe (pointer) - blokuję scrollowanie');
           }
           e.preventDefault();
         } else {
-          console.log('Wykryto pionowy scroll (pointer) - anuluj swipe');
           isDragging = false;
           this.startAutoPlay();
           return;
@@ -2274,10 +2388,8 @@ class HeroSlider {
       }
     }, { passive: false });
     
-    this.container.addEventListener('pointerup', (e) => {
+    heroSlider.addEventListener('pointerup', (e) => {
       if (!isDragging || e.pointerType !== 'touch') return;
-      
-      console.log('🎯 PointerUp (touch) event otrzymany!', e);
       
       const endX = e.clientX;
       const endY = e.clientY;
@@ -2288,16 +2400,6 @@ class HeroSlider {
       const swipeTime = endTime - startTime;
       const swipeDistance = Math.abs(deltaX);
       
-      console.log('Pointer end details:', { 
-        startX, 
-        endX,
-        deltaX, 
-        deltaY, 
-        swipeTime, 
-        swipeDistance,
-        isHorizontalSwipe
-      });
-      
       const isValidSwipe = 
         isHorizontalSwipe && 
         swipeDistance >= minSwipeDistance && 
@@ -2305,9 +2407,6 @@ class HeroSlider {
         deltaY <= maxVerticalMovement;
       
       if (isValidSwipe) {
-        const direction = deltaX > 0 ? 'left (next)' : 'right (prev)';
-        console.log('✅ Valid pointer swipe detected:', direction);
-        
         if (deltaX > 0) {
           this.nextSlide();
         } else {
@@ -2318,7 +2417,6 @@ class HeroSlider {
           this.startAutoPlay();
         }, 500);
       } else {
-        console.log('❌ Invalid pointer swipe');
         this.startAutoPlay();
       }
       
@@ -2326,16 +2424,112 @@ class HeroSlider {
       isHorizontalSwipe = false;
     }, { passive: true });
     
-    this.container.addEventListener('pointercancel', (e) => {
+    heroSlider.addEventListener('pointercancel', (e) => {
       if (isDragging && e.pointerType === 'touch') {
-        console.log('Pointer cancelled');
         isDragging = false;
         isHorizontalSwipe = false;
         this.startAutoPlay();
       }
     }, { passive: true });
+  }
+
+  addTouchEventsBackup() {
+    // Używamy głównego hero-slider kontenera zamiast slider-container
+    const heroSlider = document.getElementById('hero-slider');
+    if (!heroSlider) {
+      return;
+    }
     
-    console.log('Pointer support został dodany');
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isHorizontalSwipe = false;
+    
+    const minSwipeDistance = 50;
+    const maxSwipeTime = 800;
+    const maxVerticalMovement = 150;
+    
+    heroSlider.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+      isHorizontalSwipe = false;
+      
+      this.pauseAutoPlay();
+    }, { passive: true });
+    
+    heroSlider.addEventListener('touchmove', (e) => {
+      if (!touchStartX || !touchStartY) return;
+      
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      
+      const deltaX = Math.abs(currentX - touchStartX);
+      const deltaY = Math.abs(currentY - touchStartY);
+      
+      // Określ kierunek tylko raz
+      if (!isHorizontalSwipe && (deltaX > 15 || deltaY > 15)) {
+        if (deltaX > deltaY && deltaX > 15) {
+          isHorizontalSwipe = true;
+          e.preventDefault();
+        } else {
+          touchStartX = 0;
+          touchStartY = 0;
+          this.startAutoPlay();
+          return;
+        }
+      }
+      
+      if (isHorizontalSwipe) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+    
+    heroSlider.addEventListener('touchend', (e) => {
+      if (!touchStartX || !touchStartY) return;
+      
+      const endTime = Date.now();
+      const touchDuration = endTime - touchStartTime;
+      const lastTouch = e.changedTouches[0];
+      
+      const deltaX = touchStartX - lastTouch.clientX;
+      const deltaY = Math.abs(touchStartY - lastTouch.clientY);
+      const swipeDistance = Math.abs(deltaX);
+      
+      const isValidSwipe = 
+        isHorizontalSwipe && 
+        swipeDistance >= minSwipeDistance && 
+        touchDuration <= maxSwipeTime && 
+        deltaY <= maxVerticalMovement;
+      
+      if (isValidSwipe) {
+        if (deltaX > 0) {
+          this.nextSlide();
+        } else {
+          this.prevSlide();
+        }
+        
+        setTimeout(() => {
+          this.startAutoPlay();
+        }, 500);
+      } else {
+        this.startAutoPlay();
+      }
+      
+      // Reset stanu
+      touchStartX = 0;
+      touchStartY = 0;
+      touchStartTime = 0;
+      isHorizontalSwipe = false;
+    }, { passive: false });
+    
+    heroSlider.addEventListener('touchcancel', (e) => {
+      touchStartX = 0;
+      touchStartY = 0;
+      touchStartTime = 0;
+      isHorizontalSwipe = false;
+      this.startAutoPlay();
+    }, { passive: true });
   }
 
   showSlide(index) {
