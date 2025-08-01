@@ -3007,6 +3007,9 @@ function updateSiteConfiguration() {
   
   // Kontroluj widoczność linków do sklepu w nawigacji
   updateShopNavigationVisibility();
+  
+  // Aktualizuj tytuły stron (meta tagi Open Graph są generowane podczas budowania)
+  updatePageTitleAndMetaTags();
 }
 
 // Funkcja do kontrolowania widoczności linków do sklepu w nawigacji
@@ -3028,6 +3031,26 @@ function updateShopNavigationVisibility() {
       }
     }
   });
+}
+
+// Funkcja do aktualizowania tytułów stron (pozostawiamy dla użytkowników)
+function updatePageTitleAndMetaTags() {
+  if (!siteConfig.siteName) return;
+  
+  const currentPath = window.location.pathname;
+  let pageTitle = siteConfig.siteName;
+  
+  // Określ tytuł strony na podstawie obecnej lokalizacji
+  if (currentPath.includes('gallery.html')) {
+    pageTitle = `Galeria - ${siteConfig.siteName}`;
+  } else if (currentPath.includes('about.html')) {
+    pageTitle = `O Artyście - ${siteConfig.siteName}`;
+  } else if (currentPath.includes('shop.html')) {
+    pageTitle = `Sklep - ${siteConfig.siteName}`;
+  }
+  
+  // Aktualizuj tylko tytuł strony (meta tagi Open Graph są teraz statyczne z build-time)
+  document.title = pageTitle;
 }
 
 // Funkcja do zmiany języka

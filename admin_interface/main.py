@@ -2940,6 +2940,19 @@ class AdminInterface:
                         hint_text="Np. Portfolio Artystyczne",
                         on_change=lambda e: self.update_site_config_field("siteName", e.control.value)
                     ),
+                    ft.TextField(
+                        label="Adres URL witryny",
+                        value=self.current_data.get("siteUrl", ""),
+                        hint_text="https://twoja-strona.com",
+                        on_change=lambda e: self.update_site_config_field("siteUrl", e.control.value)
+                    ),
+                    ft.Text(
+                        "Adres URL jest używany do generowania podglądu linków (Open Graph). "
+                        "Pozostaw puste jeśli nie chcesz używać tej funkcji.",
+                        size=12,
+                        color="#666666",
+                        italic=True
+                    ),
                 ]),
                 padding=10,
                 bgcolor="#f5f5f5",
@@ -3028,7 +3041,8 @@ class AdminInterface:
                     ft.Icon(ft.Icons.INFO, color="#1976d2", size=24),
                     ft.Text(
                         "Te ustawienia wpływają na całą witrynę niezależnie od wybranego języka. "
-                        "Zmiana nazwy witryny automatycznie zaktualizuje ją w nagłówku i stopce.",
+                        "Zmiana nazwy witryny automatycznie zaktualizuje ją w nagłówku, stopce i tytułach stron. "
+                        "Adres URL witryny jest używany do generowania meta tagów Open Graph dla podglądu linków.",
                         size=12,
                         color="#1976d2",
                         text_align=ft.TextAlign.CENTER
