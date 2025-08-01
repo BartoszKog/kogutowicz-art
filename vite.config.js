@@ -70,7 +70,7 @@ export default defineConfig({
     copyStaticFilesPlugin(),
   ],
   // Base URL dla GitHub Pages
-  base: process.env.NODE_ENV === 'production' ? `/${repoName}/` : '/',
+  base: '/',
   // Konfiguracja budowania projektu
   build: {
     outDir: 'dist',
