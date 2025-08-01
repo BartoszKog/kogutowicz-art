@@ -68,31 +68,42 @@ function generateOpenGraphTags(siteConfig, featuredData, pageType = 'home') {
 
 // Funkcja do aktualizowania meta tagów w HTML
 function injectOpenGraphTags(htmlContent, ogData, pageType) {
-  // Znajdź znacznik </head> i wstaw meta tagi przed nim
+  // Znajdź sekcję <head>
+  const headStartTag = '<head>';
   const headCloseTag = '</head>';
-  const headIndex = htmlContent.indexOf(headCloseTag);
+  const headStartIndex = htmlContent.indexOf(headStartTag);
+  const headEndIndex = htmlContent.indexOf(headCloseTag);
   
-  if (headIndex === -1) {
-    console.warn(`Nie znaleziono tagu </head> w pliku HTML dla ${pageType}`);
+  if (headStartIndex === -1 || headEndIndex === -1) {
+    console.warn(`Nie znaleziono sekcji <head> w pliku HTML dla ${pageType}`);
     return htmlContent;
   }
   
-  // Usuń istniejące puste meta tagi Open Graph
-  htmlContent = htmlContent.replace(/<meta property="og:title" content="">/g, '');
-  htmlContent = htmlContent.replace(/<meta property="og:image" content="">/g, '');
-  htmlContent = htmlContent.replace(/<meta property="og:url" content="">/g, '');
+  // Wyodrębnij sekcję head
+  const beforeHead = htmlContent.slice(0, headStartIndex + headStartTag.length);
+  const headContent = htmlContent.slice(headStartIndex + headStartTag.length, headEndIndex);
+  const afterHead = htmlContent.slice(headEndIndex);
+  
+  // Usuń istniejące meta tagi Open Graph tylko z sekcji head
+  let cleanedHeadContent = headContent;
+  cleanedHeadContent = cleanedHeadContent.replace(/<meta property="og:title" content="[^"]*"[^>]*>/g, '');
+  cleanedHeadContent = cleanedHeadContent.replace(/<meta property="og:image" content="[^"]*"[^>]*>/g, '');
+  cleanedHeadContent = cleanedHeadContent.replace(/<meta property="og:url" content="[^"]*"[^>]*>/g, '');
+  cleanedHeadContent = cleanedHeadContent.replace(/<meta property="og:type" content="[^"]*"[^>]*>/g, '');
+  cleanedHeadContent = cleanedHeadContent.replace(/<!-- Open Graph meta tags[^>]*>/g, '');
+  cleanedHeadContent = cleanedHeadContent.replace(/<!-- Open Graph meta tags - generated during build -->/g, '');
   
   // Przygotuj nowe meta tagi
   const ogTags = `
+    
     <!-- Open Graph meta tags - generated during build -->
     <meta property="og:title" content="${ogData.title}">
     <meta property="og:image" content="${ogData.image}">
     <meta property="og:url" content="${ogData.url}">
-    <meta property="og:type" content="website">
-    `;
+    <meta property="og:type" content="website">`;
   
-  // Wstaw nowe meta tagi przed </head>
-  const updatedHtml = htmlContent.slice(0, headIndex) + ogTags + htmlContent.slice(headIndex);
+  // Połącz wszystko razem
+  const updatedHtml = beforeHead + cleanedHeadContent + ogTags + afterHead;
   
   return updatedHtml;
 }
