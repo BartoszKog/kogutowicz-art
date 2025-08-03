@@ -4,10 +4,22 @@
     "title": "Chapel of Our Lady of the Scapular in Maliniska",
     "description": "A small, historic sacred object, located in Kamionka Mała",
     "technique": "Oil painting on canvas"
-    },
+  },
+  {
+    "id": 86,
+    "title": "Church of St. Catherine of Alexandria in Kamionka Mała",
+    "description": "A historic wooden church built in the 18th century",
+    "technique": "Oil painting on canvas"
+  },
   {
     "id": 46,
     "title": "Laskowa - Early Spring",
+    "technique": "Oil painting on canvas"
+  },
+  {
+    "id": 32,
+    "title": "Golden Sheaves in the Shadow of the Church",
+    "description": "Traditional grain sheaves with church in the background in Żegocina",
     "technique": "Oil painting on canvas"
   },
   {
@@ -16,8 +28,19 @@
     "technique": "Oil painting on canvas"
   },
   {
+    "id": 87,
+    "title": "Church of the Nativity of the Blessed Virgin Mary in Rajbrot",
+    "technique": "Oil painting on canvas"
+  },
+  {
     "id": 38,
     "title": "Table Setting",
+    "technique": "Oil painting on canvas"
+  },
+  {
+    "id": 88,
+    "title": "St. James the Apostle Church in Rozdziele",
+    "description": "A historic, Gothic, wooden Roman Catholic church from the 15th century",
     "technique": "Oil painting on canvas"
   },
   {
@@ -162,12 +185,6 @@
     "id": 12,
     "title": "Golden Autumn",
     "description": "Golden autumn in Żegocina",
-    "technique": "Oil painting on canvas"
-  },
-  {
-    "id": 32,
-    "title": "Golden Sheaves in the Shadow of the Church",
-    "description": "Traditional grain sheaves with church in the background in Żegocina",
     "technique": "Oil painting on canvas"
   },
   {
