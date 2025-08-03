@@ -14,6 +14,22 @@
     "dimensions": "40 x 30 cm"
   },
   {
+    "id": 86,
+    "title": "Kościół pw. św. Katarzyny Aleksandryjskiej w Kamionce Małej",
+    "description": "Zabytkowa drewniana świątynia zbudowana w XVIII wieku",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "30 x 50 cm",
+    "year": 2025,
+    "image": "images/gallery/niedziela_drop (3).webp",
+    "categories": [
+      "pejzaż lokalny",
+      "Laskowa"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
     "id": 46,
     "title": "Laskowa - przedwiośnie",
     "year": 2011,
@@ -24,6 +40,20 @@
     ],
     "available": true,
     "dimensions": "30 x 30 cm",
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 32,
+    "title": "Złote mendle w cieniu kościoła",
+    "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie",
+    "year": 2025,
+    "image": "images/gallery/niedziela_drop  -kopia (1).webp",
+    "categories": [
+      "pejzaż lokalny",
+      "Żegocina"
+    ],
+    "available": true,
+    "dimensions": "24 x 30 cm",
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
@@ -40,6 +70,21 @@
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
+    "id": 87,
+    "title": "Kościół Narodzenia Najświętszej Maryi Panny w Rajbrocie",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "24 x 30 cm",
+    "year": 2025,
+    "image": "images/gallery/niedziela_drop (2).webp",
+    "categories": [
+      "Rajbrot",
+      "pejzaż lokalny"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
     "id": 38,
     "title": "Nakrycie do stołu",
     "year": 2020,
@@ -51,6 +96,22 @@
     "dimensions": "60 x 40 cm",
     "technique": "Obraz olejny malowany na płótnie",
     "positionY": 0.32
+  },
+  {
+    "id": 88,
+    "title": "Kościół św. Jakuba Apostoła w Rozdzielu",
+    "description": "Zabytkowa, gotycka, drewniana świątynia rzymskokatolicka z XV wieku",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "24 x 30 cm",
+    "year": 2025,
+    "image": "images/gallery/niedziela_drop (4).webp",
+    "categories": [
+      "Rozdziele",
+      "pejzaż lokalny"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
   },
   {
     "id": 41,
@@ -412,21 +473,7 @@
       "pejzaż lokalny",
       "Żegocina"
     ],
-    "available": false,
-    "technique": "Obraz olejny malowany na płótnie"
-  },
-  {
-    "id": 32,
-    "title": "Złote mendle w cieniu kościoła",
-    "description": "Tradycyjne mendle zboża z kościołem w tle w Żegocinie",
-    "year": 2011,
-    "image": "images/gallery/Mendle_kko38.webp",
-    "categories": [
-      "pejzaż lokalny",
-      "Żegocina"
-    ],
-    "available": false,
-    "dimensions": "30 x 40 cm",
+    "available": true,
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
