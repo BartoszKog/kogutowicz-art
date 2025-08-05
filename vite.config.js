@@ -2,9 +2,84 @@ import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'path';
 import { existsSync, mkdirSync, copyFileSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { createWriteStream } from 'fs';
+import { SitemapStream, streamToPromise } from 'sitemap';
 
 // Nazwa repozytorium GitHub
 const repoName = 'kogutowicz-art';
+
+// Funkcja do generowania sitemap.xml
+async function generateSitemap(outDir) {
+  try {
+    console.log('🗺️  Generowanie sitemap.xml...');
+    
+    // Wczytaj konfigurację strony
+    const siteConfigPath = resolve('src/data/json/site-config.json');
+    if (!existsSync(siteConfigPath)) {
+      console.warn('⚠️  Plik site-config.json nie istnieje. Pomijam generowanie sitemap.');
+      return;
+    }
+    
+    const siteConfig = JSON.parse(readFileSync(siteConfigPath, 'utf8'));
+    const baseUrl = `https://${siteConfig.siteUrl}`;
+    
+    // Definicja stron do wygenerowania w sitemap
+    const pages = [
+      {
+        url: '/',
+        changefreq: 'weekly',
+        priority: 1.0,
+        lastmod: new Date().toISOString()
+      },
+      {
+        url: '/src/pages/gallery.html',
+        changefreq: 'weekly', 
+        priority: 0.8,
+        lastmod: new Date().toISOString()
+      },
+      {
+        url: '/src/pages/about.html',
+        changefreq: 'monthly',
+        priority: 0.7,
+        lastmod: new Date().toISOString()
+      },
+      {
+        url: '/src/pages/shop.html',
+        changefreq: 'weekly',
+        priority: 0.6,
+        lastmod: new Date().toISOString()
+      }
+    ];
+    
+    // Ścieżka do wygenerowanego pliku sitemap
+    const outputPath = resolve(outDir, 'sitemap.xml');
+    
+    // Utwórz strumień sitemap
+    const sitemapStream = new SitemapStream({ hostname: baseUrl });
+    
+    // Utwórz strumień zapisu do pliku
+    const writeStream = createWriteStream(outputPath);
+    sitemapStream.pipe(writeStream);
+    
+    // Dodaj wszystkie strony do sitemap
+    pages.forEach(page => {
+      sitemapStream.write(page);
+    });
+    
+    // Zakończ strumień
+    sitemapStream.end();
+    
+    // Poczekaj na zakończenie zapisu
+    await streamToPromise(sitemapStream);
+    
+    console.log(`✅ Sitemap.xml został wygenerowany: ${outputPath}`);
+    console.log(`🌐 Bazowy URL: ${baseUrl}`);
+    console.log(`📄 Liczba stron w sitemap: ${pages.length}`);
+    
+  } catch (error) {
+    console.error('❌ Błąd podczas generowania sitemap.xml:', error);
+  }
+}
 
 // Funkcja do generowania meta tagów Open Graph
 function generateOpenGraphTags(siteConfig, featuredData, pageType = 'home') {
@@ -113,7 +188,7 @@ function copyStaticFilesPlugin() {
   return {
     name: 'copy-static-files-and-generate-og-tags',
     // Używaj writeBundle zamiast buildEnd
-    writeBundle() {
+    async writeBundle() {
       // Kopiuj pliki statyczne
       const sourceFolders = [
         { src: 'images', dest: 'dist/images' },
@@ -176,6 +251,13 @@ function copyStaticFilesPlugin() {
         
       } catch (error) {
         console.error('Błąd podczas generowania meta tagów Open Graph:', error);
+      }
+      
+      // Generuj sitemap.xml
+      try {
+        await generateSitemap('dist');
+      } catch (error) {
+        console.error('Błąd podczas generowania sitemap.xml:', error);
       }
     }
   };
