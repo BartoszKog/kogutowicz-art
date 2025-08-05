@@ -208,6 +208,16 @@ function copyStaticFilesPlugin() {
         copyFolderRecursiveSync(src, dest);
       });
       
+      // Kopiuj plik weryfikacyjny Google Search Console
+      const googleVerificationFile = 'google69b18c39e14234e6.html';
+      if (existsSync(googleVerificationFile)) {
+        const destPath = resolve('dist', googleVerificationFile);
+        copyFileSync(googleVerificationFile, destPath);
+        console.log(`✅ Plik weryfikacyjny Google skopiowany: ${destPath}`);
+      } else {
+        console.warn(`⚠️  Plik weryfikacyjny Google nie istnieje: ${googleVerificationFile}`);
+      }
+      
       console.log('Statyczne pliki zostały skopiowane do katalogu dist');
       
       // Generuj meta tagi Open Graph
