@@ -168,6 +168,9 @@ function injectOpenGraphTags(htmlContent, ogData, pageType) {
   cleanedHeadContent = cleanedHeadContent.replace(/<!-- Open Graph meta tags[^>]*>/g, '');
   cleanedHeadContent = cleanedHeadContent.replace(/<!-- Open Graph meta tags - generated during build -->/g, '');
   
+  // Aktualizuj tytuł strony <title>
+  cleanedHeadContent = cleanedHeadContent.replace(/<title>[^<]*<\/title>/g, `<title>${ogData.title}</title>`);
+  
   // Przygotuj nowe meta tagi
   const ogTags = `
     

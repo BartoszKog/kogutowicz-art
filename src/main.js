@@ -3033,24 +3033,27 @@ function updateShopNavigationVisibility() {
   });
 }
 
-// Funkcja do aktualizowania tytułów stron (pozostawiamy dla użytkowników)
+// Funkcja do aktualizowania tytułów stron (zoptymalizowana - sprawdza czy tytuł już jest poprawny)
 function updatePageTitleAndMetaTags() {
   if (!siteConfig.siteName) return;
   
   const currentPath = window.location.pathname;
-  let pageTitle = siteConfig.siteName;
+  let expectedTitle = siteConfig.siteName;
   
-  // Określ tytuł strony na podstawie obecnej lokalizacji
+  // Określ oczekiwany tytuł strony na podstawie obecnej lokalizacji
   if (currentPath.includes('gallery.html')) {
-    pageTitle = `Galeria - ${siteConfig.siteName}`;
+    expectedTitle = `Galeria - ${siteConfig.siteName}`;
   } else if (currentPath.includes('about.html')) {
-    pageTitle = `O Artyście - ${siteConfig.siteName}`;
+    expectedTitle = `O Artyście - ${siteConfig.siteName}`;
   } else if (currentPath.includes('shop.html')) {
-    pageTitle = `Sklep - ${siteConfig.siteName}`;
+    expectedTitle = `Sklep - ${siteConfig.siteName}`;
   }
   
-  // Aktualizuj tylko tytuł strony (meta tagi Open Graph są teraz statyczne z build-time)
-  document.title = pageTitle;
+  // Aktualizuj tytuł tylko jeśli jest inny niż oczekiwany (dla kompatybilności wstecznej)
+  if (document.title !== expectedTitle) {
+    document.title = expectedTitle;
+    console.log(`📝 Tytuł strony zaktualizowany na: ${expectedTitle}`);
+  }
 }
 
 // Funkcja do zmiany języka
