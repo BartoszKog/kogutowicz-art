@@ -17,6 +17,12 @@
     "technique": "Oil painting on canvas"
   },
   {
+    "id": 89,
+    "title": "The Church of the Most Holy Name of Mary in Laskowa",
+    "description": "A charming view of the church in Laskowa in a summer landscape",
+    "technique": "Oil painting on canvas"
+  },
+  {
     "id": 32,
     "title": "Golden Sheaves in the Shadow of the Church",
     "description": "Traditional grain sheaves with church in the background in Żegocina",
@@ -117,6 +123,11 @@
   {
     "id": 67,
     "title": "Elbląg",
+    "technique": "Oil painting on canvas"
+  },
+  {
+    "id": 90,
+    "title": "A Rosy Bouquet",
     "technique": "Oil painting on canvas"
   },
   {
