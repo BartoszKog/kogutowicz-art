@@ -6,6 +6,12 @@
     "technique": "Oil painting on canvas"
   },
   {
+    "id": 91,
+    "title": "Little Sheep",
+    "description": "Against the backdrop of the charming Beskid Wyspowy (Kamionka Mała)",
+    "technique": "Oil painting on canvas"
+  },
+  {
     "id": 86,
     "title": "Church of St. Catherine of Alexandria in Kamionka Mała",
     "description": "A historic wooden church built in the 18th century",
@@ -122,7 +128,7 @@
   },
   {
     "id": 67,
-    "title": "Elbląg",
+    "title": "St. Adalbert's Church in Elbląg",
     "technique": "Oil painting on canvas"
   },
   {
