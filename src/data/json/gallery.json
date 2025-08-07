@@ -11,7 +11,7 @@
     ],
     "available": true,
     "technique": "Obraz olejny malowany na płótnie",
-    "dimensions": "40 x 30 cm"
+    "dimensions": "30 x 40 cm"
   },
   {
     "id": 86,
@@ -41,6 +41,22 @@
     "available": true,
     "dimensions": "30 x 30 cm",
     "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 89,
+    "title": "Kościół Najświętszego Imienia Maryi w Laskowej",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "20 x 30 cm",
+    "year": 2025,
+    "image": "images/gallery/czwartek drop (2).webp",
+    "categories": [
+      "Laskowa",
+      "pejzaż lokalny"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "description": "Urokliwy widok na kościół w Laskowej w letnim krajobrazie"
   },
   {
     "id": 32,
@@ -306,6 +322,20 @@
     "available": true,
     "positionX": 0.5,
     "positionY": 0.5
+  },
+  {
+    "id": 90,
+    "title": "Bukiet różany",
+    "dimensions": "30 x 20 cm",
+    "year": 2025,
+    "image": "images/gallery/czwartek drop (1).webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "technique": "Obraz olejny malowany na płótnie"
   },
   {
     "id": 37,
