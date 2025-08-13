@@ -1206,5 +1206,47 @@
     "positionX": 0.5,
     "positionY": 0.5,
     "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
+    "id": 93,
+    "title": "Wazon pełen jesieni",
+    "technique": "Obraz olejny malowany na płótnie",
+    "year": 2010,
+    "image": "images/gallery/fb_img_1579019239514.webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "dimensions": "40 x 30 cm"
+  },
+  {
+    "id": 94,
+    "title": "Maki",
+    "technique": "Obraz olejny malowany na płótnie",
+    "year": 2011,
+    "image": "images/gallery/fb_img_1579025380897.webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5,
+    "dimensions": "40 x 30 cm"
+  },
+  {
+    "id": 95,
+    "title": "Białe dalie",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "40 x 30 cm",
+    "year": 2020,
+    "image": "images/gallery/Screenshot_20250813-175032.webp",
+    "categories": [
+      "kwiaty"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5
   }
 ]
