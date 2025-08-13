@@ -59,6 +59,20 @@
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
+    "id": 28,
+    "title": "Kościół w Laskowej",
+    "dimensions": "30 x 42 cm",
+    "year": 2025,
+    "image": "images/gallery/środa drop (1).webp",
+    "categories": [
+      "pejzaż lokalny",
+      "Laskowa"
+    ],
+    "available": true,
+    "description": "Kościół w Laskowej jesienią",
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
     "id": 89,
     "title": "Kościół Najświętszego Imienia Maryi w Laskowej",
     "technique": "Obraz olejny malowany na płótnie",
@@ -702,6 +716,21 @@
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
+    "id": 92,
+    "title": "Kościół p.w. Wniebowzięcia Najświętszej Marii Panny w Nowym Wiśniczu",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "30 x 30 cm",
+    "year": 2025,
+    "image": "images/gallery/środa drop (2).webp",
+    "categories": [
+      "Wiśnicz",
+      "pejzaż lokalny"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
     "id": 23,
     "title": "Zamek w Wiśniczu",
     "description": "Wiśnicz",
@@ -826,20 +855,6 @@
     ],
     "available": false,
     "dimensions": "30 x 24 cm",
-    "technique": "Obraz olejny malowany na płótnie"
-  },
-  {
-    "id": 28,
-    "title": "Kościół w Laskowej",
-    "dimensions": "30 x 40 cm",
-    "year": 2011,
-    "image": "images/gallery/Kosciol_w_Laskowej_kko83.webp",
-    "categories": [
-      "pejzaż lokalny",
-      "Laskowa"
-    ],
-    "available": false,
-    "description": "Kościół w Laskowej jesienią",
     "technique": "Obraz olejny malowany na płótnie"
   },
   {

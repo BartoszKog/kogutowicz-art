@@ -23,6 +23,12 @@
     "technique": "Oil painting on canvas"
   },
   {
+    "id": 28,
+    "title": "Church in Laskowa",
+    "description": "Church in Laskowa in autumn",
+    "technique": "Oil painting on canvas"
+  },
+  {
     "id": 89,
     "title": "The Church of the Most Holy Name of Mary in Laskowa",
     "description": "A charming view of the church in Laskowa in a summer landscape",
@@ -278,6 +284,11 @@
     "technique": "Oil painting on canvas"
   },
   {
+    "id": 92,
+    "title": "Church of the Assumption in Nowy Wiśnicz",
+    "technique": "Obraz olejny malowany na płótnie"
+  },
+  {
     "id": 23,
     "title": "Castle in Wiśnicz",
     "description": "Wiśnicz",
@@ -326,12 +337,6 @@
   {
     "id": 56,
     "title": "Figurine on Zbójka, Laskowa",
-    "technique": "Oil painting on canvas"
-  },
-  {
-    "id": 28,
-    "title": "Church in Laskowa",
-    "description": "Church in Laskowa in autumn",
     "technique": "Oil painting on canvas"
   },
   {
