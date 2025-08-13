@@ -286,7 +286,7 @@
   {
     "id": 92,
     "title": "Church of the Assumption in Nowy Wiśnicz",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Oil painting on canvas"
   },
   {
     "id": 23,
@@ -463,6 +463,21 @@
   {
     "id": 85,
     "title": "Poppies and Chamomiles",
+    "technique": "Oil painting on canvas"
+  },
+  {
+    "id": 93,
+    "title": "A Vase Full of Autumn",
+    "technique": "Oil painting on canvas"
+  },
+  {
+    "id": 94,
+    "title": "Poppies",
+    "technique": "Oil painting on canvas"
+  },
+  {
+    "id": 95,
+    "title": "White Dahlias",
     "technique": "Oil painting on canvas"
   }
 ]
