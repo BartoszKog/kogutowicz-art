@@ -108,6 +108,12 @@
     "technique": "Pastels"
   },
   {
+    "id": 97,
+    "title": "Panorama of Łąkta",
+    "description": "Łąkta illuminated by the setting summer sun",
+    "technique": "Oil painting on canvas"
+  },
+  {
     "id": 49,
     "title": "Landscape - Łąkta Górna",
     "technique": "Oil painting on canvas"
@@ -374,6 +380,11 @@
     "id": 59,
     "title": "Mother of God",
     "technique": "Oil painting on fiberboard"
+  },
+  {
+    "id": 96,
+    "title": "Our Lady of Maastricht",
+    "technique": "Pencil drawing"
   },
   {
     "id": 68,

@@ -275,6 +275,22 @@
     "available": true
   },
   {
+    "id": 97,
+    "title": "Panorama Łąkty",
+    "description": "Kotlina Łąkty oświetlona zachodzącym letnim słońcem",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "30 x 40 cm",
+    "year": 2025,
+    "image": "images/gallery/czw_drp (2).webp",
+    "categories": [
+      "Łąkta",
+      "pejzaż lokalny"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
     "id": 49,
     "title": "Pejzaż - Łąkta Górna",
     "year": 2019,
@@ -947,8 +963,22 @@
     ],
     "available": true,
     "dimensions": "15 x 7 cm",
-    "technique": "obraz olejny na płycie pilśniowej",
+    "technique": "Obraz olejny na płycie pilśniowej",
     "positionY": 0.28
+  },
+  {
+    "id": 96,
+    "title": "Matka Boża z Maastricht",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "A4",
+    "year": 2025,
+    "image": "images/gallery/czw_drp (1).webp",
+    "categories": [
+      "motywy sakralne"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.43
   },
   {
     "id": 68,
