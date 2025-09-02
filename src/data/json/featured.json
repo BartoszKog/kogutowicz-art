@@ -34,5 +34,14 @@
     "image": "images/featured/botanika.webp",
     "positionX": 0.91,
     "positionY": 0.46
+  },
+  {
+    "id": 10,
+    "title": "Rysunek i grafika",
+    "description": "Prace w odcieniach czerni, bieli i szarości",
+    "image": "images/gallery/rysunki  (1).webp",
+    "galleryCategory": "rysunek",
+    "positionX": 0.5,
+    "positionY": 0.68
   }
 ]
