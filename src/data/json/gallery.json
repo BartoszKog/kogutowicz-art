@@ -972,9 +972,10 @@
     "technique": "Rysunek ołówkiem",
     "dimensions": "A4",
     "year": 2025,
-    "image": "images/gallery/czw_drp (1).webp",
+    "image": "images/gallery/rysunki  (20).webp",
     "categories": [
-      "motywy sakralne"
+      "motywy sakralne",
+      "rysunek"
     ],
     "available": true,
     "positionX": 0.5,
@@ -1276,6 +1277,239 @@
       "kwiaty"
     ],
     "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 98,
+    "title": "Matka Boża Fatimska",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "12 x 7 cm",
+    "year": 2025,
+    "image": "images/gallery/rysunki  (4).webp",
+    "categories": [
+      "rysunek",
+      "motywy sakralne"
+    ],
+    "available": true,
+    "positionX": 0.46,
+    "positionY": 0.36
+  },
+  {
+    "id": 99,
+    "title": "Matka Boża Nieustającej Pomocy",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "25 x 20 cm",
+    "year": 2025,
+    "image": "images/gallery/rysunki  (7).webp",
+    "categories": [
+      "rysunek",
+      "motywy sakralne"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.32
+  },
+  {
+    "id": 100,
+    "title": "Matka Boża Pasierbiecka",
+    "technique": "rysunek ołówkiem",
+    "dimensions": "25 x 20 cm",
+    "year": 2025,
+    "image": "images/gallery/rysunki  (8).webp",
+    "categories": [
+      "rysunek",
+      "motywy sakralne"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 101,
+    "title": "Zdjęcie z krzyża",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "25 x20 cm",
+    "year": 2025,
+    "image": "images/gallery/rysunki  (9).webp",
+    "categories": [
+      "rysunek",
+      "motywy sakralne"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.29
+  },
+  {
+    "id": 102,
+    "title": "Niepokalane serce Maryi",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "12 x 7 cm",
+    "year": 2025,
+    "image": "images/gallery/rysunki  (6).webp",
+    "categories": [
+      "rysunek",
+      "motywy sakralne"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.37
+  },
+  {
+    "id": 103,
+    "title": "Serce Pana Jezusa",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "12 x7 cm",
+    "year": 2025,
+    "image": "images/gallery/rysunki  (5).webp",
+    "categories": [
+      "rysunek",
+      "motywy sakralne"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.45
+  },
+  {
+    "id": 104,
+    "title": "Martwa natura",
+    "technique": "Sepia",
+    "dimensions": "A4",
+    "year": 2014,
+    "image": "images/gallery/rysunki  (10).webp",
+    "categories": [
+      "rysunek",
+      "martwa natura"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 105,
+    "title": "Kaktusy",
+    "technique": "Pastele",
+    "dimensions": "30 x 40 cm",
+    "year": 2015,
+    "image": "images/gallery/rysunki  (16).webp",
+    "categories": [
+      "rysunek",
+      "pastele"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 106,
+    "title": "Motyw z Łąkty Górnej",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "A4",
+    "year": 2020,
+    "image": "images/gallery/rysunki  (11).webp",
+    "categories": [
+      "rysunek"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 107,
+    "title": "Żegocina (początek XX w.)",
+    "technique": "Rysunek cienkopisem i ołówkiem",
+    "dimensions": "20 x 25 cm",
+    "year": 2025,
+    "image": "images/gallery/rysunki  (2).webp",
+    "categories": [
+      "rysunek"
+    ],
+    "available": true,
+    "positionX": 0.43,
+    "positionY": 0.37
+  },
+  {
+    "id": 108,
+    "title": "Rozdziele minione",
+    "technique": "rysunek węglem",
+    "dimensions": "30 x 40 cm",
+    "year": 2025,
+    "image": "images/gallery/rysunki  (17).webp",
+    "categories": [
+      "rysunek"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 109,
+    "title": "Rozdziele minione",
+    "technique": "Rysunek węglem",
+    "dimensions": "30 x 40 cm",
+    "year": 2025,
+    "image": "images/gallery/rysunki  (18).webp",
+    "categories": [
+      "rysunek"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 110,
+    "title": "Bez tytułu",
+    "technique": "Rysunek tuszem",
+    "dimensions": "40 x 30 cm",
+    "year": 2019,
+    "image": "images/gallery/rysunki  (12).webp",
+    "categories": [
+      "rysunek",
+      "postacie"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 111,
+    "title": "Portret chłopca",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "40 x 30 cm",
+    "year": 2009,
+    "image": "images/gallery/rysunki  (14).webp",
+    "categories": [
+      "rysunek"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 112,
+    "title": "Portret chłopca",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "30 x 40 cm",
+    "year": 2009,
+    "image": "images/gallery/rysunki  (15).webp",
+    "categories": [
+      "rysunek"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 113,
+    "title": "Portret chłopca",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "30 x 40 cm",
+    "year": 2009,
+    "image": "images/gallery/rysunki  (13).webp",
+    "categories": [
+      "rysunek"
+    ],
+    "available": true,
     "positionX": 0.5,
     "positionY": 0.5
   }

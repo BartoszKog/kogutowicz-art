@@ -490,5 +490,85 @@
     "id": 95,
     "title": "White Dahlias",
     "technique": "Oil painting on canvas"
+  },
+  {
+    "id": 98,
+    "title": "Our Lady of Fatima",
+    "technique": "Pencil drawing"
+  },
+  {
+    "id": 99,
+    "title": "Our Lady of Perpetual Help",
+    "technique": "Pencil drawing"
+  },
+  {
+    "id": 100,
+    "title": "Our Lady of Pasierbiec",
+    "technique": "Pencil drawing"
+  },
+  {
+    "id": 101,
+    "title": "Descent from the Cross",
+    "technique": "Pencil drawing"
+  },
+  {
+    "id": 102,
+    "title": "Immaculate Heart of Mary",
+    "technique": "Pencil drawing"
+  },
+  {
+    "id": 103,
+    "title": "Sacred Heart of Jesus",
+    "technique": "Pencil drawing"
+  },
+  {
+    "id": 104,
+    "title": "Still Life",
+    "technique": "Sepia"
+  },
+  {
+    "id": 105,
+    "title": "Cacti",
+    "technique": "Pastels"
+  },
+  {
+    "id": 106,
+    "title": "Motif from Łąkta Górna",
+    "technique": "Pencil drawing"
+  },
+  {
+    "id": 107,
+    "title": "Żegocina (early 20th century)",
+    "technique": "Fineliner and pencil drawing"
+  },
+  {
+    "id": 108,
+    "title": "Bygone Rozdziele",
+    "technique": "Charcoal drawing"
+  },
+  {
+    "id": 109,
+    "title": "Bygone Rozdziele",
+    "technique": "Charcoal drawing"
+  },
+  {
+    "id": 110,
+    "title": "Untitled",
+    "technique": "Ink drawing"
+  },
+  {
+    "id": 111,
+    "title": "Portrait of a Boy",
+    "technique": "Pencil drawing"
+  },
+  {
+    "id": 112,
+    "title": "Portrait of a Boy",
+    "technique": "Pencil drawing"
+  },
+  {
+    "id": 113,
+    "title": "Portrait of a Boy",
+    "technique": "Pencil drawing"
   }
 ]
