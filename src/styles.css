@@ -1336,6 +1336,15 @@ header {
         z-index: 5;
         animation: swipeHint 3s ease-in-out infinite;
     }
+
+    /* Na urządzeniach dotykowych przesuń treść nieco wyżej (~45% od góry) */
+    #hero-slider #hero-content {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: calc(100% - 3rem);
+    }
     
     @keyframes swipeHint {
         0%, 100% { 
@@ -1431,6 +1440,15 @@ header {
         height: calc(100vh - var(--header-height) - var(--top-bar-height) - 10px); /* Zmniejszone odejmowanie dla większej wysokości (+5%) */
         min-height: 350px; /* Mniejsza minimalna wysokość na mobile */
         max-height: calc(100vh - 150px); /* Dostosowana maksymalna wysokość */
+    }
+
+    /* Przesunięcie bloku treści nieco do góry (~45% od góry) na mobile */
+    #hero-slider #hero-content {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: calc(100% - 3rem); /* zachowaj odstępy boczne jak px-6 */
     }
     
     .slider-dots {
