@@ -1481,7 +1481,7 @@
     "categories": [
       "rysunek"
     ],
-    "available": true,
+    "available": false,
     "positionX": 0.5,
     "positionY": 0.5
   },
@@ -1495,7 +1495,7 @@
     "categories": [
       "rysunek"
     ],
-    "available": true,
+    "available": false,
     "positionX": 0.5,
     "positionY": 0.5
   },
@@ -1509,7 +1509,7 @@
     "categories": [
       "rysunek"
     ],
-    "available": true,
+    "available": false,
     "positionX": 0.5,
     "positionY": 0.5
   }
