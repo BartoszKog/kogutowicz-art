@@ -1329,7 +1329,7 @@
     "id": 101,
     "title": "Zdjęcie z krzyża",
     "technique": "Rysunek ołówkiem",
-    "dimensions": "25 x20 cm",
+    "dimensions": "25 x 20 cm",
     "year": 2025,
     "image": "images/gallery/rysunki  (9).webp",
     "categories": [
@@ -1359,7 +1359,7 @@
     "id": 103,
     "title": "Serce Pana Jezusa",
     "technique": "Rysunek ołówkiem",
-    "dimensions": "12 x7 cm",
+    "dimensions": "12 x 7 cm",
     "year": 2025,
     "image": "images/gallery/rysunki  (5).webp",
     "categories": [
@@ -1512,5 +1512,36 @@
     "available": false,
     "positionX": 0.5,
     "positionY": 0.5
+  },
+  {
+    "id": 114,
+    "title": "Żegocina",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "A4",
+    "year": 2025,
+    "image": "images/gallery/szkic_zeg.webp",
+    "categories": [
+      "rysunek",
+      "Żegocina",
+      "pejzaż lokalny"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 115,
+    "title": "Ofiara krzyża",
+    "technique": "Rysunek ołówkiem i kredkami akwarelowymi",
+    "dimensions": "A4",
+    "year": 2025,
+    "image": "images/gallery/rysunki  (19).webp",
+    "categories": [
+      "rysunek",
+      "motywy sakralne"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.77
   }
 ]
