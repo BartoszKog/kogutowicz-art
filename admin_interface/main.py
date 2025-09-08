@@ -79,6 +79,11 @@ class AdminInterface:
                         label="Wyróżnione"
                     ),
                     ft.NavigationRailDestination(
+                        icon=ft.Icons.ARTICLE,
+                        selected_icon=ft.Icons.ARTICLE,
+                        label="Aktualności"
+                    ),
+                    ft.NavigationRailDestination(
                         icon=ft.Icons.PHOTO_LIBRARY,
                         selected_icon=ft.Icons.PHOTO_LIBRARY_OUTLINED,
                         label="Galeria"
@@ -159,12 +164,12 @@ class AdminInterface:
 
     def load_section(self, index):
         """Ładuje odpowiednią sekcję"""
-        sections = ["about", "featured", "gallery", "shop", "ui", "categories", "site-config"]
+        sections = ["about", "featured", "news", "gallery", "shop", "ui", "categories", "site-config"]
         self.current_file = sections[index]
         self.load_data()
         
         # Zresetuj filtr galerii przy przełączaniu sekcji
-        if index == 2:  # Sekcja galerii
+        if index == 3:  # Sekcja galerii
             self.gallery_filter = "All"
         
         if index == 0:
@@ -172,14 +177,16 @@ class AdminInterface:
         elif index == 1:
             self.show_featured_form()
         elif index == 2:
-            self.show_gallery_form()
+            self.show_news_form()
         elif index == 3:
-            self.show_shop_form()
+            self.show_gallery_form()
         elif index == 4:
-            self.show_ui_form()
+            self.show_shop_form()
         elif index == 5:
-            self.show_categories_form()
+            self.show_ui_form()
         elif index == 6:
+            self.show_categories_form()
+        elif index == 7:
             self.show_site_config_form()
 
     def on_language_mode_changed(self, e):
@@ -203,14 +210,16 @@ class AdminInterface:
             elif current_index == 1:
                 self.show_featured_form()
             elif current_index == 2:
-                self.show_gallery_form()
+                self.show_news_form()
             elif current_index == 3:
-                self.show_shop_form()
+                self.show_gallery_form()
             elif current_index == 4:
-                self.show_ui_form()
+                self.show_shop_form()
             elif current_index == 5:
-                self.show_categories_form()
+                self.show_ui_form()
             elif current_index == 6:
+                self.show_categories_form()
+            elif current_index == 7:
                 self.show_site_config_form()
     
     def merge_data_for_display(self, english_data, polish_data):
@@ -241,6 +250,9 @@ class AdminInterface:
                         merged_item['description'] = eng_item['description']
                     if 'technique' in eng_item:
                         merged_item['technique'] = eng_item['technique']
+                    # Obsługa sekcji aktualności (news): pole 'content'
+                    if 'content' in eng_item:
+                        merged_item['content'] = eng_item['content']
                     
                     merged_list.append(merged_item)
                 else:
@@ -267,13 +279,10 @@ class AdminInterface:
         try:
             self._loading_data = True  # Ustaw flagę ładowania
             
-            # Specjalna obsługa dla sekcji kategorii
             if self.current_file == "categories":
                 if self.english_mode:
-                    # W trybie angielskim ładuj ui_en.json
                     json_file = self.json_path / "ui_en.json"
                 else:
-                    # W trybie polskim nie ładuj niczego - będzie obsłużone w show_categories_form
                     self.current_data = {}
                     self.unsaved_changes = False
                     self.update_title()
@@ -282,7 +291,6 @@ class AdminInterface:
                     return
             elif self.current_file == "site-config":
                 if self.english_mode:
-                    # W trybie angielskim nie ładuj niczego - będzie obsłużone w show_site_config_form
                     self.current_data = {}
                     self.unsaved_changes = False
                     self.update_title()
@@ -290,32 +298,24 @@ class AdminInterface:
                     self._loading_data = False
                     return
                 else:
-                    # W trybie polskim ładuj normalnie
                     json_file = self.json_path / f"{self.current_file}.json"
+            elif self.current_file == "news":
+                # Aktualności: niezależne listy per język, brak merge
+                json_file = self.json_path / ("news_en.json" if self.english_mode else "news_pl.json")
             else:
-                # Dla innych sekcji - logika z łączeniem danych dla trybu angielskiego
                 if self.english_mode:
                     json_file = self.json_path / f"{self.current_file}_en.json"
                     polish_file = self.json_path / f"{self.current_file}.json"
-                    
-                    # Załaduj dane angielskie
                     with open(json_file, 'r', encoding='utf-8') as f:
                         english_data = json.load(f)
-                    
-                    # Załaduj dane polskie jako backup dla pól disabled
                     try:
                         with open(polish_file, 'r', encoding='utf-8') as f:
                             polish_data = json.load(f)
-                        
-                        # Połącz dane - angielskie jako główne, polskie jako uzupełnienie
                         self.current_data = self.merge_data_for_display(english_data, polish_data)
-                        self.original_polish_data = polish_data  # Zachowaj oryginalne dane polskie
-                        
+                        self.original_polish_data = polish_data
                     except FileNotFoundError:
                         self.current_data = english_data
                         self.original_polish_data = None
-                        
-                    # Nie używaj standardowego ładowania pliku - już załadowane
                     self.unsaved_changes = False
                     self.update_title()
                     self.update_buttons_state()
@@ -327,6 +327,8 @@ class AdminInterface:
             
             with open(json_file, 'r', encoding='utf-8') as f:
                 self.current_data = json.load(f)
+
+            # Aktualności: brak dodatkowego przetwarzania (bez ID)
             self.unsaved_changes = False
             self.update_title()
             self.update_buttons_state()
@@ -336,7 +338,7 @@ class AdminInterface:
             if self.current_file == "categories":
                 # Dla kategorii nie pokazuj błędu - zostanie obsłużone w show_categories_form
                 self.current_data = {}
-            elif self.current_file in ["gallery", "shop", "featured"]:
+            elif self.current_file in ["gallery", "shop", "featured", "news"]:
                 # Dla sekcji kolekcji utwórz pustą listę
                 self.current_data = []
                 self.show_message(f"Utworzono nowy plik dla sekcji {self.current_file}", "#4caf50")
@@ -348,7 +350,7 @@ class AdminInterface:
                 self.current_data = None
         except json.JSONDecodeError:
             self._loading_data = False
-            if self.current_file in ["gallery", "shop", "featured"]:
+            if self.current_file in ["gallery", "shop", "featured", "news"]:
                 # Dla sekcji kolekcji utwórz pustą listę jeśli plik jest uszkodzony
                 self.current_data = []
                 self.show_message(f"Plik {self.current_file}.json był uszkodzony - utworzono nowy", "#f57c00")
@@ -413,6 +415,9 @@ class AdminInterface:
                         filtered_item['description'] = item['description']
                     if 'technique' in item:
                         filtered_item['technique'] = item['technique']
+                    # Dla aktualności zachowaj treść
+                    if 'content' in item:
+                        filtered_item['content'] = item['content']
                     
                     # Dodaj element tylko jeśli ma jakieś pola oprócz ID
                     if len(filtered_item) > 1 or ('id' in filtered_item and len(filtered_item) == 1 and any(key in item for key in ['title', 'description', 'technique'])):
@@ -458,6 +463,14 @@ class AdminInterface:
                 else:
                     # W trybie polskim zapisuj normalnie
                     json_file = self.json_path / f"{self.current_file}.json"
+            elif self.current_file == "news":
+                # Aktualności: niezależny zapis, bez filtrowania i synchronizacji
+                json_file = self.json_path / ("news_en.json" if self.english_mode else "news_pl.json")
+                # Usuń ewentualne pola 'id' - nie używamy ich w aktualnościach
+                if isinstance(cleaned_data, list):
+                    for it in cleaned_data:
+                        if isinstance(it, dict) and 'id' in it:
+                            it.pop('id', None)
             else:
                 # Dla innych sekcji - logika z filtrowaniem dla trybu angielskiego
                 if self.english_mode:
@@ -484,70 +497,75 @@ class AdminInterface:
     def synchronize_language_versions(self):
         """Synchronizuje strukturę danych między wersjami językowymi"""
         try:
-            # Wczytaj dane z obu wersji
-            polish_file = self.json_path / f"{self.current_file}.json"
-            english_file = self.json_path / f"{self.current_file}_en.json"
-            
-            with open(polish_file, 'r', encoding='utf-8') as f:
-                polish_data = json.load(f)
-            
-            try:
-                with open(english_file, 'r', encoding='utf-8') as f:
-                    english_data = json.load(f)
-            except FileNotFoundError:
-                english_data = []
-            
-            # Utwórz mapę istniejących elementów angielskich według ID
-            english_map = {}
-            for item in english_data:
-                if isinstance(item, dict) and 'id' in item:
-                    english_map[item['id']] = item
-            
-            # Przygotuj nową listę angielską
-            new_english_data = []
-            
-            for polish_item in polish_data:
-                if isinstance(polish_item, dict) and 'id' in polish_item:
-                    item_id = polish_item['id']
-                    
-                    if item_id in english_map:
-                        # Element istnieje - zachowaj istniejące tłumaczenia
-                        new_english_data.append(english_map[item_id])
-                    else:
-                        # Nowy element - dodaj podstawową strukturę
-                        if self.current_file == "gallery":
-                            new_item = {
-                                "id": item_id,
-                                "title": polish_item.get("title", "")
-                            }
-                            # Dodaj description jeśli istnieje
-                            if "description" in polish_item:
-                                new_item["description"] = polish_item["description"]
-                            # Dodaj technique jeśli istnieje
-                            if "technique" in polish_item:
-                                new_item["technique"] = polish_item["technique"]
-                        elif self.current_file == "featured":
-                            new_item = {
-                                "id": item_id,
-                                "title": polish_item.get("title", "")
-                            }
-                            # Dodaj description jeśli istnieje
-                            if "description" in polish_item:
-                                new_item["description"] = polish_item["description"]
-                        elif self.current_file == "shop":
-                            new_item = {
-                                "id": item_id,
-                                "title": polish_item.get("title", "")
-                            }
-                            # Dodaj description jeśli istnieje
-                            if "description" in polish_item:
-                                new_item["description"] = polish_item["description"]
-                        
-                        new_english_data.append(new_item)
-            
-            # Zapisz zsynchronizowane dane angielskie
-            with open(english_file, 'w', encoding='utf-8') as f:
-                json.dump(new_english_data, f, ensure_ascii=False, indent=2)
+            # Wczytaj dane z obu wersji (nie dotyczy 'news')
+            if self.current_file != "news":
+                polish_file = self.json_path / f"{self.current_file}.json"
+                english_file = self.json_path / f"{self.current_file}_en.json"
+
+                # Dotyczy wyłącznie sekcji listowych: gallery, featured, shop
+                if self.current_file not in ["gallery", "featured", "shop"]:
+                    return
+
+                # Wczytaj PL (źródło prawdy) i EN (tłumaczenia)
+                try:
+                    with open(polish_file, 'r', encoding='utf-8') as f:
+                        pl_data = json.load(f)
+                except FileNotFoundError:
+                    pl_data = []
+
+                try:
+                    with open(english_file, 'r', encoding='utf-8') as f:
+                        en_data = json.load(f)
+                except FileNotFoundError:
+                    en_data = []
+
+                # Zapewnij typ listy
+                if not isinstance(pl_data, list):
+                    pl_data = []
+                if not isinstance(en_data, list):
+                    en_data = []
+
+                # Mapy EN po id
+                en_by_id = {}
+                for it in en_data:
+                    if isinstance(it, dict) and 'id' in it:
+                        en_by_id[it['id']] = it
+
+                # Dozwolone pola tłumaczeń per sekcja
+                if self.current_file == 'gallery':
+                    translatable_fields = {'title', 'description', 'technique'}
+                elif self.current_file == 'shop':
+                    translatable_fields = {'title', 'description'}
+                else:  # featured
+                    translatable_fields = {'title', 'description'}
+
+                # Zbuduj nową listę EN w kolejności PL:
+                # - dla każdego PL elementu: jeśli istnieje EN po id, zachowaj tylko id + pola tłumaczeń
+                # - jeśli brak w EN, utwórz stub { id }
+                new_en_list = []
+                for pl_item in pl_data:
+                    if not isinstance(pl_item, dict):
+                        continue
+                    item_id = pl_item.get('id')
+                    if item_id is None:
+                        continue  # pomiń elementy bez ID (nie powinno wystąpić)
+
+                    existing_en = en_by_id.get(item_id, {})
+                    filtered_en = {'id': item_id}
+                    for key in translatable_fields:
+                        val = existing_en.get(key)
+                        if isinstance(val, str) and val.strip():
+                            filtered_en[key] = val
+                    new_en_list.append(filtered_en)
+
+                # Zapisz EN: uporządkowane, bez osieroconych wpisów, tylko id + tłumaczenia
+                with open(english_file, 'w', encoding='utf-8') as f:
+                    json.dump(new_en_list, f, ensure_ascii=False, indent=2)
+
+                # Opcjonalnie: nic nie zmieniamy w PL przy edycji EN
+                return
+            else:
+                return
                 
         except Exception as e:
             print(f"Błąd synchronizacji: {str(e)}")
@@ -613,8 +631,11 @@ class AdminInterface:
         """Tworzy przyciski akcji i umieszcza je w stałym kontenerze na dole"""
         buttons = []
         
-        # Przycisk dodawania (jeśli wymagany i nie w trybie angielskim)
-        if show_add_button and add_button_callback and not self.english_mode:
+        # Przycisk dodawania (dla news dostępny także w EN, dla innych tylko w PL)
+        can_add = show_add_button and add_button_callback and (
+            not self.english_mode or self.current_file == "news"
+        )
+        if can_add:
             add_button = ft.ElevatedButton(
                 add_button_text,
                 icon=ft.Icons.ADD,
@@ -688,6 +709,22 @@ class AdminInterface:
                     about_data = json.load(f)
                     if "artistPhoto" in about_data:
                         used_images.add(about_data["artistPhoto"])
+            # Sprawdź news_pl.json
+            news_pl_path = self.json_path / "news_pl.json"
+            if news_pl_path.exists():
+                with open(news_pl_path, 'r', encoding='utf-8') as f:
+                    news_data = json.load(f)
+                    for item in news_data:
+                        if isinstance(item, dict) and "image" in item:
+                            used_images.add(item["image"])
+            # Sprawdź news_en.json
+            news_en_path = self.json_path / "news_en.json"
+            if news_en_path.exists():
+                with open(news_en_path, 'r', encoding='utf-8') as f:
+                    news_en_data = json.load(f)
+                    for item in news_en_data:
+                        if isinstance(item, dict) and "image" in item:
+                            used_images.add(item["image"])
             
         except Exception as e:
             print(f"Błąd podczas sprawdzania używanych obrazów: {e}")
@@ -2247,7 +2284,6 @@ class AdminInterface:
             # Dodaj sprawdzenie długości
             if len(data.get("artistName", "")) > 100:
                 errors.append("Imię i nazwisko artysty nie może być dłuższe niż 100 znaków")
-                
         elif data_type in ["featured", "gallery", "shop"]:
             # Puste listy są dozwolone dla sekcji galerii i sklepu
             if not isinstance(data, list):
@@ -2272,6 +2308,23 @@ class AdminInterface:
                         price = item.get("price", 0)
                         if not isinstance(price, (int, float)) or price < 0 or price > 1000000:
                             errors.append(f"Element {i+1}: Cena musi być liczbą między 0 a 1,000,000")
+        elif data_type == "news":
+            if not isinstance(data, list):
+                errors.append("Dane muszą być listą")
+            else:
+                for i, item in enumerate(data):
+                    if not item.get("title", "").strip():
+                        errors.append(f"Element {i+1}: Tytuł jest wymagany")
+                    # W trybie PL wymagamy obrazu i treści
+                    if not self.english_mode:
+                        if not item.get("image", "").strip():
+                            errors.append(f"Element {i+1}: Obraz jest wymagany")
+                        if not item.get("content", "").strip():
+                            errors.append(f"Element {i+1}: Treść jest wymagana")
+                    else:
+                        # W trybie EN wymagaj również obrazu
+                        if not item.get("image", "").strip():
+                            errors.append(f"Element {i+1}: Obraz jest wymagany (EN)")
         
         return errors
 
@@ -2604,6 +2657,8 @@ class AdminInterface:
             self.show_about_form()
         elif self.current_file == "featured":
             self.show_featured_form()
+        elif self.current_file == "news":
+            self.show_news_form()
         elif self.current_file == "gallery":
             self.show_gallery_form()
         elif self.current_file == "shop":
@@ -2612,6 +2667,156 @@ class AdminInterface:
             self.show_ui_form()
         elif self.current_file == "site-config":
             self.show_site_config_form()
+
+    def show_news_form(self):
+        """Pokazuje formularz edycji sekcji 'Aktualności'"""
+        # Inicjalizuj listę jeśli brak
+        if self.current_data is None:
+            self.current_data = []
+
+        # Funkcje pomocnicze
+        def add_news_item():
+            new_item = {
+                "title": "",
+                "content": "",
+                "image": "",
+                "positionX": 0.5,
+                "positionY": 0.5
+            }
+            self.current_data.append(new_item)
+            self.unsaved_changes = True
+            self.update_title()
+            self.update_buttons_state()
+            self.show_news_form()
+
+        def delete_news_item(index):
+            def confirm_delete(e):
+                self.current_data.pop(index)
+                self.unsaved_changes = True
+                self.update_title()
+                self.update_buttons_state()
+                self.page.close(dialog)
+                self.show_news_form()
+
+            def cancel_delete(e):
+                self.page.close(dialog)
+
+            dialog = ft.AlertDialog(
+                modal=True,
+                title=ft.Text("Potwierdź usunięcie"),
+                content=ft.Text("Czy na pewno chcesz usunąć aktualność?"),
+                actions=[
+                    ft.TextButton("Usuń", on_click=confirm_delete),
+                    ft.TextButton("Anuluj", on_click=cancel_delete),
+                ]
+            )
+            self.page.open(dialog)
+
+        # Kontener formularza
+        form_container = ft.Column([
+            ft.Text("Edycja sekcji 'Aktualności'", size=24, weight=ft.FontWeight.BOLD),
+            ft.Divider(),
+        ], scroll=ft.ScrollMode.AUTO)
+
+        for i, item in enumerate(self.current_data):
+            card = ft.Card(
+                content=ft.Container(
+                    content=ft.Column([
+                        ft.Row([
+                            ft.Text(f"Aktualność {i+1}", weight=ft.FontWeight.BOLD),
+                            ft.Row([
+                                ft.Text("Pozycja:", size=12),
+                                ft.TextField(
+                                    value=str(i+1),
+                                    width=60,
+                                    height=40,
+                                    text_align=ft.TextAlign.CENTER,
+                                    input_filter=ft.NumbersOnlyInputFilter(),
+                                    disabled=False,
+                                    on_submit=lambda e, idx=i: self.move_to_position(idx, e.control.value),
+                                    on_blur=lambda e, idx=i: self.move_to_position(idx, e.control.value)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_UP,
+                                    tooltip="Przesuń w górę",
+                                    disabled=i == 0,
+                                    on_click=lambda e, idx=i: self.move_item_up(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.KEYBOARD_ARROW_DOWN,
+                                    tooltip="Przesuń w dół",
+                                    disabled=i == len(self.current_data) - 1,
+                                    on_click=lambda e, idx=i: self.move_item_down(idx)
+                                ),
+                                ft.IconButton(
+                                    ft.Icons.DELETE,
+                                    tooltip="Usuń",
+                                    disabled=False,
+                                    on_click=lambda e, idx=i: delete_news_item(idx)
+                                )
+                            ])
+                        ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
+                        ft.TextField(
+                            label="Tytuł",
+                            value=item.get("title", ""),
+                            on_change=lambda e, idx=i: self.update_item_field(idx, "title", e.control.value)
+                        ),
+                        ft.TextField(
+                            label="Treść",
+                            value=item.get("content", ""),
+                            multiline=True,
+                            min_lines=2,
+                            max_lines=6,
+                            on_change=lambda e, idx=i: self.update_item_field(idx, "content", e.control.value)
+                        ),
+                        ft.Text("Pozycjonowanie obrazu w aktualnościach:", weight=ft.FontWeight.BOLD),
+                        ft.Row([
+                            ft.Column([
+                                ft.Text("Pozycja X (0 = lewa, 0.5 = środek, 1 = prawa)", size=12),
+                                ft.Slider(
+                                    min=0,
+                                    max=1,
+                                    value=item.get("positionX", 0.5),
+                                    divisions=100,
+                                    label="{value}",
+                                    disabled=False,
+                                    on_change=lambda e, idx=i: self.update_item_field(idx, "positionX", round(e.control.value, 2))
+                                )
+                            ], expand=True),
+                            ft.Column([
+                                ft.Text("Pozycja Y (0 = góra, 0.5 = środek, 1 = dół)", size=12),
+                                ft.Slider(
+                                    min=0,
+                                    max=1,
+                                    value=item.get("positionY", 0.5),
+                                    divisions=100,
+                                    label="{value}",
+                                    disabled=False,
+                                    on_change=lambda e, idx=i: self.update_item_field(idx, "positionY", round(e.control.value, 2))
+                                )
+                            ], expand=True)
+                        ]),
+                        ft.Text("Obraz:", weight=ft.FontWeight.BOLD),
+                        self.create_image_picker(
+                            item.get("image", ""),
+                            lambda path, idx=i: self.update_item_field(idx, "image", path),
+                            disabled=False
+                        )
+                    ]),
+                    padding=15
+                )
+            )
+            form_container.controls.append(card)
+
+        self.content_area.content = form_container
+
+        # Przyciski akcji
+        self.create_action_buttons(
+            form_refresh_func=self.show_news_form,
+            show_add_button=True,
+            add_button_text="Dodaj nową aktualność",
+            add_button_callback=lambda e: add_news_item()
+        )
             
     def show_ui_form(self):
         """Pokazuje formularz do edycji tekstów interfejsu użytkownika"""

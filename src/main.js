@@ -9,6 +9,10 @@ let artistData = {}; // Nowa zmienna dla danych o artyście
 let currentLanguage = 'pl'; // Domyślny język
 let uiTexts = {}; // Teksty interfejsu użytkownika
 let siteConfig = {}; // Konfiguracja witryny
+let newsItems = []; // Aktualności dla bieżącego języka
+let newsSlider = { intervalId: null, currentIndex: 0, autoIntervalMs: 10000 }; // Stan karuzeli aktualności
+let newsSwipeCleanup = null; // cleanup listenerów swipe dla aktualności
+let newsSwipeAttached = false; // czy nasłuchy swipe są podpięte
 
 // Funkcja pomocnicza do pobierania podstawowej ścieżki
 function getBasePath() {
@@ -143,9 +147,33 @@ async function fetchData() {
     // Po załadowaniu danych, zaktualizuj interfejs
     updateUITexts();
     updateSiteConfiguration();
+    // Załaduj aktualności zależnie od języka
+    await loadNews(jsonBasePath);
     initializeApp();
   } catch (error) {
     console.error('Błąd podczas ładowania danych:', error);
+  }
+}
+
+// Ładowanie aktualności (dla bieżącego języka)
+async function loadNews(jsonBasePathFromFetch = null) {
+  try {
+    const basePath = jsonBasePathFromFetch ?? getBasePath();
+    const currentPath = window.location.pathname;
+    let jsonBasePath = basePath;
+    if (currentPath.includes('/pages/') && !basePath) {
+      // Lokalnie na podstronach
+      jsonBasePath = '../..';
+    }
+    const suffix = currentLanguage === 'en' ? 'en' : 'pl';
+    const res = await fetch(`${jsonBasePath}/src/data/json/news_${suffix}.json`);
+    newsItems = await res.json();
+    if (!Array.isArray(newsItems)) {
+      newsItems = [];
+    }
+  } catch (e) {
+    console.warn('Nie udało się załadować aktualności:', e);
+    newsItems = [];
   }
 }
 
@@ -643,8 +671,343 @@ function initializeApp() {
   } else {
     // Strona główna
     renderFeaturedArtworks();
+    // Sekcja aktualności (jeśli są dane)
+    renderNewsSection();
     setupGlobalScrollBehavior();
   }
+}
+
+// ===== SEKCJA AKTUALNOŚCI =====
+function renderNewsSection() {
+  const section = document.getElementById('news-section');
+  if (!section) return;
+
+  // Proaktywnie wyczyść poprzednie nasłuchy swipe, jeśli jakieś istnieją (globalny cleanup)
+  if (typeof newsSwipeCleanup === 'function') {
+    try { newsSwipeCleanup(); } catch {}
+    newsSwipeCleanup = null;
+  newsSwipeAttached = false;
+  }
+
+  // Brak aktualności -> ukryj sekcję i zatrzymaj autoplay
+  if (!newsItems || newsItems.length === 0) {
+    section.classList.add('hidden');
+    stopNewsAutoSlide();
+    return;
+  }
+
+  // Swipe na urządzeniach mobilnych dla aktualności (używamy globalnego newsSwipeCleanup)
+  function setupNewsSwipe() {
+    const section = document.getElementById('news-section');
+    const content = section?.querySelector('.news-content');
+    const track = section?.querySelector('.news-track');
+    if (!section || !content || !track) return;
+    const slidesCount = track.querySelectorAll('.news-slide').length;
+    if (slidesCount <= 1) return; // swipe tylko gdy jest co przewijać
+  
+
+    // Jeśli istnieją poprzednie nasłuchy – wyczyść je
+    if (typeof newsSwipeCleanup === 'function') {
+      
+      newsSwipeCleanup();
+      newsSwipeCleanup = null;
+    }
+
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let startTime = 0;
+    let isHorizontalSwipe = false;
+    let currentGestureId = 0; // ID aktualnego gestu do logowania
+    const minSwipeDistance = 50; // px
+    const maxSwipeTime = 800;    // ms
+    // Użyj ALBO Pointer Events, ALBO fallback Touch Events (nie obu naraz)
+    const supportsPointer = 'PointerEvent' in window;
+    let listenersType = supportsPointer ? 'pointer' : 'touch';
+  
+
+    if (supportsPointer) {
+      if (newsSwipeAttached) {
+        return;
+      }
+      const onPointerDown = (e) => {
+        if (e.pointerType !== 'touch') return;
+        handledThisGesture = false; // reset flag per gesture start
+        isDragging = true;
+        isHorizontalSwipe = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        startTime = Date.now();
+        currentGestureId = (currentGestureId % 1_000_000) + 1;
+        
+        try { content.setPointerCapture(e.pointerId); } catch {}
+        stopNewsAutoSlide();
+      };
+      const onPointerMove = (e) => {
+        if (!isDragging || e.pointerType !== 'touch') return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const absDx = Math.abs(dx);
+        const absDy = Math.abs(dy);
+        if (!isHorizontalSwipe && (absDx > 15 || absDy > 15)) {
+          if (absDx > absDy) {
+            isHorizontalSwipe = true;
+          } else {
+            isDragging = false;
+          }
+        }
+        if (isHorizontalSwipe && e.cancelable) e.preventDefault();
+        
+      };
+      let handledThisGesture = false;
+      const onPointerUp = (e) => {
+        if (!isDragging || e.pointerType !== 'touch') return;
+        if (handledThisGesture) {
+          return;
+        }
+        const endTime = Date.now();
+        const duration = endTime - startTime;
+        const dx = e.clientX - startX;
+        const absDx = Math.abs(dx);
+        const isValid = isHorizontalSwipe && absDx >= minSwipeDistance && duration <= maxSwipeTime;
+        
+        if (isValid) {
+          if (dx < 0 && newsSlider.currentIndex < slidesCount - 1) {
+            gotoNewsSlide(newsSlider.currentIndex + 1);
+          } else if (dx > 0 && newsSlider.currentIndex > 0) {
+            gotoNewsSlide(newsSlider.currentIndex - 1);
+          } else {
+            
+          }
+        }
+        handledThisGesture = true;
+        isDragging = false;
+        isHorizontalSwipe = false;
+        startX = startY = 0;
+        startTime = 0;
+        startNewsAutoSlide();
+      };
+      content.addEventListener('pointerdown', onPointerDown, { passive: true });
+      content.addEventListener('pointermove', onPointerMove, { passive: false });
+      content.addEventListener('pointerup', onPointerUp, { passive: false });
+      // Nie traktuj pointercancel/leave jako zakończenia gestu, aby uniknąć duplikatów
+
+      newsSwipeCleanup = () => {
+        content.removeEventListener('pointerdown', onPointerDown);
+        content.removeEventListener('pointermove', onPointerMove);
+        content.removeEventListener('pointerup', onPointerUp);
+        newsSwipeAttached = false;
+      };
+      newsSwipeAttached = true;
+    } else {
+      if (newsSwipeAttached) {
+        return;
+      }
+      // Fallback touch* dla starszych przeglądarek (iOS < 13 itp.)
+      const onTouchStart = (e) => {
+        if (!e.touches || e.touches.length !== 1) return;
+        handledThisGesture = false; // reset flag per gesture start
+        isDragging = true;
+        isHorizontalSwipe = false;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        startTime = Date.now();
+        currentGestureId = (currentGestureId % 1_000_000) + 1;
+        
+        stopNewsAutoSlide();
+      };
+      const onTouchMove = (e) => {
+        if (!isDragging) return;
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        const absDx = Math.abs(dx);
+        const absDy = Math.abs(dy);
+        if (!isHorizontalSwipe && (absDx > 15 || absDy > 15)) {
+          if (absDx > absDy) isHorizontalSwipe = true; else isDragging = false;
+        }
+        if (isHorizontalSwipe && e.cancelable) e.preventDefault();
+        
+      };
+      let handledThisGesture = false;
+      const onTouchEnd = (e) => {
+        if (!isDragging) return;
+        if (handledThisGesture) {
+          return;
+        }
+        const endTime = Date.now();
+        const duration = endTime - startTime;
+        const dx = (e.changedTouches?.[0]?.clientX ?? startX) - startX;
+        const absDx = Math.abs(dx);
+        const isValid = isHorizontalSwipe && absDx >= minSwipeDistance && duration <= maxSwipeTime;
+        
+        if (isValid) {
+          if (dx < 0 && newsSlider.currentIndex < slidesCount - 1) {
+            gotoNewsSlide(newsSlider.currentIndex + 1);
+          } else if (dx > 0 && newsSlider.currentIndex > 0) {
+            gotoNewsSlide(newsSlider.currentIndex - 1);
+          } else {
+            
+          }
+        }
+        handledThisGesture = true;
+        isDragging = false;
+        isHorizontalSwipe = false;
+        startX = startY = 0;
+        startTime = 0;
+        startNewsAutoSlide();
+      };
+      content.addEventListener('touchstart', onTouchStart, { passive: true });
+      content.addEventListener('touchmove', onTouchMove, { passive: false });
+      content.addEventListener('touchend', onTouchEnd, { passive: false });
+
+      newsSwipeCleanup = () => {
+        content.removeEventListener('touchstart', onTouchStart);
+        content.removeEventListener('touchmove', onTouchMove);
+        content.removeEventListener('touchend', onTouchEnd);
+        newsSwipeAttached = false;
+      };
+      newsSwipeAttached = true;
+    }
+  }
+
+  // Tytuł zależny od języka
+  const titleEl = document.getElementById('news-title');
+  if (titleEl) titleEl.textContent = currentLanguage === 'en' ? 'News' : 'Aktualności';
+
+  section.classList.remove('hidden');
+  const content = section.querySelector('.news-content');
+  const controls = section.querySelector('.news-controls');
+  const dotsContainer = section.querySelector('.news-dots');
+  const prevBtn = section.querySelector('.news-nav.prev');
+  const nextBtn = section.querySelector('.news-nav.next');
+  if (!content || !controls || !dotsContainer || !prevBtn || !nextBtn) return;
+
+  content.innerHTML = '';
+  dotsContainer.innerHTML = '';
+
+  // Jedna aktualność – ukryj kontrolki
+  if (newsItems.length === 1) {
+  controls.classList.add('hidden');
+  controls.style.display = 'none';
+    const item = newsItems[0];
+    const img = correctImagePath(item.image);
+    const posX = item.positionX !== undefined ? item.positionX : 0.5;
+    const posY = item.positionY !== undefined ? item.positionY : 0.5;
+    const objectPosition = `${posX * 100}% ${posY * 100}%`;
+    const el = document.createElement('article');
+    el.className = 'news-item card';
+    el.innerHTML = `
+      <div class="news-image"><img src="${img}" alt="${item.title}" style="object-position: ${objectPosition};"></div>
+      <div class="news-text">
+        <h3 class="news-item-title">${item.title}</h3>
+        <p class="news-item-content">${item.content}</p>
+      </div>
+    `;
+    content.appendChild(el);
+  observeNewsSection();
+  if (typeof newsSwipeCleanup === 'function') { newsSwipeCleanup(); newsSwipeCleanup = null; }
+    stopNewsAutoSlide();
+    return;
+  }
+
+  // Wiele aktualności – karuzela
+  controls.classList.remove('hidden');
+  controls.style.display = '';
+  const track = document.createElement('div');
+  track.className = 'news-track';
+  content.appendChild(track);
+
+  newsItems.forEach((item, idx) => {
+    const slide = document.createElement('article');
+    slide.className = 'news-slide';
+    const img = correctImagePath(item.image);
+    const posX = item.positionX !== undefined ? item.positionX : 0.5;
+    const posY = item.positionY !== undefined ? item.positionY : 0.5;
+    const objectPosition = `${posX * 100}% ${posY * 100}%`;
+    slide.innerHTML = `
+      <div class="news-image"><img src="${img}" alt="${item.title}" style="object-position: ${objectPosition};"></div>
+      <div class="news-text">
+        <h3 class="news-item-title">${item.title}</h3>
+        <p class="news-item-content">${item.content}</p>
+      </div>
+    `;
+    track.appendChild(slide);
+
+    const dot = document.createElement('button');
+    dot.className = 'news-dot';
+    dot.setAttribute('aria-label', `Slide ${idx + 1}`);
+    dot.addEventListener('click', () => gotoNewsSlide(idx));
+    dotsContainer.appendChild(dot);
+  });
+
+  const prevHandler = () => gotoNewsSlide((newsSlider.currentIndex - 1 + newsItems.length) % newsItems.length);
+  const nextHandler = () => gotoNewsSlide((newsSlider.currentIndex + 1) % newsItems.length);
+  prevBtn.onclick = prevHandler;
+  nextBtn.onclick = nextHandler;
+
+  // Po zbudowaniu karuzeli włącz obsługę gestów
+  setupNewsSwipe();
+  gotoNewsSlide(0);
+  startNewsAutoSlide();
+  observeNewsSection();
+}
+
+function gotoNewsSlide(index) {
+  const section = document.getElementById('news-section');
+  const track = section?.querySelector('.news-track');
+  const dots = section?.querySelectorAll('.news-dot');
+  if (!track || !dots) return;
+  
+  newsSlider.currentIndex = index;
+  // Oblicz pikselowe przesunięcie na podstawie realnej szerokości slajdów + gap (16px)
+  // Wylicz przesunięcie sumując szerokości poprzednich slajdów + odstęp (gap)
+  const GAP = 8; // zgodny ze styles.css (news-track gap)
+  let offsetPx = 0;
+  for (let i = 0; i < index; i++) {
+    const child = track.children[i];
+    if (child) offsetPx += child.getBoundingClientRect().width + GAP;
+  }
+  // Przesuń tor tak, by aktywny slajd wypełniał szerokość widoku,
+  // a przerwa (gap) po PRAWEJ była schowana poza krawędzią (bez "pustego pasa").
+  // Dla ostatniego slajdu nie ma już kolejnego gapu – nie dodajemy korekty.
+  const isLast = index === track.children.length - 1;
+  const extraRightShift = index > 0 && !isLast ? GAP : 0;
+  track.style.transform = `translateX(${-(offsetPx + extraRightShift)}px)`;
+  dots.forEach((d, i) => d.classList.toggle('active', i === index));
+
+  // Oznacz aktywny slajd (do od-blurowania i skalowania)
+  const slides = track.querySelectorAll('.news-slide');
+  slides.forEach((s, i) => s.classList.toggle('active', i === index));
+}
+
+function startNewsAutoSlide() {
+  stopNewsAutoSlide();
+  if (!newsItems || newsItems.length <= 1) return;
+  newsSlider.intervalId = setInterval(() => {
+    gotoNewsSlide((newsSlider.currentIndex + 1) % newsItems.length);
+  }, newsSlider.autoIntervalMs);
+}
+
+function stopNewsAutoSlide() {
+  if (newsSlider.intervalId) {
+    clearInterval(newsSlider.intervalId);
+    newsSlider.intervalId = null;
+  }
+}
+
+function observeNewsSection() {
+  const section = document.getElementById('news-section');
+  if (!section) return;
+  section.classList.remove('fade-in');
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        section.classList.add('fade-in');
+        obs.disconnect();
+      }
+    });
+  }, { threshold: 0.2 });
+  observer.observe(section);
 }
 
 // Funkcja do obsługi responsywnego menu
@@ -1911,6 +2274,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     observeContactSection();
     // Inicjalizuj obserwator dla górnego paska
     initTopBarScrollBehavior();
+  // Pokaż/ukryj sekcję aktualności po starcie
+  renderNewsSection();
   } else {
     console.log('Nie jestem na stronie głównej, pomijam slider');
     // Na innych stronach też inicjalizuj obserwację górnego paska (ale z inną logiką)
@@ -3065,6 +3430,8 @@ async function changeLanguage(newLanguage) {
   
   // Przeładuj dane w nowym języku
   await fetchData();
+  // Przeładuj aktualności w nowym języku
+  await loadNews();
   
   // Aktualizuj interfejs użytkownika
   updateUITexts();
@@ -3077,6 +3444,7 @@ async function changeLanguage(newLanguage) {
       (!currentPath.includes('/pages/') && !currentPath.includes('gallery.html') && !currentPath.includes('about.html') && !currentPath.includes('shop.html'))) {
     // Strona główna
     renderFeaturedArtworks();
+  renderNewsSection();
     // Odśwież slider jeśli istnieje
     if (heroSlider && typeof heroSlider.refreshSlider === 'function') {
       heroSlider.refreshSlider();
