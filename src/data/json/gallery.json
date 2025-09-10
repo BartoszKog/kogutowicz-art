@@ -100,7 +100,8 @@
     ],
     "available": false,
     "dimensions": "24 x 30 cm",
-    "technique": "Obraz olejny malowany na płótnie"
+    "technique": "Obraz olejny malowany na płótnie",
+    "copiesDimensions": "18 x 24 cm"
   },
   {
     "id": 43,
@@ -536,7 +537,8 @@
     ],
     "available": false,
     "technique": "Obraz olejny malowany na płótnie",
-    "description": "Żegocina centrum"
+    "description": "Żegocina centrum",
+    "copiesDimensions": "18 x 24 cm"
   },
   {
     "id": 12,
@@ -886,7 +888,8 @@
     ],
     "available": false,
     "technique": "Obraz olejny malowany na płótnie",
-    "positionY": 0.72
+    "positionY": 0.72,
+    "copiesDimensions": "24 x 30 cm"
   },
   {
     "id": 30,

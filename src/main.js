@@ -241,8 +241,8 @@ function renderGalleryArtworks(artworks = galleryArtworks) {
   galleryContainer.innerHTML = '';
   
   artworks.forEach((artwork, index) => {
-    const artworkElement = document.createElement('div');
-    artworkElement.className = 'bg-white rounded shadow-md overflow-hidden';
+  const artworkElement = document.createElement('div');
+  artworkElement.className = 'bg-white rounded shadow-md overflow-hidden flex flex-col';
     
     // Dodaj atrybut z indeksem dla trybu skupienia
     artworkElement.setAttribute('data-artwork-index', index);
@@ -259,15 +259,20 @@ function renderGalleryArtworks(artworks = galleryArtworks) {
       <div class="h-64 bg-gray-200 flex items-center justify-center overflow-hidden">
         <img src="${correctedImagePath}" alt="${artwork.title || 'Obraz'}" class="w-full h-full object-cover" style="object-position: ${objectPosition};">
       </div>
-      <div class="p-4">
-        <h3 class="text-xl font-semibold mb-2">${artwork.title || 'Bez tytułu'}</h3>
-        ${(artwork.technique || artwork.dimensions || artwork.year) ? 
-          `<p class="text-gray-600">${[artwork.technique, artwork.dimensions, artwork.year].filter(Boolean).join(', ')}</p>` : 
-          ''}
-        ${artwork.description ? `<p class="text-sm mt-2">${artwork.description}</p>` : ''}
-        <p class="mt-2 ${artwork.available ? 'text-green-600' : 'text-gray-400'}">
-          ${artwork.available ? (uiTexts.common?.available || 'Dostępny') : (uiTexts.common?.unavailable || 'Niedostępny')}
-        </p>
+      <div class="p-4 flex flex-col flex-grow">
+        <div class="flex flex-col flex-grow">
+          <h3 class="text-xl font-semibold mb-2">${artwork.title || 'Bez tytułu'}</h3>
+          ${(artwork.technique || artwork.dimensions || artwork.year) ? 
+            `<p class=\"text-gray-600\">${[artwork.technique, artwork.dimensions, artwork.year].filter(Boolean).join(', ')}</p>` : 
+            ''}
+          ${(artwork.copiesDimensions) ? `<p class=\"text-xs text-blue-600 mt-1 font-medium\">${uiTexts.common?.copiesAvailable || 'Dostępne kopie'}: ${artwork.copiesDimensions}</p>` : ''}
+          ${artwork.description ? `<p class=\"text-sm mt-2\">${artwork.description}</p>` : ''}
+        </div>
+        <div class="mt-3 pt-2 border-t border-gray-100">
+          <p class="${artwork.available ? 'text-green-600' : 'text-gray-400'}">
+            ${artwork.available ? (uiTexts.common?.available || 'Dostępny') : (uiTexts.common?.unavailable || 'Niedostępny')}
+          </p>
+        </div>
       </div>
     `;
     
@@ -278,6 +283,14 @@ function renderGalleryArtworks(artworks = galleryArtworks) {
     
     galleryContainer.appendChild(artworkElement);
   });
+}
+
+// Helper function to render painting time
+function renderPaintingTime(paintingTime) {
+  if (typeof paintingTime === 'number' && paintingTime > 0) {
+    return `<p class="text-sm text-gray-500 mt-1"><span class="font-medium">${uiTexts.common?.paintingTime || 'Czas malowania'}:</span> ${paintingTime}h</p>`;
+  }
+  return '';
 }
 
 // Funkcja do renderowania produktów w sklepie
@@ -308,8 +321,8 @@ function renderShopProducts() {
   shopContainer.className = 'shop-products grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
   
   shopProducts.forEach(product => {
-    const productElement = document.createElement('div');
-    productElement.className = 'bg-white rounded shadow-md overflow-hidden';
+  const productElement = document.createElement('div');
+  productElement.className = 'bg-white rounded shadow-md overflow-hidden flex flex-col';
     
     // Użyj funkcji correctImagePath do skorygowania ścieżki obrazu
     const correctedImagePath = correctImagePath(product.image);
@@ -333,15 +346,19 @@ function renderShopProducts() {
       <div class="h-64 bg-gray-200 flex items-center justify-center overflow-hidden cursor-pointer shop-product-image" data-product-id="${product.id}">
         <img src="${correctedImagePath}" alt="${product.title || 'Produkt'}" class="w-full h-full object-cover" style="object-position: ${objectPosition};">
       </div>
-      <div class="p-4">
-        <h3 class="text-xl font-semibold mb-2">${product.title || 'Bez tytułu'}</h3>
-        ${product.description ? `<p class="text-gray-600">${product.description}</p>` : ''}
-        ${product.dimensions ? `<p class="text-sm text-gray-500 mt-1"><span class="font-medium">${uiTexts.common?.dimensions || 'Wymiary'}:</span> ${product.dimensions}</p>` : ''}
-        ${product.price ? `<p class="text-purple-600 font-bold mt-2">${product.price} zł</p>` : ''}        <div class="mt-4 flex items-center justify-between">
+      <div class="p-4 flex flex-col flex-grow">
+        <div class="flex flex-col flex-grow">
+          <h3 class="text-xl font-semibold mb-2">${product.title || 'Bez tytułu'}</h3>
+          ${product.description ? `<p class=\"text-gray-600\">${product.description}</p>` : ''}
+          ${product.dimensions ? `<p class=\"text-sm text-gray-500 mt-1\"><span class=\"font-medium\">${uiTexts.common?.dimensions || 'Wymiary'}:</span> ${product.dimensions}</p>` : ''}
+          ${renderPaintingTime(product.paintingTime)}
+          ${product.price ? `<p class=\"text-purple-600 font-bold mt-2\">${product.price} zł</p>` : ''}
+        </div>
+        <div class="mt-4 flex items-center justify-between pt-2 border-t border-gray-100">
           <a ${buttonAttributes} class="${buttonClass}">
             ${buttonText}
           </a>
-          ${!isAvailable ? `<span class="text-gray-400 font-semibold text-sm">${uiTexts.common?.sold || 'Sprzedane'}</span>` : ''}
+          ${!isAvailable ? `<span class=\"text-gray-400 font-semibold text-sm\">${uiTexts.common?.sold || 'Sprzedane'}</span>` : ''}
         </div>
       </div>
     `;
@@ -1340,6 +1357,9 @@ function displayCurrentArtwork() {
     // Dla produktów ze sklepu - opis i wymiary w jednej linii
     if (artwork.description) detailsArray.push(artwork.description);
     if (artwork.dimensions) detailsArray.push(artwork.dimensions);
+    if (typeof artwork.paintingTime === 'number' && artwork.paintingTime > 0) {
+      detailsArray.push(`${uiTexts.common?.paintingTime || 'Czas malowania'}: ${artwork.paintingTime}h`);
+    }
   } else {
     // Dla galerii i featured - standardowe szczegóły techniczne
     if (artwork.technique) detailsArray.push(artwork.technique);
@@ -1373,7 +1393,7 @@ function displayCurrentArtwork() {
       : 'onclick="return false;"';
     
     availabilityOrPurchase.innerHTML = `
-      <div class="flex items-center justify-center gap-4">
+      <div class="flex items-center justify-center gap-6 flex-wrap">
         ${price}
         <a ${buttonAttributes} class="${buttonClass}">
           ${buttonText}
@@ -1382,11 +1402,13 @@ function displayCurrentArtwork() {
     `;
   } else if (focusModeState.source === 'gallery') {
     // Dla galerii - status dostępności
-    availabilityOrPurchase.innerHTML = `
-      <span class="${artwork.available ? 'text-green-600' : 'text-gray-400'} font-semibold">
-        ${artwork.available ? (uiTexts.common?.available || 'Dostępny') : (uiTexts.common?.unavailable || 'Niedostępny')}
-      </span>
-    `;
+    if (artwork.copiesDimensions) {
+      // Jeśli są kopie, pokazujemy tylko informację o kopiach
+      availabilityOrPurchase.innerHTML = `<span class="text-blue-600 font-medium">${uiTexts.common?.copiesAvailable || 'Dostępne kopie'}: ${artwork.copiesDimensions}</span>`;
+    } else {
+      // W przeciwnym razie standardowy status dostępności
+      availabilityOrPurchase.innerHTML = `<span class="${artwork.available ? 'text-green-600' : 'text-gray-400'} font-semibold">${artwork.available ? (uiTexts.common?.available || 'Dostępny') : (uiTexts.common?.unavailable || 'Niedostępny')}</span>`;
+    }
   } else {
     // Dla featured artworks - ukryj sekcję
     availabilityOrPurchase.innerHTML = '';

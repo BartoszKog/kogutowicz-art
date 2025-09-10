@@ -535,7 +535,7 @@ class AdminInterface:
                 if self.current_file == 'gallery':
                     translatable_fields = {'title', 'description', 'technique'}
                 elif self.current_file == 'shop':
-                    translatable_fields = {'title', 'description'}
+                    translatable_fields = {'title', 'description'}  # paintingTime numeric & copiesDimensions not tłumaczone
                 else:  # featured
                     translatable_fields = {'title', 'description'}
 
@@ -1732,7 +1732,8 @@ class AdminInterface:
                 "categories": [self.gallery_filter] if self.gallery_filter != "All" else [],
                 "available": True,
                 "positionX": 0.5,
-                "positionY": 0.5
+                "positionY": 0.5,
+                "copiesDimensions": ""  # tekstowe wymiary kopii jeśli istnieją
             }
             self.current_data.append(new_artwork)
             self.unsaved_changes = True
@@ -1872,6 +1873,15 @@ class AdminInterface:
                                 on_change=lambda e, idx=original_index: self.update_item_field(idx, "dimensions", e.control.value)
                             )
                         ]),
+                        ft.Row([
+                            ft.TextField(
+                                label="Wymiary kopii (pozostaw puste jeśli brak kopii)",
+                                value=artwork.get("copiesDimensions", ""),
+                                expand=True,
+                                disabled=self.english_mode,
+                                on_change=lambda e, idx=original_index: self.update_item_field(idx, "copiesDimensions", e.control.value)
+                            ),
+                        ]),
                         self.create_category_selector(
                             artwork.get("categories", []),
                             lambda categories, idx=original_index: self.update_item_field(idx, "categories", categories),
@@ -1950,7 +1960,8 @@ class AdminInterface:
                 "originalArtworkId": 1,
                 "purchaseUrl": "",
                 "positionX": 0.5,
-                "positionY": 0.5
+                "positionY": 0.5,
+                "paintingTime": 0  # liczba godzin malowania
             }
             self.current_data.append(new_product)
             self.unsaved_changes = True
@@ -2027,7 +2038,14 @@ class AdminInterface:
                                 width=200,
                                 disabled=self.english_mode,
                                 on_change=lambda e, idx=new_index: self.update_item_field(idx, "originalArtworkId", int(e.control.value) if e.control.value.isdigit() else 1)
-                            )
+                            ),
+                            ft.TextField(
+                                label="Czas malowania (h)",
+                                value=str(new_product.get("paintingTime", 0)),
+                                width=160,
+                                disabled=self.english_mode,
+                                on_change=lambda e, idx=new_index: self.update_item_field(idx, "paintingTime", int(e.control.value) if e.control.value.isdigit() else 0)
+                            ),
                         ]),
                         ft.TextField(
                             label="URL zakupu",
@@ -2206,7 +2224,14 @@ class AdminInterface:
                                 width=200,
                                 disabled=self.english_mode,
                                 on_change=lambda e, idx=i: self.update_item_field(idx, "originalArtworkId", int(e.control.value) if e.control.value.isdigit() else 1)
-                            )
+                            ),
+                            ft.TextField(
+                                label="Czas malowania (h)",
+                                value=str(product.get("paintingTime", 0)),
+                                width=160,
+                                disabled=self.english_mode,
+                                on_change=lambda e, idx=i: self.update_item_field(idx, "paintingTime", int(e.control.value) if e.control.value.isdigit() else 0)
+                            ),
                         ]),
                         ft.TextField(
                             label="URL zakupu",
