@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import shutil
 import threading
+import datetime
 
 class AdminInterface:
     def __init__(self, page: ft.Page):
@@ -1373,11 +1374,6 @@ class AdminInterface:
             multiline = False
             min_lines = 1
             max_lines = 1
-        elif list_name == "exhibitions":
-            label = f"Wystawa {new_index + 1}"
-            multiline = False
-            min_lines = 1
-            max_lines = 1
         
         new_row = ft.Row([
             ft.TextField(
@@ -1727,7 +1723,7 @@ class AdminInterface:
                 "description": "",
                 "technique": "",
                 "dimensions": "",
-                "year": 2024,
+                "year": datetime.datetime.now().year,
                 "image": "",
                 "categories": [self.gallery_filter] if self.gallery_filter != "All" else [],
                 "available": True,
@@ -1849,7 +1845,7 @@ class AdminInterface:
                                 value=str(artwork.get("year", "")),
                                 width=100,
                                 disabled=self.english_mode,
-                                on_change=lambda e, idx=original_index: self.update_item_field(idx, "year", int(e.control.value) if e.control.value.isdigit() else 2024)
+                                    on_change=lambda e, idx=original_index: self.update_item_field(idx, "year", int(e.control.value) if e.control.value.isdigit() else datetime.now().year)
                             )
                         ]),
                         ft.TextField(
