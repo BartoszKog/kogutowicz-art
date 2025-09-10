@@ -34,6 +34,8 @@
     "available": "Available",
     "unavailable": "Unavailable",
     "notAvailable": "Not Available",
+  "copiesAvailable": "Copies available",
+  "paintingTime": "Painting time",
     "sold": "Sold",
     "goToPurchase": "Go to Purchase",
     "dimensions": "Dimensions",
