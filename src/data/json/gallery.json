@@ -1546,5 +1546,35 @@
     "available": true,
     "positionX": 0.5,
     "positionY": 0.77
+  },
+  {
+    "id": 116,
+    "title": "Zwiastowanie",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "20 x 20 cm",
+    "year": 2025,
+    "image": "images/gallery/rys 11wrz (1).webp",
+    "categories": [
+      "rysunek",
+      "motywy sakralne"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.45
+  },
+  {
+    "id": 117,
+    "title": "Motywy gotyckie",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "20 x 20 cm",
+    "year": 2025,
+    "image": "images/gallery/rys 11wrz (2).webp",
+    "categories": [
+      "rysunek",
+      "motywy sakralne"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.28
   }
 ]
