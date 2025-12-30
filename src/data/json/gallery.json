@@ -194,7 +194,7 @@
     "categories": [
       "martwa natura"
     ],
-    "available": true,
+    "available": false,
     "dimensions": "20 x 20 cm",
     "technique": "Obraz olejny malowany na płótnie"
   },
@@ -282,12 +282,12 @@
     "technique": "Obraz olejny malowany na płótnie",
     "dimensions": "30 x 40 cm",
     "year": 2025,
-    "image": "images/gallery/czw_drp (2).webp",
+    "image": "images/gallery/2025_12_30 13_01_lakta.webp",
     "categories": [
       "Łąkta",
       "pejzaż lokalny"
     ],
-    "available": false,
+    "available": true,
     "positionX": 0.5,
     "positionY": 0.5
   },
@@ -544,14 +544,14 @@
     "id": 12,
     "title": "Złota jesień",
     "description": "Złota jesień w Żegocinie",
-    "dimensions": "50 x 50 cm",
-    "year": 2011,
-    "image": "images/gallery/zegocina_kosciol.webp",
+    "dimensions": "30 x 40 cm",
+    "year": 2025,
+    "image": "images/gallery/2025_12_30 13_01_jes_zag.webp",
     "categories": [
       "pejzaż lokalny",
       "Żegocina"
     ],
-    "available": false,
+    "available": true,
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
@@ -571,13 +571,13 @@
     "id": 54,
     "title": "Kościół w Żegocinie - zima",
     "year": 2025,
-    "image": "images/gallery/zeg_zima.webp",
+    "image": "images/gallery/2025_12_30 13_01_zim_zeg.webp",
     "categories": [
       "Żegocina",
       "pejzaż lokalny"
     ],
-    "available": false,
-    "dimensions": "18 x 24 cm",
+    "available": true,
+    "dimensions": "24 x 30 cm",
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
