@@ -93,6 +93,11 @@
     "technique": "Oil painting on canvas"
   },
   {
+    "id": 121,
+    "title": "Winter Panorama of Wiśnicz",
+    "technique": "Oil painting on canvas"
+  },
+  {
     "id": 48,
     "title": "Morning in Wiśnicz",
     "technique": "Oil painting on canvas"
@@ -182,6 +187,11 @@
   {
     "id": 7,
     "title": "Market Square in Bochnia",
+    "technique": "Oil painting on canvas"
+  },
+  {
+    "id": 122,
+    "title": "The Sacred Heart of Jesus",
     "technique": "Oil painting on canvas"
   },
   {
@@ -380,6 +390,22 @@
     "id": 59,
     "title": "Mother of God",
     "technique": "Oil painting on fiberboard"
+  },
+  {
+    "id": 120,
+    "title": "In the Ornament of Bare Tree Branches",
+    "description": "St. Leonard's Church in Lipnica Murowana",
+    "technique": "Pencil drawing"
+  },
+  {
+    "id": 119,
+    "title": "The townhouses of Bochnia",
+    "technique": "Pencil and ink drawing"
+  },
+  {
+    "id": 118,
+    "title": "Bochnia Market Square",
+    "technique": "Pencil and ink drawing"
   },
   {
     "id": 96,
@@ -590,5 +616,10 @@
     "id": 117,
     "title": "Gothic Motifs",
     "technique": "Pencil drawing"
+  },
+  {
+    "id": 123,
+    "title": "Dandelion Meadow",
+    "technique": "Oil painting on canvas"
   }
 ]

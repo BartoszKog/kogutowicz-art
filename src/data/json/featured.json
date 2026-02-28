@@ -39,9 +39,9 @@
     "id": 10,
     "title": "Rysunek i grafika",
     "description": "Prace w odcieniach czerni, bieli i szarości.",
-    "image": "images/gallery/rysunki  (1).webp",
+    "image": "images/featured/rysunki.webp",
     "galleryCategory": "rysunek",
     "positionX": 0.11,
-    "positionY": 0.68
+    "positionY": 0.91
   }
 ]

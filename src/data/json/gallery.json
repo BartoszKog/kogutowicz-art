@@ -237,10 +237,25 @@
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
+    "id": 121,
+    "title": "Zimowa panorama Wiśnicza",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "30 x 40 cm",
+    "year": 2026,
+    "image": "images/gallery/2026_02_28 14_47 Office Lens (1).webp",
+    "categories": [
+      "Wiśnicz",
+      "pejzaż lokalny"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
     "id": 48,
     "title": "Poranek w Wiśniczu",
     "year": 2025,
-    "image": "images/gallery/Wiśnicz z mgłą.webp",
+    "image": "images/gallery/2026_02_28 14_47 Office Lens (5).webp",
     "categories": [
       "Wiśnicz",
       "pejzaż lokalny"
@@ -282,7 +297,7 @@
     "technique": "Obraz olejny malowany na płótnie",
     "dimensions": "30 x 40 cm",
     "year": 2025,
-    "image": "images/gallery/2025_12_30 13_01_lakta.webp",
+    "image": "images/gallery/2026_02_28 14_47 Office Lens (6).webp",
     "categories": [
       "Łąkta",
       "pejzaż lokalny"
@@ -477,6 +492,20 @@
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
+    "id": 122,
+    "title": "Najświętsze Serce Pana Jezusa",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "30 x 24 cm",
+    "year": 2025,
+    "image": "images/gallery/2026_02_28 15_01 Office Lens.webp",
+    "categories": [
+      "motywy sakralne"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.2
+  },
+  {
     "id": 8,
     "title": "Jan Paweł II",
     "year": 2012,
@@ -563,7 +592,7 @@
       "Żegocina",
       "pejzaż lokalny"
     ],
-    "available": true,
+    "available": false,
     "dimensions": "30 x 20 cm",
     "technique": "Obraz olejny na panelu malarskim"
   },
@@ -744,7 +773,7 @@
       "Wiśnicz",
       "pejzaż lokalny"
     ],
-    "available": true,
+    "available": false,
     "positionX": 0.5,
     "positionY": 0.5
   },
@@ -968,6 +997,52 @@
     "dimensions": "15 x 7 cm",
     "technique": "Obraz olejny na płycie pilśniowej",
     "positionY": 0.28
+  },
+  {
+    "id": 120,
+    "title": "W ornamencie nagich konarów drzew",
+    "description": "Kościół św. Leonarda w Lipnicy Murowanej",
+    "technique": "Rysunek ołówkiem",
+    "dimensions": "A3",
+    "year": 2025,
+    "image": "images/gallery/2026_02_28 14_47 Office Lens (4).webp",
+    "categories": [
+      "rysunek",
+      "Lipnica"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 119,
+    "title": "Bocheńskie kamieniczki",
+    "technique": "Rysunek cienkopisem i ołówkiem",
+    "dimensions": "A5",
+    "year": 2025,
+    "image": "images/gallery/2026_02_28 14_47 Office Lens (3).webp",
+    "categories": [
+      "rysunek",
+      "Bochnia"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 118,
+    "title": "Bocheński rynek",
+    "technique": "Rysunek cienkopisem i ołówkiem",
+    "dimensions": "A5",
+    "year": 2025,
+    "image": "images/gallery/2026_02_28 14_47 Office Lens (2).webp",
+    "categories": [
+      "rysunek",
+      "Bochnia"
+    ],
+    "available": true,
+    "positionX": 0.5,
+    "positionY": 0.5
   },
   {
     "id": 96,
@@ -1309,7 +1384,7 @@
       "rysunek",
       "motywy sakralne"
     ],
-    "available": true,
+    "available": false,
     "positionX": 0.5,
     "positionY": 0.32
   },
@@ -1576,5 +1651,20 @@
     "available": false,
     "positionX": 0.5,
     "positionY": 0.28
+  },
+  {
+    "id": 123,
+    "title": "Łąka z dmuchawcami",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "18 x 24 cm",
+    "year": 2025,
+    "image": "images/gallery/2026_02_28 14_47 Office Lens (7).webp",
+    "categories": [
+      "Laskowa",
+      "pejzaż lokalny"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5
   }
 ]
