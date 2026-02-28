@@ -1,27 +1,27 @@
 [
   {
     "id": 1,
-    "title": "Local Landscape",
-    "description": "Vivid views of surrounding places, captured in different seasons."
+    "description": "Vivid views of surrounding places, captured in different seasons.",
+    "title": "Local Landscape"
   },
   {
     "id": 7,
-    "title": "Human",
-    "description": "Portraits and scenes from life, showing emotions and character of figures."
+    "description": "Portraits and scenes from life, showing emotions and character of figures.",
+    "title": "Human"
   },
   {
     "id": 8,
-    "title": "Still Life",
-    "description": "Compositions of everyday objects, reflecting their beauty and harmony."
+    "description": "Compositions of everyday objects, reflecting their beauty and harmony.",
+    "title": "Still Life"
   },
   {
     "id": 9,
-    "title": "Botanical Stories",
-    "description": "Beautiful representations of plants and flowers."
+    "description": "Beautiful representations of plants and flowers.",
+    "title": "Botanical Stories"
   },
   {
     "id": 10,
-    "title": "Drawing and Graphics",
-    "description": "Works in shades of black, white, and gray."
+    "description": "Works in shades of black, white, and gray.",
+    "title": "Drawing and Graphics"
   }
 ]
