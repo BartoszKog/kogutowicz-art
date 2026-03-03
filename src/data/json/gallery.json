@@ -113,7 +113,7 @@
       "Żegocina",
       "pejzaż lokalny"
     ],
-    "available": true,
+    "available": false,
     "technique": "Obraz olejny malowany na płótnie"
   },
   {
@@ -605,7 +605,7 @@
       "Żegocina",
       "pejzaż lokalny"
     ],
-    "available": true,
+    "available": false,
     "dimensions": "24 x 30 cm",
     "technique": "Obraz olejny malowany na płótnie"
   },
