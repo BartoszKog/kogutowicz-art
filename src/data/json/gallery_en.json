@@ -1,20 +1,20 @@
 [
   {
     "id": 40,
-    "description": "A small, historic sacred object, located in Kamionka Mała",
     "title": "Chapel of Our Lady of the Scapular in Maliniska",
+    "description": "A small, historic sacred object, located in Kamionka Mała",
     "technique": "Oil painting on canvas"
   },
   {
     "id": 91,
-    "description": "Against the backdrop of the charming Beskid Wyspowy (Kamionka Mała)",
     "title": "Little Sheep",
+    "description": "Against the backdrop of the charming Beskid Wyspowy (Kamionka Mała)",
     "technique": "Oil painting on canvas"
   },
   {
     "id": 86,
-    "description": "A historic wooden church built in the 18th century",
     "title": "Church of St. Catherine of Alexandria in Kamionka Mała",
+    "description": "A historic wooden church built in the 18th century",
     "technique": "Oil painting on canvas"
   },
   {
@@ -24,20 +24,20 @@
   },
   {
     "id": 28,
-    "description": "Church in Laskowa in autumn",
     "title": "Church in Laskowa",
+    "description": "Church in Laskowa in autumn",
     "technique": "Oil painting on canvas"
   },
   {
     "id": 89,
-    "description": "A charming view of the church in Laskowa in a summer landscape",
     "title": "The Church of the Most Holy Name of Mary in Laskowa",
+    "description": "A charming view of the church in Laskowa in a summer landscape",
     "technique": "Oil painting on canvas"
   },
   {
     "id": 32,
-    "description": "Traditional grain sheaves with church in the background in Żegocina",
     "title": "Golden Sheaves in the Shadow of the Church",
+    "description": "Traditional grain sheaves with church in the background in Żegocina",
     "technique": "Oil painting on canvas"
   },
   {
@@ -57,14 +57,14 @@
   },
   {
     "id": 88,
-    "description": "A historic, Gothic, wooden Roman Catholic church from the 15th century",
     "title": "St. James the Apostle Church in Rozdziele",
+    "description": "A historic, Gothic, wooden Roman Catholic church from the 15th century",
     "technique": "Oil painting on canvas"
   },
   {
     "id": 41,
-    "description": "St. Margaret's Church in Trzciana",
     "title": "Church in Trzciana - Winter",
+    "description": "St. Margaret's Church in Trzciana",
     "technique": "Oil painting on canvas"
   },
   {
@@ -114,8 +114,8 @@
   },
   {
     "id": 97,
-    "description": "Łąkta illuminated by the setting summer sun",
     "title": "Panorama of Łąkta",
+    "description": "Łąkta illuminated by the setting summer sun",
     "technique": "Oil painting on canvas"
   },
   {
@@ -170,8 +170,8 @@
   },
   {
     "id": 50,
-    "description": "The oldest and largest church in Bochnia",
     "title": "St. Nicholas Basilica in Bochnia",
+    "description": "The oldest and largest church in Bochnia",
     "technique": "Oil painting on canvas"
   },
   {
@@ -216,14 +216,14 @@
   },
   {
     "id": 11,
-    "description": "Żegocina center",
     "title": "Landscape with Postman",
+    "description": "Żegocina center",
     "technique": "Oil painting on canvas"
   },
   {
     "id": 12,
-    "description": "Golden autumn in Żegocina",
     "title": "Golden Autumn",
+    "description": "Golden autumn in Żegocina",
     "technique": "Oil painting on canvas"
   },
   {
@@ -248,8 +248,8 @@
   },
   {
     "id": 15,
-    "description": "Cracow pigeons against the backdrop of St. Mary's Church",
     "title": "Cracow Pigeons",
+    "description": "Cracow pigeons against the backdrop of St. Mary's Church",
     "technique": "Oil painting on canvas"
   },
   {
@@ -284,14 +284,14 @@
   },
   {
     "id": 51,
-    "description": "A historic, Gothic, wooden Roman Catholic church from the 15th century",
     "title": "St. James the Apostle Church in Rozdziele",
+    "description": "A historic, Gothic, wooden Roman Catholic church from the 15th century",
     "technique": "Oil painting on canvas"
   },
   {
     "id": 22,
-    "description": "A historic, Gothic, wooden Roman Catholic church from the 15th century",
     "title": "Rozdziele",
+    "description": "A historic, Gothic, wooden Roman Catholic church from the 15th century",
     "technique": "Oil painting on canvas"
   },
   {
@@ -306,8 +306,8 @@
   },
   {
     "id": 23,
-    "description": "Wiśnicz",
     "title": "Castle in Wiśnicz",
+    "description": "Wiśnicz",
     "technique": "Oil painting on canvas"
   },
   {
@@ -317,14 +317,14 @@
   },
   {
     "id": 24,
-    "description": "Market Square in Myślenice",
     "title": "Myślenice",
+    "description": "Market Square in Myślenice",
     "technique": "Oil painting on canvas"
   },
   {
     "id": 26,
-    "description": "End of summer in Łąkta Górna",
     "title": "Sunflowers - End of Summer",
+    "description": "End of summer in Łąkta Górna",
     "technique": "Oil painting on canvas"
   },
   {
@@ -334,20 +334,20 @@
   },
   {
     "id": 45,
-    "description": "St. Leonard's Church in Lipnica Murowana",
     "title": "Leonard",
+    "description": "St. Leonard's Church in Lipnica Murowana",
     "technique": "Oil painting on canvas"
   },
   {
     "id": 27,
-    "description": "St. Leonard's Church in Lipnica Murowana",
     "title": "Leonard",
+    "description": "St. Leonard's Church in Lipnica Murowana",
     "technique": "Oil painting on canvas"
   },
   {
     "id": 57,
-    "description": "It was built to protect against floods and droughts",
     "title": "St. John of Nepomuk Chapel, Laskowa",
+    "description": "It was built to protect against floods and droughts",
     "technique": "Oil painting on canvas"
   },
   {
@@ -357,8 +357,8 @@
   },
   {
     "id": 29,
-    "description": "St. Leonard's Church in Lipnica Murowana",
     "title": "Leonard",
+    "description": "St. Leonard's Church in Lipnica Murowana",
     "technique": "Oil painting on canvas"
   },
   {
