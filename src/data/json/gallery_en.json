@@ -195,6 +195,11 @@
     "technique": "Oil painting on canvas"
   },
   {
+    "id": 124,
+    "title": "The Immaculate Heart of Mary",
+    "technique": "Oil painting on canvas"
+  },
+  {
     "id": 8,
     "title": "John Paul II",
     "technique": "Oil painting on canvas"
@@ -621,5 +626,10 @@
     "id": 123,
     "title": "Dandelion Meadow",
     "technique": "Oil painting on canvas"
+  },
+  {
+    "id": 125,
+    "title": "Miniature with Sunflowers",
+    "technique": "Oil painting on panel"
   }
 ]
