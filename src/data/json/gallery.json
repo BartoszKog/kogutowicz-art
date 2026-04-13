@@ -506,6 +506,20 @@
     "positionY": 0.2
   },
   {
+    "id": 124,
+    "title": "Niepokalane Serce Maryi",
+    "technique": "Obraz olejny malowany na płótnie",
+    "dimensions": "30 x 24 cm",
+    "year": 2025,
+    "image": "images/gallery/niepokalane_serce.webp",
+    "categories": [
+      "motywy sakralne"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.29
+  },
+  {
     "id": 8,
     "title": "Jan Paweł II",
     "year": 2012,
@@ -1661,6 +1675,20 @@
     "image": "images/gallery/2026_02_28 14_47 Office Lens (7).webp",
     "categories": [
       "Laskowa",
+      "pejzaż lokalny"
+    ],
+    "available": false,
+    "positionX": 0.5,
+    "positionY": 0.5
+  },
+  {
+    "id": 125,
+    "title": "Miniaturka ze słonecznikami",
+    "technique": "Obraz olejny malowany na panelu",
+    "dimensions": "13 x 18 cm",
+    "year": 2026,
+    "image": "images/gallery/miniaturka_ze_slonecznikami.webp",
+    "categories": [
       "pejzaż lokalny"
     ],
     "available": false,
