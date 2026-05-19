@@ -999,10 +999,11 @@ function gotoNewsSlide(index) {
 
 function startNewsAutoSlide() {
   stopNewsAutoSlide();
-  if (!newsItems || newsItems.length <= 1) return;
-  newsSlider.intervalId = setInterval(() => {
-    gotoNewsSlide((newsSlider.currentIndex + 1) % newsItems.length);
-  }, newsSlider.autoIntervalMs);
+  // Wyłączono automatyczne przewijanie co 10 sekund
+  // if (!newsItems || newsItems.length <= 1) return;
+  // newsSlider.intervalId = setInterval(() => {
+  //   gotoNewsSlide((newsSlider.currentIndex + 1) % newsItems.length);
+  // }, newsSlider.autoIntervalMs);
 }
 
 function stopNewsAutoSlide() {
